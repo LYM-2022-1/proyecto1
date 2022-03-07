@@ -1,0 +1,228 @@
+/*
+Gramatica para el Robot:
+Autor: Alejandro Arango
+Modificado por: Silvia Takahashi
+Modificado por: Juan Pablo Morales.
+Agregadas producciones para manejar globos
+Modificado por Silvia Takahashi
+Eliminadas producciones para manejar globos
+Agregado el esqueleto para la traduccion
+Modificado por Silvia Takahashi 
+Re: Agregar Reglas para el manejo de globos
+Modificado por Saulo Daza y Sonia Vivas
+Modificado por Silvia Takahashi
+Eliminadas reglas de traducci�n DE  MARCROS
+Cambio del lenguaje de comandos
+Modificado por Silvia Takahashi: algunas Reglas para traduccion
+Modificado por Silvia Takahashi: Cambio en el lenguaje
+Abril: 2008 - Simplificado apra solo interpretaci�n
+ **/
+
+options 
+{
+	LOOKAHEAD=1; 
+	IGNORE_CASE=true;
+	STATIC = false;
+	
+}
+   
+
+PARSER_BEGIN(Robot)
+
+package uniandes.lym.robot.control;
+
+import uniandes.lym.robot.kernel.*;
+import java.awt.Point;
+import java.io.*;
+import java.util.Vector;
+import java.util.LinkedList;
+
+@SuppressWarnings("serial")
+public class Robot 
+{
+
+
+	private RobotWorldDec world;
+	
+	
+	void setWorld(RobotWorld w) {
+		world = (RobotWorldDec) w;	
+	}
+
+	String salida=new String();
+}
+PARSER_END(Robot)
+
+SKIP:
+{
+	" "
+	|	"\r"
+	|	"\t"
+//	| "\n"
+}
+
+TOKEN: /* Nombres de Comandos */
+{
+
+			<MOVE:  "move">
+		| 	<TURNRIGHT: "turnright">
+		| 	<PUT: "Put">
+		| 	<PICK: "Pick">
+		|  <POP: "Pop" >
+		| < DEFVAR: "defvar">
+		|  <EQUALS: "=" >
+		|  <TURN: "turn" >
+		|  <FACE: "face" >
+		|  <MOVE_DIR: "move-dir" >
+		|  <RUN_DIRS: "run-dirs" >
+		|  <MOVE_FACE: "move-face" >
+		|  <IF: "if" >
+		|  <LOOP: "loop" >
+		|  <REPEAT: "repeat" >
+		|  <DEFUN: "defun" >
+		|  <FACING_P: "facing-p" >
+		|  <CAN_PUT: "can-put-p" >
+		|  <CAN_PICK: "can-pick-p" >
+		|  <CAN_MOVE: "can-move-p" >
+		|  <NOT: "not" >
+		|  <OP: "(" >
+		|  <CP: ")" >
+	
+		
+
+}
+
+TOKEN : /* PARAMETROS */
+{
+		<BALLOONS:  "balloons" >
+		|	<CHIPS:     "chips"  >
+		|  <RIGHT: "right" >
+		|  <LEFT: "left" >
+		|  <AROUND: "around" >
+		|  <BACK: "back" >
+		|  <FRONT: "front" >
+		|  <NORTH: "north" >
+		|  <SOUTH: "south" >
+		|  <WEST: "west" >
+		|  <EAST: "east" >
+
+}
+
+
+TOKEN :
+{
+		<NUM: (<DIGIT>)+ >
+		|  	<#DIGIT: ["0"-"9"] >
+		| < #LOWER: ["a"-"z"] >
+		| < #UPPER: ["A"-"Z"] >
+		| <NAME: (<LOWER>|< UPPER >)(<LOWER>|< UPPER >|< DIGIT >)*>
+}
+
+void dos_parametros(): { }
+{
+  <OP>(<PUT>|<PICK>|<DEFVAR>)
+  <CP>
+}
+
+
+	int numero() throws Error:
+	{	
+		int total=1;
+	}
+	{
+		<NUM>
+		{
+			try 
+			{
+				total = Integer.parseInt(token.image);
+			} 
+			catch (NumberFormatException ee) 
+			{
+				// Dada la forma de NUMERO, sabemos que solo puede tener d�gitos
+				// Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
+				throw new Error("Number out of bounds: "+token.image+"!!");
+			}
+			return total;
+		}
+	}
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/*boolean command(StringBuffer sistema) :
+	{	
+		
+		int x;
+		salida=new String();
+		
+	}
+	
+	{
+		(
+		   <TURNRIGHT> "(" ")" {world.turnRight();salida = "Command: Turnright";}
+		| 	<MOVE>  "(" x=numero() ")" {world.moveForward(x);salida = "Command: Moveforward ";}  
+		|  <PUT> "("  objetoPoner() ")"					  			
+		|  <PICK> "("  objetoRecoger()  ")"	
+	    |  < POP > "(" x=numero() ")" {world.popBalloons(x); salida = "Comando:  Pop";}
+		) "\n" 
+
+		{
+		  //  try {
+	    	//		 Thread.sleep(1);
+	    	  //   } catch (InterruptedException e) {
+	    		//	        System.err.format("IOException: %s%n", e);
+	    		//	    }
+	    			 
+			sistema.append(salida);
+			return true;
+		}
+
+     |  "\n" { return true; }
+
+		| <EOF> {return false;} 
+	}
+
+	void objetoPoner() :
+	{
+		int f=1;	
+	}
+	{
+		( <CHIPS>    "," f=numero() {world.putChips(f); salida = "Command:  Put Chips"; })
+		|  	  ( <BALLOONS>   "," f=numero() {world.putBalloons(f); salida = "Command:  Put Balloons";})	 
+
+	}
+
+	void objetoRecoger() :
+	{
+		int f=1;	
+	}
+	{
+		( <CHIPS>   "," f=numero() {world.pickChips(f);salida = "Command:  Pick chips";})
+		|  	  ( <BALLOONS>   "," f=numero() {world.grabBalloons(f);salida="Command:  Pick balloons";})	 
+
+	}
+
+	
+	
+
+	/**
+	 *  reconoce un numero entero sin signo
+	 * @return el valor entero correspondiente al valor reconocido
+	 */
+
+	
