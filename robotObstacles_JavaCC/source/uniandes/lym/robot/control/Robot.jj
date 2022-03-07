@@ -55,8 +55,7 @@ PARSER_END(Robot)
 
 SKIP:
 {
-	" "
-	|	"\r"
+	"\r"
 	|	"\t"
 //	| "\n"
 }
@@ -92,6 +91,19 @@ TOKEN: /* Nombres de Comandos */
 
 }
 
+TOKEN :
+{
+		<NUMERO: (<DIGIT>)+ >
+		|  	<#DIGIT: ["0"-"9"] >
+}
+
+TOKEN:
+{
+  	< #letra: ["a"-"z","A"-"Z"]>
+ 	| <#digito: ["0"-"9"] >
+ 	| < NAME: (< letra >)(< letra >|< digito >)*>
+}
+
 TOKEN : /* PARAMETROS */
 {
 		<BALLOONS:  "balloons" >
@@ -108,7 +120,7 @@ TOKEN : /* PARAMETROS */
 
 }
 
-
+/*
 TOKEN :
 {
 		<NUM: (<DIGIT>)+ >
@@ -117,10 +129,11 @@ TOKEN :
 		| < #UPPER: ["A"-"Z"] >
 		| <NAME: (<LOWER>|< UPPER >)(<LOWER>|< UPPER >|< DIGIT >)*>
 }
+*/
 
 void dos_parametros(): { }
 {
-  <OP>(<PUT>|<PICK>|<DEFVAR>)
+  <OP>(<PUT>|<PICK>)
   <CP>
 }
 
@@ -130,7 +143,7 @@ void dos_parametros(): { }
 		int total=1;
 	}
 	{
-		<NUM>
+		<NUMERO>
 		{
 			try 
 			{
@@ -164,11 +177,13 @@ void dos_parametros(): { }
 
 
 
-	/*boolean command(StringBuffer sistema) :
+boolean command(StringBuffer sistema) :
 	{	
 		
 		int x;
 		salida=new String();
+		String[] variables= new String[10];
+		int[] valorvars= new int[10];
 		
 	}
 	
@@ -176,9 +191,7 @@ void dos_parametros(): { }
 		(
 		   <TURNRIGHT> "(" ")" {world.turnRight();salida = "Command: Turnright";}
 		| 	<MOVE>  "(" x=numero() ")" {world.moveForward(x);salida = "Command: Moveforward ";}  
-		|  <PUT> "("  objetoPoner() ")"					  			
-		|  <PICK> "("  objetoRecoger()  ")"	
-	    |  < POP > "(" x=numero() ")" {world.popBalloons(x); salida = "Comando:  Pop";}
+	    | < DEFVAR> " " declararVariable(variables, valorvars) ")"
 		) "\n" 
 
 		{
@@ -197,6 +210,49 @@ void dos_parametros(): { }
 		| <EOF> {return false;} 
 	}
 
+
+	void declararVariable(String[] variables, int[] valorvars) :
+	{
+	  String nombre = "";
+	  int total = 1;
+	}
+	{
+	  < NAME>
+	  {
+	    try 
+			{
+				nombre = token.image;
+				variables[1]= nombre;
+				
+			} 
+			catch (NumberFormatException ee) 
+			{
+				// Dada la forma de NUMERO, sabemos que solo puede tener d�gitos
+				// Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
+				throw new Error("NO PUDE METER EN EL ARRAY ESTO: "+token.image+"!!");
+			}
+
+	  }
+	  " "
+	  <NUMERO>
+		{
+			try 
+			{
+				total = Integer.parseInt(token.image);
+				valorvars[1]=total;
+			} 
+			catch (NumberFormatException ee) 
+			{
+				// Dada la forma de NUMERO, sabemos que solo puede tener d�gitos
+				// Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
+				throw new Error("Number out of bounds: "+token.image+"!!");
+			}
+			
+		}
+	}
+
+	
+	/*
 	void objetoPoner() :
 	{
 		int f=1;	
