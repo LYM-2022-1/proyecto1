@@ -84,6 +84,7 @@ TOKEN: /* Nombres de Comandos */
 		|  <CAN_PICK: "can-pick-p" >
 		|  <CAN_MOVE: "can-move-p" >
 		|  <NOT: "not" >
+		| < PASS:"skip">
 		|  <OP: "(" >
 		|  <CP: ")" >
 	
@@ -99,9 +100,10 @@ TOKEN :
 
 TOKEN:
 {
+  	
   	< #letra: ["a"-"z","A"-"Z"]>
  	| <#digito: ["0"-"9"] >
- 	| < NAME: (< letra >)(< letra >|< digito >)*>
+ 	//| < LETRA: (< letra >)(< letra >|< digito >)*>
 }
 
 TOKEN : /* PARAMETROS */
@@ -120,21 +122,37 @@ TOKEN : /* PARAMETROS */
 
 }
 
-/*
-TOKEN :
-{
-		<NUM: (<DIGIT>)+ >
-		|  	<#DIGIT: ["0"-"9"] >
-		| < #LOWER: ["a"-"z"] >
-		| < #UPPER: ["A"-"Z"] >
-		| <NAME: (<LOWER>|< UPPER >)(<LOWER>|< UPPER >|< DIGIT >)*>
-}
-*/
 
-void dos_parametros(): { }
+void comandos(): { }
 {
-  <OP>(<PUT>|<PICK>)
-  <CP>
+   <PUT> <OP> ":" (<CHIPS>|<BALLOONS>) <NUMERO> <CP>
+|  <PICK><OP> ":" (<CHIPS>|<BALLOONS>) <NUMERO> <CP>
+|  <MOVE><OP><NUMERO><CP>
+|  <TURNRIGHT><OP><CP>
+|  <POP><OP><NUMERO> <CP>
+}
+
+void instruccioes(): { }
+{
+  <OP>
+(   <DEFVAR>< letra >(< letra >|< digito >)*<NUMERO>
+| <EQUALS>< letra >(< letra >|< digito >)*<NUMERO> //PUEDO PONER TOKEN DINAMICO ASI?
+| <MOVE>(<NUMERO>|"VARIABLE?")
+| <TURN>":"(<LEFT>|<AROUND>|<RIGHT>)
+| <FACE>":"(<SOUTH>|<WEST>|<EAST>|<NORTH>)
+| <PUT>":"(<BALLOONS>|<CHIPS>)(<NUMERO>|"VARIABLE?")
+| <PICK>":"(<BALLOONS>|<CHIPS>)(<NUMERO>|"VARIABLE?")
+| <MOVE_DIR>(<NUMERO>|"VARIABLE?")(<FRONT>|<RIGHT>|<LEFT>|<BACK>)
+| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
+| <MOVE_FACE>(<NUMERO>|"VARIABLE?")(<SOUTH>|<WEST>|<EAST>|<NORTH>) 
+)
+<CP>
+
+}
+
+
+  //|<DEFVAR>|<EQUALS>|<PUT>|<PICK>|<MOVE_DIR>|<RUN_DIRS>|<MOVE_FACE>)
+
 }
 
 
@@ -177,7 +195,7 @@ void dos_parametros(): { }
 
 
 
-boolean command(StringBuffer sistema) :
+/*boolean command(StringBuffer sistema) :
 	{	
 		
 		int x;
@@ -208,7 +226,7 @@ boolean command(StringBuffer sistema) :
      |  "\n" { return true; }
 
 		| <EOF> {return false;} 
-	}
+	}*/
 
 
 	void declararVariable(String[] variables, int[] valorvars) :
