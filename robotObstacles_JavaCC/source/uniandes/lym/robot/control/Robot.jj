@@ -101,8 +101,9 @@ TOKEN :
 TOKEN:
 {
   	
-  	< #letra: ["a"-"z","A"-"Z"]>
- 	| <#digito: ["0"-"9"] >
+  	< LETRA: ["a"-"z","A"-"Z"]>
+ 	| <DIGITO: ["0"-"9"] >
+ 	| < NAME: (< LETRA >)(< LETRA >|< DIGITO >)*>
  	//| < LETRA: (< letra >)(< letra >|< digito >)*>
 }
 
@@ -132,32 +133,16 @@ void comandos(): { }
 |  <POP><OP><NUMERO> <CP>
 }
 
-void instruccioes(): { }
-{
-  <OP>
-(   <DEFVAR>< letra >(< letra >|< digito >)*<NUMERO>
-| <EQUALS>< letra >(< letra >|< digito >)*<NUMERO> //PUEDO PONER TOKEN DINAMICO ASI?
-| <MOVE>(<NUMERO>|"VARIABLE?")
-| <TURN>":"(<LEFT>|<AROUND>|<RIGHT>)
-| <FACE>":"(<SOUTH>|<WEST>|<EAST>|<NORTH>)
-| <PUT>":"(<BALLOONS>|<CHIPS>)(<NUMERO>|"VARIABLE?")
-| <PICK>":"(<BALLOONS>|<CHIPS>)(<NUMERO>|"VARIABLE?")
-| <MOVE_DIR>(<NUMERO>|"VARIABLE?")(<FRONT>|<RIGHT>|<LEFT>|<BACK>)
-| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
-| <MOVE_FACE>(<NUMERO>|"VARIABLE?")(<SOUTH>|<WEST>|<EAST>|<NORTH>) 
-)
-<CP>
 
-}
 
 
   //|<DEFVAR>|<EQUALS>|<PUT>|<PICK>|<MOVE_DIR>|<RUN_DIRS>|<MOVE_FACE>)
 
-}
 
 
 	int numero() throws Error:
-	{	
+	{
+	  
 		int total=1;
 	}
 	{
@@ -181,36 +166,66 @@ void instruccioes(): { }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*boolean command(StringBuffer sistema) :
-	{	
-		
-		int x;
+void instructions():
+{
+ 		int x = 0;
 		salida=new String();
 		String[] variables= new String[10];
 		int[] valorvars= new int[10];
+ }
+{
+  	<OP>
+	(
+   		<EQUALS>< LETRA >(< LETRA >|< DIGITO >)*<NUMERO> //PUEDO PONER TOKEN DINAMICO ASI?
+		| <MOVE>" " (<NUMERO>|checkNum(variables, valorvars)) //{world.moveForward(x);salida = "Command: Moveforward ";}
+		| <TURN>":"(<LEFT>|<AROUND>|<RIGHT>) //{ world.moveHorizontally}
+		| <FACE>":"(<SOUTH>|<WEST>|<EAST>|<NORTH>)
+		| <PUT>":"(<BALLOONS>|<CHIPS>)(<NUMERO>|"VARIABLE?")
+		| <PICK>":"(<BALLOONS>|<CHIPS>)(<NUMERO>|"VARIABLE?")
+		| <MOVE_DIR>(<NUMERO>|"VARIABLE?")(<FRONT>|<RIGHT>|<LEFT>|<BACK>)
+		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
+		| <MOVE_FACE>(<NUMERO>|"VARIABLE?")(<SOUTH>|<WEST>|<EAST>|<NORTH>)
+		| < DEFVAR> " " declararVariable(variables, valorvars) 
+	)
+	<CP>
+}
+
+int checkNum(String[] variables, int[] valorvars) :
+{
+  int rta = -57;
+  int i = 0;
+}
+{
+  < NAME>
+  {
+  
+  	for(i=0; i<variables.length; i++)
+  	{
+    	if(variables[i].equals(token.image))
+    	{
+    	  rta= valorvars[i];
+
+    	}
+  	}
+  	if(rta == -57)
+  	{
+  	  throw new Error("ERROR: NO EXISTE LA VARIABLE");
+
+  	}
+  	return rta;
+  }
+}
+
+
+boolean command(StringBuffer sistema) :
+	{	
+		
+		
 		
 	}
 	
 	{
-		(
-		   <TURNRIGHT> "(" ")" {world.turnRight();salida = "Command: Turnright";}
-		| 	<MOVE>  "(" x=numero() ")" {world.moveForward(x);salida = "Command: Moveforward ";}  
-	    | < DEFVAR> " " declararVariable(variables, valorvars) ")"
-		) "\n" 
+		instructions() 
 
 		{
 		  //  try {
@@ -226,19 +241,44 @@ void instruccioes(): { }
      |  "\n" { return true; }
 
 		| <EOF> {return false;} 
-	}*/
+	}
 
 
 	void declararVariable(String[] variables, int[] valorvars) :
 	{
 	  String nombre = "";
 	  int total = 1;
+	  int pos = 33;
+	  int j = 0;
+	  int k = 0;
 	}
 	{
 	  < NAME>
 	  {
 	    try 
 			{
+			  	if(!variables[variables.length].equals(null))
+			  	{
+			  	  pos = 1;
+			  	  String[] nuevaria= new String[variables.length+100];
+			  	  for(j=0; j<variables.length; j++)
+			  	  {
+			  	    nuevaria[j] = variables[j];
+			  	  }
+			  	  variables[j] = token.image;
+
+			  	}
+			  	
+			  	for(k=0; k<variables.length; k++)
+			  	{
+			  	  if(variables[k].equals(null))
+			  	  {
+			  	    nombre = token.image;
+					variables[k]= nombre;
+					pos = k;
+			  	  }
+
+			  	}
 				nombre = token.image;
 				variables[1]= nombre;
 				
@@ -256,8 +296,14 @@ void instruccioes(): { }
 		{
 			try 
 			{
-				total = Integer.parseInt(token.image);
-				valorvars[1]=total;
+			  if(pos!=33)
+			  {
+			    total = Integer.parseInt(token.image);
+				valorvars[pos]=total;
+
+			  }
+
+				
 			} 
 			catch (NumberFormatException ee) 
 			{
