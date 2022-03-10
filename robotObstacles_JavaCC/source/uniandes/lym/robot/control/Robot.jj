@@ -43,6 +43,8 @@ public class Robot
 
 
 	private RobotWorldDec world;
+	private String[] variables= new String[10];
+	private int[] valorvars= new int[10];
 	
 	
 	void setWorld(RobotWorld w) {
@@ -136,10 +138,6 @@ void comandos(): { }
 
 
 
-  //|<DEFVAR>|<EQUALS>|<PUT>|<PICK>|<MOVE_DIR>|<RUN_DIRS>|<MOVE_FACE>)
-
-
-
 	int numero() throws Error:
 	{
 	  
@@ -166,7 +164,7 @@ void comandos(): { }
 
 
 
-void instructions(int x, String salida, String[] variables, int[] valorvars, String[] nueva):
+void instructions(int x, String salida, String[] nueva):
 {
   int p = 0;
  		
@@ -174,7 +172,7 @@ void instructions(int x, String salida, String[] variables, int[] valorvars, Str
 {
   	  	  <OP>
 	(
-   		<EQUALS>< LETRA >(< LETRA >|< DIGITO >)*<NUMERO> //PUEDO PONER TOKEN DINAMICO ASI?
+   		<EQUALS> " " cambiarVariable(variables, valorvars) 
 		| <MOVE>" " x=checkNum(variables, valorvars) //{world.moveForward(x);salida = "Command: Moveforward ";}
 		| <TURN>":"(<LEFT>|<AROUND>|<RIGHT>) //{ world.moveHorizontally}
 		| <FACE>":"(<SOUTH>|<WEST>|<EAST>|<NORTH>)
@@ -183,34 +181,42 @@ void instructions(int x, String salida, String[] variables, int[] valorvars, Str
 		| <MOVE_DIR> x=checkNum(variables, valorvars) (<FRONT>|<RIGHT>|<LEFT>|<BACK>)
 		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
 		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
-		| < DEFVAR> " " nueva = declararVariable(variables, valorvars) {variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);for(p=0; p<variables.length; p++)
-    			{
-      				System.out.println(variables[p]);
-
-    			}
-    			System.out.println(nueva[0]+nueva[1]+nueva[2]);}
+		| < DEFVAR> " " nueva = declararVariable(variables, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
 	)
 	<CP>
     
+}
+
+void cambiarVariable(String[] variables, int[] valorvars) :
+{
+  < NAME>
+  {
+    for(i=0; i<variables.length; i++)
+  	{
+    	if(token.image.equals(variables[i]))
+    	{
+    	  rta= valorvars[i];
+
+    	}
+  	}
+  }
+
 }
 
 int checkNum(String[] variables, int[] valorvars) :
 {
   int rta = -57;
   int i = 0;
+  String prueba = "prueba";
 }
 {
   (    < NAME>
   {
-    for(i=0; i<variables.length; i++)
-    {
-      System.out.println(variables[i]);
-
-    }
+    
   
   	for(i=0; i<variables.length; i++)
   	{
-    	if(variables[i]==token.image)
+    	if(token.image.equals(variables[i]))
     	{
     	  rta= valorvars[i];
 
@@ -236,14 +242,12 @@ boolean command(StringBuffer sistema) :
 	{	
 		int x = 0;
 		salida=new String();
-		String[] variables= new String[10];
-		int[] valorvars= new int[10];
 		String[] nueva= new String[3];
 		
 	}
 	
 	{
-		instructions(x, salida, variables, valorvars, nueva) 
+		instructions(x, salida, nueva) 
 
 		{
 		  //  try {
@@ -277,18 +281,6 @@ String[] declararVariable(String[] variables, int[] valorvars) :
 	  {
 	    try 
 			{
-			  	/*if(!variables[variables.length].equals(null))
-			  	{
-			  	  pos = 1;
-			  	  String[] nuevaria= new String[variables.length+100];
-			  	  for(j=0; j<variables.length; j++)
-			  	  {
-			  	    nuevaria[j] = variables[j];
-			  	  }
-			  	  variables[j] = token.image;
-
-			  	}
-			  	*/
 			  	
 			  	for(k=0; k<variables.length; k++)
 			  	{
