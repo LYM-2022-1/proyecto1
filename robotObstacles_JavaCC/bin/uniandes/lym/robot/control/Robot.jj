@@ -166,15 +166,13 @@ void comandos(): { }
 
 
 
-void instructions():
+void instructions(int x, String salida, String[] variables, int[] valorvars, String[] nueva):
 {
- 		int x = 0;
-		salida=new String();
-		String[] variables= new String[10];
-		int[] valorvars= new int[10];
+  int p = 0;
+ 		
  }
 {
-  	<OP>
+  	  	  <OP>
 	(
    		<EQUALS>< LETRA >(< LETRA >|< DIGITO >)*<NUMERO> //PUEDO PONER TOKEN DINAMICO ASI?
 		| <MOVE>" " x=checkNum(variables, valorvars) //{world.moveForward(x);salida = "Command: Moveforward ";}
@@ -185,9 +183,15 @@ void instructions():
 		| <MOVE_DIR> x=checkNum(variables, valorvars) (<FRONT>|<RIGHT>|<LEFT>|<BACK>)
 		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
 		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
-		| < DEFVAR> " " declararVariable(variables, valorvars) 
+		| < DEFVAR> " " nueva = declararVariable(variables, valorvars) {variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);for(p=0; p<variables.length; p++)
+    			{
+      				System.out.println(variables[p]);
+
+    			}
+    			System.out.println(nueva[0]+nueva[1]+nueva[2]);}
 	)
 	<CP>
+    
 }
 
 int checkNum(String[] variables, int[] valorvars) :
@@ -198,10 +202,15 @@ int checkNum(String[] variables, int[] valorvars) :
 {
   (    < NAME>
   {
+    for(i=0; i<variables.length; i++)
+    {
+      System.out.println(variables[i]);
+
+    }
   
   	for(i=0; i<variables.length; i++)
   	{
-    	if(variables[i].equals(token.image))
+    	if(variables[i]==token.image)
     	{
     	  rta= valorvars[i];
 
@@ -225,13 +234,16 @@ int checkNum(String[] variables, int[] valorvars) :
 
 boolean command(StringBuffer sistema) :
 	{	
-		
-		
+		int x = 0;
+		salida=new String();
+		String[] variables= new String[10];
+		int[] valorvars= new int[10];
+		String[] nueva= new String[3];
 		
 	}
 	
 	{
-		instructions() 
+		instructions(x, salida, variables, valorvars, nueva) 
 
 		{
 		  //  try {
@@ -250,13 +262,15 @@ boolean command(StringBuffer sistema) :
 	}
 
 
-	void declararVariable(String[] variables, int[] valorvars) :
+String[] declararVariable(String[] variables, int[] valorvars) :
 	{
 	  String nombre = "";
 	  int total = 1;
 	  int pos = 0;
 	  int j = 0;
 	  int k = 0;
+	  String[] nueva= new String[3];
+	  
 	}
 	{
 	  < NAME>
@@ -278,20 +292,16 @@ boolean command(StringBuffer sistema) :
 			  	
 			  	for(k=0; k<variables.length; k++)
 			  	{
-			  	  if(variables[k].equals(null))
+			  	  if(variables[k]!=null)
 			  	  {
-			  	    nombre = token.image;
-					variables[k]= nombre;
 					pos = k;
 			  	  }
 
 			  	}
-			  	if(nombre.equals(""))
-			  	{
-			  	  nombre = token.image;
-				  variables[pos]= nombre;
-
-			  	}
+			  	nombre = token.image;
+				variables[pos]= nombre;
+				nueva[0]= Integer.toString(pos);
+				nueva[1]= token.image;
 				
 			} 
 			catch (NumberFormatException ee) 
@@ -309,6 +319,9 @@ boolean command(StringBuffer sistema) :
 			{
 			  total = Integer.parseInt(token.image);
 			  valorvars[pos]=total;
+			  nueva[2] = token.image;
+			  return nueva;
+			  
 
 				
 			} 
@@ -318,6 +331,7 @@ boolean command(StringBuffer sistema) :
 				// Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
 				throw new Error("Number out of bounds: "+token.image+"!!");
 			}
+			
 			
 		}
 	}
