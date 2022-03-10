@@ -12,6 +12,8 @@ public class Robot implements RobotConstants {
 
 
         private RobotWorldDec world;
+        private String[] variables= new String[10];
+        private int[] valorvars= new int[10];
 
 
         void setWorld(RobotWorld w) {
@@ -102,7 +104,7 @@ public class Robot implements RobotConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public void instructions(int x, String salida, String[] variables, int[] valorvars, String[] nueva) throws ParseException {
+  final public void instructions(int x, String salida, String[] nueva) throws ParseException {
   int p = 0;
     jj_consume_token(OP);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -298,12 +300,6 @@ public class Robot implements RobotConstants {
       jj_consume_token(DEFVAR);
       jj_consume_token(44);
       nueva = declararVariable(variables, valorvars);
-                                                                                variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);for(p=0; p<variables.length; p++)
-                        {
-                                System.out.println(variables[p]);
-
-                        }
-                        System.out.println(nueva[0]+nueva[1]+nueva[2]);
       break;
     default:
       jj_la1[13] = jj_gen;
@@ -316,6 +312,7 @@ public class Robot implements RobotConstants {
   final public int checkNum(String[] variables, int[] valorvars) throws ParseException {
   int rta = -57;
   int i = 0;
+  String prueba = "prueba";
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case NAME:
       jj_consume_token(NAME);
@@ -324,10 +321,12 @@ public class Robot implements RobotConstants {
       System.out.println(variables[i]);
 
     }
+    System.out.println(token.image.charAt(1));
+    System.out.println(token.image.length());
 
         for(i=0; i<variables.length; i++)
         {
-        if(variables[i]==token.image)
+        if(token.image.equals(variables[i]))
         {
           rta= valorvars[i];
 
@@ -356,12 +355,10 @@ public class Robot implements RobotConstants {
   final public boolean command(StringBuffer sistema) throws ParseException {
                 int x = 0;
                 salida=new String();
-                String[] variables= new String[10];
-                int[] valorvars= new int[10];
                 String[] nueva= new String[3];
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case OP:
-      instructions(x, salida, variables, valorvars, nueva);
+      instructions(x, salida, nueva);
                   //  try {
                 //		 Thread.sleep(1);
                   //   } catch (InterruptedException e) {
