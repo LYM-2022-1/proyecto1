@@ -177,7 +177,7 @@ void instructions():
   	<OP>
 	(
    		<EQUALS>< LETRA >(< LETRA >|< DIGITO >)*<NUMERO> //PUEDO PONER TOKEN DINAMICO ASI?
-		| <MOVE>" " (<NUMERO>|checkNum(variables, valorvars)) //{world.moveForward(x);salida = "Command: Moveforward ";}
+		| <MOVE>" " x=checkNum(variables, valorvars) //{world.moveForward(x);salida = "Command: Moveforward ";}
 		| <TURN>":"(<LEFT>|<AROUND>|<RIGHT>) //{ world.moveHorizontally}
 		| <FACE>":"(<SOUTH>|<WEST>|<EAST>|<NORTH>)
 		| <PUT>":"(<BALLOONS>|<CHIPS>)(<NUMERO>|"VARIABLE?")
@@ -196,7 +196,7 @@ int checkNum(String[] variables, int[] valorvars) :
   int i = 0;
 }
 {
-  < NAME>
+  (    < NAME>
   {
   
   	for(i=0; i<variables.length; i++)
@@ -214,6 +214,12 @@ int checkNum(String[] variables, int[] valorvars) :
   	}
   	return rta;
   }
+	|  < NUMERO>
+	{
+	  rta=Integer.parseInt(token.image);
+	  return rta; 
+	}
+	)
 }
 
 
@@ -248,7 +254,7 @@ boolean command(StringBuffer sistema) :
 	{
 	  String nombre = "";
 	  int total = 1;
-	  int pos = 33;
+	  int pos = 0;
 	  int j = 0;
 	  int k = 0;
 	}
@@ -257,7 +263,7 @@ boolean command(StringBuffer sistema) :
 	  {
 	    try 
 			{
-			  	if(!variables[variables.length].equals(null))
+			  	/*if(!variables[variables.length].equals(null))
 			  	{
 			  	  pos = 1;
 			  	  String[] nuevaria= new String[variables.length+100];
@@ -268,6 +274,7 @@ boolean command(StringBuffer sistema) :
 			  	  variables[j] = token.image;
 
 			  	}
+			  	*/
 			  	
 			  	for(k=0; k<variables.length; k++)
 			  	{
@@ -279,8 +286,12 @@ boolean command(StringBuffer sistema) :
 			  	  }
 
 			  	}
-				nombre = token.image;
-				variables[1]= nombre;
+			  	if(nombre.equals(""))
+			  	{
+			  	  nombre = token.image;
+				  variables[pos]= nombre;
+
+			  	}
 				
 			} 
 			catch (NumberFormatException ee) 
@@ -296,12 +307,8 @@ boolean command(StringBuffer sistema) :
 		{
 			try 
 			{
-			  if(pos!=33)
-			  {
-			    total = Integer.parseInt(token.image);
-				valorvars[pos]=total;
-
-			  }
+			  total = Integer.parseInt(token.image);
+			  valorvars[pos]=total;
 
 				
 			} 

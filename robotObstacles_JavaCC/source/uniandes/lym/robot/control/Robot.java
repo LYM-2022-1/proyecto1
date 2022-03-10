@@ -141,18 +141,7 @@ public class Robot implements RobotConstants {
     case MOVE:
       jj_consume_token(MOVE);
       jj_consume_token(44);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case NUMERO:
-        jj_consume_token(NUMERO);
-        break;
-      case NAME:
-        checkNum(variables, valorvars);
-        break;
-      default:
-        jj_la1[5] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
+      x = checkNum(variables, valorvars);
       break;
     case TURN:
       jj_consume_token(TURN);
@@ -168,7 +157,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(RIGHT);
         break;
       default:
-        jj_la1[6] = jj_gen;
+        jj_la1[5] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -190,7 +179,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(NORTH);
         break;
       default:
-        jj_la1[7] = jj_gen;
+        jj_la1[6] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -206,7 +195,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(CHIPS);
         break;
       default:
-        jj_la1[8] = jj_gen;
+        jj_la1[7] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -218,7 +207,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(45);
         break;
       default:
-        jj_la1[9] = jj_gen;
+        jj_la1[8] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -234,7 +223,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(CHIPS);
         break;
       default:
-        jj_la1[10] = jj_gen;
+        jj_la1[9] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -246,7 +235,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(45);
         break;
       default:
-        jj_la1[11] = jj_gen;
+        jj_la1[10] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -261,7 +250,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(45);
         break;
       default:
-        jj_la1[12] = jj_gen;
+        jj_la1[11] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -279,7 +268,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(BACK);
         break;
       default:
-        jj_la1[13] = jj_gen;
+        jj_la1[12] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -302,7 +291,7 @@ public class Robot implements RobotConstants {
           jj_consume_token(BACK);
           break;
         default:
-          jj_la1[14] = jj_gen;
+          jj_la1[13] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -314,7 +303,7 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[15] = jj_gen;
+          jj_la1[14] = jj_gen;
           break label_2;
         }
       }
@@ -329,7 +318,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(45);
         break;
       default:
-        jj_la1[16] = jj_gen;
+        jj_la1[15] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -347,7 +336,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(NORTH);
         break;
       default:
-        jj_la1[17] = jj_gen;
+        jj_la1[16] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -358,7 +347,7 @@ public class Robot implements RobotConstants {
       declararVariable(variables, valorvars);
       break;
     default:
-      jj_la1[18] = jj_gen;
+      jj_la1[17] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -368,7 +357,9 @@ public class Robot implements RobotConstants {
   final public int checkNum(String[] variables, int[] valorvars) throws ParseException {
   int rta = -57;
   int i = 0;
-    jj_consume_token(NAME);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case NAME:
+      jj_consume_token(NAME);
         for(i=0; i<variables.length; i++)
         {
         if(variables[i].equals(token.image))
@@ -383,6 +374,17 @@ public class Robot implements RobotConstants {
 
         }
         {if (true) return rta;}
+      break;
+    case NUMERO:
+      jj_consume_token(NUMERO);
+          rta=Integer.parseInt(token.image);
+          {if (true) return rta;}
+      break;
+    default:
+      jj_la1[18] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
     throw new Error("Missing return statement in function");
   }
 
@@ -418,23 +420,24 @@ public class Robot implements RobotConstants {
   final public void declararVariable(String[] variables, int[] valorvars) throws ParseException {
           String nombre = "";
           int total = 1;
-          int pos = 33;
+          int pos = 0;
           int j = 0;
           int k = 0;
     jj_consume_token(NAME);
             try
                         {
-                                if(!variables[variables.length].equals(null))
-                                {
-                                  pos = 1;
-                                  String[] nuevaria= new String[variables.length+100];
-                                  for(j=0; j<variables.length; j++)
-                                  {
-                                    nuevaria[j] = variables[j];
-                                  }
-                                  variables[j] = token.image;
+                                /*if(!variables[variables.length].equals(null))
+			  	{
+			  	  pos = 1;
+			  	  String[] nuevaria= new String[variables.length+100];
+			  	  for(j=0; j<variables.length; j++)
+			  	  {
+			  	    nuevaria[j] = variables[j];
+			  	  }
+			  	  variables[j] = token.image;
 
-                                }
+			  	}
+			  	*/
 
                                 for(k=0; k<variables.length; k++)
                                 {
@@ -446,8 +449,12 @@ public class Robot implements RobotConstants {
                                   }
 
                                 }
-                                nombre = token.image;
-                                variables[1]= nombre;
+                                if(nombre.equals(""))
+                                {
+                                  nombre = token.image;
+                                  variables[pos]= nombre;
+
+                                }
 
                         }
                         catch (NumberFormatException ee)
@@ -460,12 +467,8 @@ public class Robot implements RobotConstants {
     jj_consume_token(NUMERO);
                         try
                         {
-                          if(pos!=33)
-                          {
-                            total = Integer.parseInt(token.image);
-                                valorvars[pos]=total;
-
-                          }
+                          total = Integer.parseInt(token.image);
+                          valorvars[pos]=total;
 
 
                         }
@@ -494,10 +497,10 @@ public class Robot implements RobotConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x0,0x0,0xf8,0x60000000,0x60000000,0x88000000,0x0,0x0,0x0,0x8000000,0x0,0x8000000,0x8000000,0x0,0x0,0x0,0x8000000,0x0,0x7f68,0x2000001,};
+      jj_la1_0 = new int[] {0x0,0x0,0xf8,0x60000000,0x60000000,0x0,0x0,0x0,0x8000000,0x0,0x8000000,0x8000000,0x0,0x0,0x0,0x8000000,0x0,0x7f68,0x88000000,0x2000001,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x3,0x3,0x0,0x0,0x0,0x0,0x1c,0x780,0x3,0x2000,0x3,0x2000,0x2000,0x6c,0x6c,0x6c,0x2000,0x780,0x0,0x4000,};
+      jj_la1_1 = new int[] {0x3,0x3,0x0,0x0,0x0,0x1c,0x780,0x3,0x2000,0x3,0x2000,0x2000,0x6c,0x6c,0x6c,0x2000,0x780,0x0,0x0,0x4000,};
    }
 
   /** Constructor with InputStream. */
