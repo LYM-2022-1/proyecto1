@@ -180,11 +180,11 @@ void instructions():
 		| <MOVE>" " x=checkNum(variables, valorvars) //{world.moveForward(x);salida = "Command: Moveforward ";}
 		| <TURN>":"(<LEFT>|<AROUND>|<RIGHT>) //{ world.moveHorizontally}
 		| <FACE>":"(<SOUTH>|<WEST>|<EAST>|<NORTH>)
-		| <PUT>":"(<BALLOONS>|<CHIPS>)(<NUMERO>|"VARIABLE?")
-		| <PICK>":"(<BALLOONS>|<CHIPS>)(<NUMERO>|"VARIABLE?")
-		| <MOVE_DIR>(<NUMERO>|"VARIABLE?")(<FRONT>|<RIGHT>|<LEFT>|<BACK>)
+		| <PUT>":"(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
+		| <PICK>":"(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
+		| <MOVE_DIR> x=checkNum(variables, valorvars) (<FRONT>|<RIGHT>|<LEFT>|<BACK>)
 		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
-		| <MOVE_FACE>(<NUMERO>|"VARIABLE?")(<SOUTH>|<WEST>|<EAST>|<NORTH>)
+		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
 		| < DEFVAR> " " declararVariable(variables, valorvars) 
 	)
 	<CP>
