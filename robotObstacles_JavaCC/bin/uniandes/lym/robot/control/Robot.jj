@@ -36,6 +36,7 @@ import java.awt.Point;
 import java.io.*;
 import java.util.Vector;
 import java.util.LinkedList;
+import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class Robot 
@@ -43,6 +44,8 @@ public class Robot
 
 
 	private RobotWorldDec world;
+	private ArrayList<String> variables = new ArrayList<>();
+	private ArrayList<int> valorvars = new ArrayList<>();
 	
 	
 	void setWorld(RobotWorld w) {
@@ -136,10 +139,6 @@ void comandos(): { }
 
 
 
-  //|<DEFVAR>|<EQUALS>|<PUT>|<PICK>|<MOVE_DIR>|<RUN_DIRS>|<MOVE_FACE>)
-
-
-
 	int numero() throws Error:
 	{
 	  
@@ -166,7 +165,7 @@ void comandos(): { }
 
 
 
-void instructions(int x, String salida, String[] variables, int[] valorvars, String[] nueva):
+void instructions(int x, String salida, String[] nueva):
 {
   int p = 0;
  		
@@ -174,7 +173,7 @@ void instructions(int x, String salida, String[] variables, int[] valorvars, Str
 {
   	  	  <OP>
 	(
-   		<EQUALS>< LETRA >(< LETRA >|< DIGITO >)*<NUMERO> //PUEDO PONER TOKEN DINAMICO ASI?
+   		<EQUALS> " " cambiarVariable(variables, valorvars) 
 		| <MOVE>" " x=checkNum(variables, valorvars) //{world.moveForward(x);salida = "Command: Moveforward ";}
 		| <TURN>":"(<LEFT>|<AROUND>|<RIGHT>) //{ world.moveHorizontally}
 		| <FACE>":"(<SOUTH>|<WEST>|<EAST>|<NORTH>)
@@ -183,36 +182,61 @@ void instructions(int x, String salida, String[] variables, int[] valorvars, Str
 		| <MOVE_DIR> x=checkNum(variables, valorvars) (<FRONT>|<RIGHT>|<LEFT>|<BACK>)
 		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
 		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
-		| < DEFVAR> " " nueva = declararVariable(variables, valorvars) {variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);for(p=0; p<variables.length; p++)
-    			{
-      				System.out.println(variables[p]);
-
-    			}
-    			System.out.println(nueva[0]+nueva[1]+nueva[2]);}
+		| < DEFVAR> " " nueva = declararVariable(variables, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
 	)
 	<CP>
     
 }
 
-int checkNum(String[] variables, int[] valorvars) :
+void cambiarVariable(ArrayList<String> variables, ArrayList<int> valorvars) :
+{
+  int pos=-40;
+  int i = 0;
+}
+{
+  < NAME>
+  {
+    for(i=0; i<variables.size(); i++)
+  	{
+    	if(token.image.equals(variables.get(i)))
+    	{
+    	  variables.remove(i)
+    	  valorvars.remove(i)
+    	  variables.add(token.image)
+    	  pos = i;
+    	}
+  	}
+  	if(pos==-40)
+  	{
+  	  throw new Error("ERROR: NO EXISTE LA VARIABLE");
+
+  	}
+  	
+  }
+  " "
+  < NUMERO>
+  {
+    valorvars.add(Integer.parseInt(token.image));
+  }
+
+}
+
+int checkNum(ArrayList<String> variables, ArrayList<int> valorvars) :
 {
   int rta = -57;
   int i = 0;
+  String prueba = "prueba";
 }
 {
   (    < NAME>
   {
-    for(i=0; i<variables.length; i++)
-    {
-      System.out.println(variables[i]);
-
-    }
+    
   
-  	for(i=0; i<variables.length; i++)
+  	for(i=0; i<variables.size(); i++)
   	{
-    	if(variables[i]==token.image)
+    	if(token.image.equals(variables[i]))
     	{
-    	  rta= valorvars[i];
+    	  rta= valorvars.get(i);
 
     	}
   	}
@@ -236,14 +260,12 @@ boolean command(StringBuffer sistema) :
 	{	
 		int x = 0;
 		salida=new String();
-		String[] variables= new String[10];
-		int[] valorvars= new int[10];
 		String[] nueva= new String[3];
 		
 	}
 	
 	{
-		instructions(x, salida, variables, valorvars, nueva) 
+		instructions(x, salida, nueva) 
 
 		{
 		  //  try {
@@ -262,14 +284,13 @@ boolean command(StringBuffer sistema) :
 	}
 
 
-String[] declararVariable(String[] variables, int[] valorvars) :
+void declararVariable(ArrayList<String> variables, ArrayList<int> valorvars) :
 	{
 	  String nombre = "";
 	  int total = 1;
 	  int pos = 0;
 	  int j = 0;
 	  int k = 0;
-	  String[] nueva= new String[3];
 	  
 	}
 	{
@@ -277,31 +298,7 @@ String[] declararVariable(String[] variables, int[] valorvars) :
 	  {
 	    try 
 			{
-			  	/*if(!variables[variables.length].equals(null))
-			  	{
-			  	  pos = 1;
-			  	  String[] nuevaria= new String[variables.length+100];
-			  	  for(j=0; j<variables.length; j++)
-			  	  {
-			  	    nuevaria[j] = variables[j];
-			  	  }
-			  	  variables[j] = token.image;
-
-			  	}
-			  	*/
-			  	
-			  	for(k=0; k<variables.length; k++)
-			  	{
-			  	  if(variables[k]!=null)
-			  	  {
-					pos = k;
-			  	  }
-
-			  	}
-			  	nombre = token.image;
-				variables[pos]= nombre;
-				nueva[0]= Integer.toString(pos);
-				nueva[1]= token.image;
+			  	variables.add(token.image)
 				
 			} 
 			catch (NumberFormatException ee) 
@@ -318,9 +315,7 @@ String[] declararVariable(String[] variables, int[] valorvars) :
 			try 
 			{
 			  total = Integer.parseInt(token.image);
-			  valorvars[pos]=total;
-			  nueva[2] = token.image;
-			  return nueva;
+			  valorvars.add(total)
 			  
 
 				
@@ -335,35 +330,4 @@ String[] declararVariable(String[] variables, int[] valorvars) :
 			
 		}
 	}
-
-	
-	/*
-	void objetoPoner() :
-	{
-		int f=1;	
-	}
-	{
-		( <CHIPS>    "," f=numero() {world.putChips(f); salida = "Command:  Put Chips"; })
-		|  	  ( <BALLOONS>   "," f=numero() {world.putBalloons(f); salida = "Command:  Put Balloons";})	 
-
-	}
-
-	void objetoRecoger() :
-	{
-		int f=1;	
-	}
-	{
-		( <CHIPS>   "," f=numero() {world.pickChips(f);salida = "Command:  Pick chips";})
-		|  	  ( <BALLOONS>   "," f=numero() {world.grabBalloons(f);salida="Command:  Pick balloons";})	 
-
-	}
-
-	
-	
-
-	/**
-	 *  reconoce un numero entero sin signo
-	 * @return el valor entero correspondiente al valor reconocido
-	 */
-
 	
