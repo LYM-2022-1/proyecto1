@@ -127,7 +127,69 @@ TOKEN : /* PARAMETROS */
 }
 
 
-void comandos(): { }
+boolean command(StringBuffer sistema) :
+	{	
+		int x = 0;
+		salida=new String();
+		String[] nueva= new String[3];
+		
+	}
+	
+	{
+
+		/*(
+		   <TURNRIGHT> "(" ")" {world.turnRight();salida = "Command: Turnright";}
+		| 	<MOVE>  "(" x=numero() ")" {world.moveForward(x);salida = "Command: Moveforward ";}  
+	    | < DEFVAR> " " declararVariable(variables, valorvars) ")"
+		) "\n" */ 
+		instructions(x, salida, nueva) 
+
+		{
+		  //  try {
+	    	//		 Thread.sleep(1);
+	    	  //   } catch (InterruptedException e) {
+	    		//	        System.err.format("IOException: %s%n", e);
+	    		//	    }
+	    			 
+			sistema.append(salida);
+			return true;
+		}
+
+     |  "\n" { return true; }
+
+		| <EOF> {return false;} 
+	}
+
+void instructions(int x, String salida, String[] nueva):
+{
+  int p = 0;
+ 		
+ }
+{
+  	
+  	  <OP>
+	(
+   		<EQUALS> " " cambiarVariable(variables, valorvars) 
+		| <MOVE>" " x=checkNum(variables, valorvars) //{world.moveForward(x);salida = "Command: Moveforward ";}
+		| <TURN>":"(<LEFT>|<AROUND>|<RIGHT>) //{ world.moveHorizontally}
+		| <FACE>":"(<SOUTH>|<WEST>|<EAST>|<NORTH>)
+		| <PUT>":"(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
+		| <PICK>":"(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
+		| <MOVE_DIR> x=checkNum(variables, valorvars) (<FRONT>|<RIGHT>|<LEFT>|<BACK>)
+		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
+		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
+		| <DEFVAR> " " declararVariable(variables, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
+		| <IF>condition()
+		| alternos()
+
+	)
+	
+	
+	<CP>
+    
+}
+
+void alternos(): { }
 {
    <PUT> <OP> ":" (<CHIPS>|<BALLOONS>) <NUMERO> <CP>
 |  <PICK><OP> ":" (<CHIPS>|<BALLOONS>) <NUMERO> <CP>
@@ -135,7 +197,6 @@ void comandos(): { }
 |  <TURNRIGHT><OP><CP>
 |  <POP><OP><NUMERO> <CP>
 }
-
 
 
 
@@ -165,29 +226,24 @@ void comandos(): { }
 
 
 
-void instructions(int x, String salida, String[] nueva):
-{
-  int p = 0;
- 		
- }
-{
-  	  	  <OP>
-	(
-   		<EQUALS> " " cambiarVariable(variables, valorvars) 
-		| <MOVE>" " x=checkNum(variables, valorvars) //{world.moveForward(x);salida = "Command: Moveforward ";}
-		| <TURN>":"(<LEFT>|<AROUND>|<RIGHT>) //{ world.moveHorizontally}
-		| <FACE>":"(<SOUTH>|<WEST>|<EAST>|<NORTH>)
-		| <PUT>":"(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
-		| <PICK>":"(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
-		| <MOVE_DIR> x=checkNum(variables, valorvars) (<FRONT>|<RIGHT>|<LEFT>|<BACK>)
-		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
-		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
-		| < DEFVAR> " " declararVariable(variables, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
-	)
-	<CP>
-    
-}
 
+void condition ():
+
+{
+}
+{
+ <OP>
+(
+  
+ <FACING_P>" "(<SOUTH>|<WEST>|<EAST>|<NORTH>)
+| <CAN_PUT_P>" "(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
+| <CAN_PICK_P>" "(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
+| <CAN_MOVE_P>" "(<SOUTH>|<WEST>|<EAST>|<NORTH>)
+| <NOT> condition()
+)
+ <CP> 
+
+}
 void cambiarVariable(ArrayList<String> variables, ArrayList<Integer> valorvars) :
 {
   int pos=-40;
@@ -232,7 +288,8 @@ int checkNum(ArrayList<String> variables, ArrayList<Integer> valorvars) :
   int i = 0;
 }
 {
-  (    < NAME>
+  (
+    < NAME>
   {
     
   
@@ -260,32 +317,6 @@ int checkNum(ArrayList<String> variables, ArrayList<Integer> valorvars) :
 }
 
 
-boolean command(StringBuffer sistema) :
-	{	
-		int x = 0;
-		salida=new String();
-		String[] nueva= new String[3];
-		
-	}
-	
-	{
-		instructions(x, salida, nueva) 
-
-		{
-		  //  try {
-	    	//		 Thread.sleep(1);
-	    	  //   } catch (InterruptedException e) {
-	    		//	        System.err.format("IOException: %s%n", e);
-	    		//	    }
-	    			 
-			sistema.append(salida);
-			return true;
-		}
-
-     |  "\n" { return true; }
-
-		| <EOF> {return false;} 
-	}
 
 
 void declararVariable(ArrayList<String> variables, ArrayList<Integer> valorvars) :
