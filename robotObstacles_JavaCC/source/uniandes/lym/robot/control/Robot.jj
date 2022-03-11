@@ -83,13 +83,14 @@ TOKEN: /* Nombres de Comandos */
 		|  <REPEAT: "repeat" >
 		|  <DEFUN: "defun" >
 		|  <FACING_P: "facing-p" >
-		|  <CAN_PUT: "can-put-p" >
-		|  <CAN_PICK: "can-pick-p" >
-		|  <CAN_MOVE: "can-move-p" >
+		|  <CAN_PUT_P: "can-put-p" >
+		|  <CAN_PICK_P: "can-pick-p" >
+		|  <CAN_MOVE_P: "can-move-p" >
 		|  <NOT: "not" >
 		| < PASS:"skip">
 		|  <OP: "(" >
 		|  <CP: ")" >
+		
 	
 		
 
@@ -101,14 +102,6 @@ TOKEN :
 		|  	<#DIGIT: ["0"-"9"] >
 }
 
-TOKEN:
-{
-  	
-  	< LETRA: ["a"-"z","A"-"Z"]>
- 	| <DIGITO: ["0"-"9"] >
- 	| < NAME: (< LETRA >)(< LETRA >|< DIGITO >)*>
- 	//| < LETRA: (< letra >)(< letra >|< digito >)*>
-}
 
 TOKEN : /* PARAMETROS */
 {
@@ -125,6 +118,17 @@ TOKEN : /* PARAMETROS */
 		|  <EAST: "east" >
 
 }
+
+TOKEN:
+{
+  	
+  	< LETRA: ["a"-"z","A"-"Z"]>
+ 	| <DIGITO: ["0"-"9"] >
+ 	| < NAME: (< LETRA >)(< LETRA >|< DIGITO >)*>
+ 	//| < LETRA: (< letra >)(< letra >|< digito >)*>
+}
+
+
 
 
 boolean command(StringBuffer sistema) :
@@ -171,7 +175,7 @@ void instructions(int x, String salida, String[] nueva):
 	(
    		<EQUALS> " " cambiarVariable(variables, valorvars) 
 		| <MOVE>" " x=checkNum(variables, valorvars) //{world.moveForward(x);salida = "Command: Moveforward ";}
-		| <TURN>":"(<LEFT>|<AROUND>|<RIGHT>) //{ world.moveHorizontally}
+		| <TURN>":"(<LEFT>|<AROUND>|<RIGHT>) //{ world.moveHorizontally(x);salida = "Command: Moveforward ";}
 		| <FACE>":"(<SOUTH>|<WEST>|<EAST>|<NORTH>)
 		| <PUT>":"(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
 		| <PICK>":"(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
@@ -180,22 +184,12 @@ void instructions(int x, String salida, String[] nueva):
 		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
 		| <DEFVAR> " " declararVariable(variables, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
 		| <IF>condition()
-		| alternos()
 
 	)
 	
 	
 	<CP>
     
-}
-
-void alternos(): { }
-{
-   <PUT> <OP> ":" (<CHIPS>|<BALLOONS>) <NUMERO> <CP>
-|  <PICK><OP> ":" (<CHIPS>|<BALLOONS>) <NUMERO> <CP>
-|  <MOVE><OP><NUMERO><CP>
-|  <TURNRIGHT><OP><CP>
-|  <POP><OP><NUMERO> <CP>
 }
 
 
@@ -230,6 +224,7 @@ void alternos(): { }
 void condition ():
 
 {
+  int x=0;
 }
 {
  <OP>
