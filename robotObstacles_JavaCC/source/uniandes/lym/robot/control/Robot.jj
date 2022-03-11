@@ -44,8 +44,8 @@ public class Robot
 
 
 	private RobotWorldDec world;
-	private ArrayList<String> variables = new ArrayList<>();
-	private ArrayList<int> valorvars = new ArrayList<>();
+	private ArrayList<String> variables = new ArrayList<String>();
+	private ArrayList<Integer> valorvars = new ArrayList<Integer>();
 	
 	
 	void setWorld(RobotWorld w) {
@@ -182,29 +182,34 @@ void instructions(int x, String salida, String[] nueva):
 		| <MOVE_DIR> x=checkNum(variables, valorvars) (<FRONT>|<RIGHT>|<LEFT>|<BACK>)
 		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
 		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
-		| < DEFVAR> " " nueva = declararVariable(variables, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
+		| < DEFVAR> " " declararVariable(variables, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
 	)
 	<CP>
     
 }
 
-void cambiarVariable(ArrayList<String> variables, ArrayList<int> valorvars) :
+void cambiarVariable(ArrayList<String> variables, ArrayList<Integer> valorvars) :
 {
   int pos=-40;
   int i = 0;
+  String pru = "";
 }
 {
   < NAME>
   {
     for(i=0; i<variables.size(); i++)
   	{
-    	if(token.image.equals(variables.get(i)))
+  	  pru = variables.get(i);
+  	  if (pru!=null)
+  	  { 
+    	if(token.image.equals(pru))
     	{
-    	  variables.remove(i)
-    	  valorvars.remove(i)
-    	  variables.add(token.image)
+    	  variables.remove(i);
+    	  valorvars.remove(i);
+    	  variables.add(token.image);
     	  pos = i;
     	}
+  	  }
   	}
   	if(pos==-40)
   	{
@@ -221,11 +226,10 @@ void cambiarVariable(ArrayList<String> variables, ArrayList<int> valorvars) :
 
 }
 
-int checkNum(ArrayList<String> variables, ArrayList<int> valorvars) :
+int checkNum(ArrayList<String> variables, ArrayList<Integer> valorvars) :
 {
   int rta = -57;
   int i = 0;
-  String prueba = "prueba";
 }
 {
   (    < NAME>
@@ -234,7 +238,7 @@ int checkNum(ArrayList<String> variables, ArrayList<int> valorvars) :
   
   	for(i=0; i<variables.size(); i++)
   	{
-    	if(token.image.equals(variables[i]))
+    	if(token.image.equals(variables.get(i)))
     	{
     	  rta= valorvars.get(i);
 
@@ -284,7 +288,7 @@ boolean command(StringBuffer sistema) :
 	}
 
 
-void declararVariable(ArrayList<String> variables, ArrayList<int> valorvars) :
+void declararVariable(ArrayList<String> variables, ArrayList<Integer> valorvars) :
 	{
 	  String nombre = "";
 	  int total = 1;
@@ -298,7 +302,7 @@ void declararVariable(ArrayList<String> variables, ArrayList<int> valorvars) :
 	  {
 	    try 
 			{
-			  	variables.add(token.image)
+			  	variables.add(token.image);
 				
 			} 
 			catch (NumberFormatException ee) 
@@ -315,7 +319,7 @@ void declararVariable(ArrayList<String> variables, ArrayList<int> valorvars) :
 			try 
 			{
 			  total = Integer.parseInt(token.image);
-			  valorvars.add(total)
+			  valorvars.add(total);
 			  
 
 				
