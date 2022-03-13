@@ -46,6 +46,11 @@ public class Robot
 	private RobotWorldDec world;
 	private ArrayList<String> variables = new ArrayList<String>();
 	private ArrayList<Integer> valorvars = new ArrayList<Integer>();
+	private ArrayList<String> tempnombres = new ArrayList<String>();
+	private ArrayList<Integer> tempvalores = new ArrayList<Integer>();
+	private ArrayList<String> blockfuns = new ArrayList<String>();
+	private ArrayList<String> nombrefuns = new ArrayList<String>();
+	private ArrayList<String> paramfuns = new ArrayList<String>();
 	
 	
 	void setWorld(RobotWorld w) {
@@ -146,7 +151,7 @@ boolean command(StringBuffer sistema) :
 		| 	<MOVE>  "(" x=numero() ")" {world.moveForward(x);salida = "Command: Moveforward ";}  
 	    | < DEFVAR> " " declararVariable(variables, valorvars) ")"
 		) "\n" */ 
-		instructions(x, salida, nueva) 
+		haceInput(x, salida, nueva) 
 
 		{
 		  //  try {
@@ -164,7 +169,7 @@ boolean command(StringBuffer sistema) :
 		| <EOF> {return false;} 
 	}
 
-void instructions(int x, String salida, String[] nueva):
+void haceInput(int x, String salida, String[] nueva):
 {
   int p = 0;
  		
@@ -174,8 +179,8 @@ void instructions(int x, String salida, String[] nueva):
   	  <OP>
 	(
    		<EQUALS> " " cambiarVariable(variables, valorvars) 
-		| <MOVE>" " x=checkNum(variables, valorvars) //{world.moveForward(x);salida = "Command: Moveforward ";}
-		| <TURN>":"(<LEFT>|<AROUND>|<RIGHT>) //{ world.moveHorizontally(x);salida = "Command: Moveforward ";}
+		| <MOVE>" " x=checkNum(variables, valorvars) {world.moveHorizontally(x);salida = "Command: Moveforward ";}
+		| <TURN>":"(<LEFT>|<AROUND>|<RIGHT>) 
 		| <FACE>":"(<SOUTH>|<WEST>|<EAST>|<NORTH>)
 		| <PUT>":"(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
 		| <PICK>":"(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
@@ -183,6 +188,7 @@ void instructions(int x, String salida, String[] nueva):
 		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
 		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
 		| <DEFVAR> " " declararVariable(variables, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
+		| < DEFUN> " " cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns)
 		| <IF>condition()
 
 	)
@@ -190,6 +196,105 @@ void instructions(int x, String salida, String[] nueva):
 	
 	<CP>
     
+}
+
+void soloRevisa(int x, String salida, ArrayList<String> tempnombres, ArrayList<Integer> tempvalores):
+{
+  int p = 0;
+ 		
+ }
+{
+  	
+  	  <OP>
+	(
+   		<EQUALS> " " cambiarVariable(tempnombres, tempvalores) 
+		| <MOVE>" " x=checkNum(tempnombres, tempvalores)// {world.moveHorizontally(x);salida = "Command: Moveforward ";}
+		| <TURN>":"(<LEFT>|<AROUND>|<RIGHT>) 
+		| <FACE>":"(<SOUTH>|<WEST>|<EAST>|<NORTH>)
+		| <PUT>":"(<BALLOONS>|<CHIPS>) x=checkNum(tempnombres, tempvalores)
+		| <PICK>":"(<BALLOONS>|<CHIPS>) x=checkNum(tempnombres, tempvalores)
+		| <MOVE_DIR> x=checkNum(tempnombres, tempvalores) (<FRONT>|<RIGHT>|<LEFT>|<BACK>)
+		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
+		| <MOVE_FACE> x=checkNum(tempnombres, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
+		| <DEFVAR> " " declararVariable(tempnombres, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
+		| < DEFUN> " " cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns)
+		| <IF>condition()
+
+	)
+	
+	
+	<CP>
+    
+}
+
+void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores, ArrayList<String> nombrefuns, ArrayList<String> paramfuns, ArrayList<String> blockfuns) :
+{
+  String parametros = "";
+  int x = 0;
+  String salida = "";
+}
+{
+  (    < NAME>|< LETRA>
+  )
+  {
+    try 
+			{
+			  	nombrefuns.add(token.image);
+				
+			} 
+			catch (NumberFormatException ee) 
+			{
+				// Dada la forma de NUMERO, sabemos que solo puede tener d�gitos
+				// Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
+				throw new Error("NO PUDE METER EN EL ARRAY ESTO: "+token.image+"!!");
+			}
+  }
+  " "
+  < OP>
+  (
+    < NAME>|< LETRA>
+  )
+  {
+    
+  	try 
+			{
+			  	tempnombres.add(token.image);
+				tempvalores.add(4);
+				parametros = parametros.concat(token.image);
+			} 
+			catch (NumberFormatException ee) 
+			{
+				// Dada la forma de NUMERO, sabemos que solo puede tener d�gitos
+				// Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
+				throw new Error("NO PUDE METER EN EL ARRAY ESTO: "+token.image+"!!");
+			}
+	}
+  (
+    " "
+    (
+    < NAME>|< LETRA>
+  	)
+    {
+    
+  		try 
+			{
+			  	tempnombres.add(token.image);
+				tempvalores.add(4);
+				parametros = parametros.concat(token.image);
+			} 
+			catch (NumberFormatException ee) 
+			{
+				// Dada la forma de NUMERO, sabemos que solo puede tener d�gitos
+				// Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
+				throw new Error("NO PUDE METER EN EL ARRAY ESTO: "+token.image+"!!");
+			}
+	}  )*
+  < CP>
+  soloRevisa(x,salida,tempnombres, tempvalores)
+  /*{
+    paramfuns.add(parametros);
+  }*/
+  
 }
 
 
@@ -215,6 +320,7 @@ void instructions(int x, String salida, String[] nueva):
 			return total;
 		}
 	}
+
 
 	
 
@@ -303,6 +409,25 @@ int checkNum(ArrayList<String> variables, ArrayList<Integer> valorvars) :
   	}
   	return rta;
   }
+	| < LETRA>
+  {
+    
+  
+  	for(i=0; i<variables.size(); i++)
+  	{
+    	if(token.image.equals(variables.get(i)))
+    	{
+    	  rta= valorvars.get(i);
+
+    	}
+  	}
+  	if(rta == -57)
+  	{
+  	  throw new Error("ERROR: NO EXISTE LA VARIABLE");
+
+  	}
+  	return rta;
+  }
 	|  < NUMERO>
 	{
 	  rta=Integer.parseInt(token.image);
@@ -324,7 +449,8 @@ void declararVariable(ArrayList<String> variables, ArrayList<Integer> valorvars)
 	  
 	}
 	{
-	  < NAME>
+	  (	    < NAME>|< LETRA>
+	  )
 	  {
 	    try 
 			{
