@@ -44,6 +44,7 @@ public class Robot
 
 
 	private RobotWorldDec world;
+	private RobotWorld world2;
 	private ArrayList<String> variables = new ArrayList<String>();
 	private ArrayList<Integer> valorvars = new ArrayList<Integer>();
 	private ArrayList<String> tempnombres = new ArrayList<String>();
@@ -51,11 +52,15 @@ public class Robot
 	private ArrayList<String> blockfuns = new ArrayList<String>();
 	private ArrayList<String> nombrefuns = new ArrayList<String>();
 	private ArrayList<String> paramfuns = new ArrayList<String>();
-	
-	
-	void setWorld(RobotWorld w) {
+	private ArrayList<String> boolscondiciones = new ArrayList<String>();
+	private int cuentaif = -1;
+	void setWorld(RobotWorldDec w) {
 		world = (RobotWorldDec) w;	
 	}
+	void setWorld2(RobotWorld w2) {
+		world2 = (RobotWorld) w2;	
+	}
+	
 
 	String salida=new String();
 }
@@ -117,10 +122,10 @@ TOKEN : /* PARAMETROS */
 		|  <AROUND: "around" >
 		|  <BACK: "back" >
 		|  <FRONT: "front" >
-		|  <NORTH: "north" >
-		|  <SOUTH: "south" >
-		|  <WEST: "west" >
-		|  <EAST: "east" >
+		|  <NORTH: ":north" >
+		|  <SOUTH: ":south" >
+		|  <WEST: ":west" >
+		|  <EAST: ":east" >
 
 }
 
@@ -189,7 +194,13 @@ void haceInput(int x, String salida, String[] nueva):
 		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
 		| <DEFVAR> " " declararVariable(variables, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
 		| < DEFUN> " " cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns)
-		| <IF>condition()
+		| (<IF>condition(boolscondiciones)
+			{cuentaif+=1;
+			boolscondiciones.get(cuentaif)	
+		}
+
+		)
+		
 
 	)
 	
@@ -198,7 +209,7 @@ void haceInput(int x, String salida, String[] nueva):
     
 }
 
-void soloRevisa(int x, String salida, ArrayList<String> tempnombres, ArrayList<Integer> tempvalores):
+void soloRevisa(int x, String salida, ArrayList<String> tempnombres, ArrayList<Integer> tempvalores,ArrayList<String> boolscondiciones):
 {
   int p = 0;
  		
@@ -217,8 +228,8 @@ void soloRevisa(int x, String salida, ArrayList<String> tempnombres, ArrayList<I
 		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
 		| <MOVE_FACE> x=checkNum(tempnombres, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
 		| <DEFVAR> " " declararVariable(tempnombres, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
-		| < DEFUN> " " cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns)
-		| <IF>condition()
+		| <DEFUN> " " cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns)
+		| <IF>condition(boolscondiciones)
 
 	)
 	
@@ -290,7 +301,7 @@ void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores
 			}
 	}  )*
   < CP>
-  soloRevisa(x,salida,tempnombres, tempvalores)
+  soloRevisa(x,salida,tempnombres, tempvalores,boolscondiciones)
   /*{
     paramfuns.add(parametros);
   }*/
@@ -327,7 +338,7 @@ void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores
 
 
 
-void condition ():
+void condition (ArrayList<String> boolscondiciones):
 
 {
   int x=0;
@@ -336,15 +347,69 @@ void condition ():
  <OP>
 (
   
- <FACING_P>" "(<SOUTH>|<WEST>|<EAST>|<NORTH>)
+ facing_p(boolscondiciones)
 | <CAN_PUT_P>" "(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
 | <CAN_PICK_P>" "(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
 | <CAN_MOVE_P>" "(<SOUTH>|<WEST>|<EAST>|<NORTH>)
-| <NOT> condition()
+|<DEFUN> " " cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns)
+| <NOT> condition(boolscondiciones)
+
+
 )
- <CP> 
+ <CP>
+}
+
+void facing_p(ArrayList<String> boolscondiciones):
+{
+  int x=0;
+}
+{
+  <FACING_P>" "
+  (<SOUTH>
+  {if (world2.facingSouth())
+	  {
+	    boolscondiciones.add("true");
+	  }
+	else
+	{
+		boolscondiciones.add("false");
+	}
+  }
+| <WEST>
+	{if (world2.facingWest())
+		  {
+		    boolscondiciones.add("true");
+		  }
+		else
+		{
+			boolscondiciones.add("false");
+		}
+	  }
+|<EAST>
+	{if (world2.facingEast())
+		  {
+		    boolscondiciones.add("true");
+		  }
+		else
+		{
+			boolscondiciones.add("false");
+		}
+	  }
+| <NORTH>
+
+	{if (world2.facingEast())
+		  {
+		    boolscondiciones.add("true");
+		  }
+	 else
+	 {
+		boolscondiciones.add("false");
+     }
+	 }
+)
 
 }
+
 void cambiarVariable(ArrayList<String> variables, ArrayList<Integer> valorvars) :
 {
   int pos=-40;
@@ -352,7 +417,7 @@ void cambiarVariable(ArrayList<String> variables, ArrayList<Integer> valorvars) 
   String pru = "";
 }
 {
-  < NAME>
+  <NAME>
   {
     for(i=0; i<variables.size(); i++)
   	{
@@ -376,7 +441,7 @@ void cambiarVariable(ArrayList<String> variables, ArrayList<Integer> valorvars) 
   	
   }
   " "
-  < NUMERO>
+  <NUMERO>
   {
     valorvars.add(Integer.parseInt(token.image));
   }
