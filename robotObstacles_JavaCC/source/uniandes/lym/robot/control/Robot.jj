@@ -37,6 +37,7 @@ import java.io.*;
 import java.util.Vector;
 import java.util.LinkedList;
 import java.util.ArrayList;
+//import control.Interpreter;
 
 @SuppressWarnings("serial")
 public class Robot 
@@ -45,6 +46,7 @@ public class Robot
 
 	private RobotWorldDec world;
 	private RobotWorld world2;
+	//private Interpreter recursividad = new Interpreter();
 	private ArrayList<String> variables = new ArrayList<String>();
 	private ArrayList<Integer> valorvars = new ArrayList<Integer>();
 	private ArrayList<String> tempnombres = new ArrayList<String>();
@@ -70,7 +72,7 @@ SKIP:
 {
 	"\r"
 	|	"\t"
-//	| "\n"
+	| "\n"
 }
 
 TOKEN: /* Nombres de Comandos */
@@ -78,9 +80,8 @@ TOKEN: /* Nombres de Comandos */
 
 			<MOVE:  "move">
 		| 	<TURNRIGHT: "turnright">
-		| 	<PUT: "Put">
-		| 	<PICK: "Pick">
-		|  <POP: "Pop" >
+		| 	<PUT: "put">
+		| 	<PICK: "pick">
 		| < DEFVAR: "defvar">
 		|  <EQUALS: "=" >
 		|  <TURN: "turn" >
@@ -169,7 +170,7 @@ boolean command(StringBuffer sistema) :
 			return true;
 		}
 
-     |  "\n" { return true; }
+     |  "po" { return true; }
 
 		| <EOF> {return false;} 
 	}
@@ -211,6 +212,7 @@ void haceInput(int x, String salida, String[] nueva):
 			
 
 		)
+		|buscarFuncion() 
 		
 
 	)
@@ -218,6 +220,51 @@ void haceInput(int x, String salida, String[] nueva):
 	
 	<CP>
     
+}
+
+void buscarFuncion():
+{
+  int x=0;
+  boolean cheker=false;
+  
+}
+{
+  (
+    < NAME>|< LETRA>
+  )
+  {
+    try 
+			{
+			  	for(x=0; x<nombrefuns.size(); x++)
+    			{
+      				if(token.image.equals(nombrefuns.get(x)))
+      				{
+      				  cheker=true;
+
+      				}
+     			}
+     			if(!cheker)
+     			{
+     			  throw new Error("NO ENCONTRE ESA FUNCION... PAILA ");
+
+     			}
+			} 
+			catch (NumberFormatException ee) 
+			{
+				// Dada la forma de NUMERO, sabemos que solo puede tener d�gitos
+				// Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
+				throw new Error("NO PUDE METER EN EL ARRAY ESTO: "+token.image+"!!");
+			}
+  }
+  (
+    < NUMERO>
+    {
+
+    }  )
+  (
+    " "
+    < NUMERO>  )
+  
 }
 
 void soloRevisa(int x, String salida, ArrayList<String> tempnombres, ArrayList<Integer> tempvalores):
@@ -234,25 +281,27 @@ void soloRevisa(int x, String salida, ArrayList<String> tempnombres, ArrayList<I
 		| <MOVE>" " x=checkNum(tempnombres, tempvalores)// {world.moveHorizontally(x);salida = "Command: Moveforward ";}
 		| <TURN>":"(<LEFT>|<AROUND>|<RIGHT>) 
 		| <FACE>":"(<SOUTH>|<WEST>|<EAST>|<NORTH>)
-		| <PUT>":"(<BALLOONS>|<CHIPS>) x=checkNum(tempnombres, tempvalores)
-		| <PICK>":"(<BALLOONS>|<CHIPS>) x=checkNum(tempnombres, tempvalores)
+		| <PUT>" :"(<BALLOONS>|<CHIPS>) " " x=checkNum(tempnombres, tempvalores)
+		| <PICK>" :"(<BALLOONS>|<CHIPS>) " " x=checkNum(tempnombres, tempvalores)
 		| <MOVE_DIR> x=checkNum(tempnombres, tempvalores) (<FRONT>|<RIGHT>|<LEFT>|<BACK>)
 		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
 		| <MOVE_FACE> x=checkNum(tempnombres, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
 		| <DEFVAR> " " declararVariable(tempnombres, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
 		| <DEFUN> " " cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns)
 		| <IF>bool=condition()
-
+		| (soloRevisa(x, salida, tempnombres, tempvalores))+
 	)
 	
 	
-	<CP>
+		  <CP>
     
 }
 
 void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores, ArrayList<String> nombrefuns, ArrayList<String> paramfuns, ArrayList<String> blockfuns) :
 {
   String parametros = "";
+  String agregastr = "";
+  int agregaint = 0;
   int x = 0;
   String salida = "";
 }
@@ -303,6 +352,7 @@ void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores
 			{
 			  	tempnombres.add(token.image);
 				tempvalores.add(4);
+				parametros = parametros.concat(" ");
 				parametros = parametros.concat(token.image);
 			} 
 			catch (NumberFormatException ee) 
@@ -313,10 +363,22 @@ void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores
 			}
 	}  )*
   < CP>
+  {
+    for(x=0; x<variables.size(); x++)
+    {
+      agregastr = variables.get(x);
+      agregaint = valorvars.get(x);
+      tempnombres.add(agregastr);
+	  tempvalores.add(agregaint);
+     }
+  }
   soloRevisa(x,salida,tempnombres, tempvalores)
-  /*{
+  {
+    //blockfuns
     paramfuns.add(parametros);
-  }*/
+    blockfuns.add(token.image);
+    
+  }
   
 }
 
@@ -452,7 +514,8 @@ void cambiarVariable(ArrayList<String> variables, ArrayList<Integer> valorvars) 
   String pru = "";
 }
 {
-  <NAME>
+  (    <NAME>|< LETRA>
+  )
   {
     for(i=0; i<variables.size(); i++)
   	{

@@ -11,15 +11,13 @@ public interface RobotConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int MOVE = 3;
+  int MOVE = 4;
   /** RegularExpression Id. */
-  int TURNRIGHT = 4;
+  int TURNRIGHT = 5;
   /** RegularExpression Id. */
-  int PUT = 5;
+  int PUT = 6;
   /** RegularExpression Id. */
-  int PICK = 6;
-  /** RegularExpression Id. */
-  int POP = 7;
+  int PICK = 7;
   /** RegularExpression Id. */
   int DEFVAR = 8;
   /** RegularExpression Id. */
@@ -99,11 +97,11 @@ public interface RobotConstants {
     "<EOF>",
     "\"\\r\"",
     "\"\\t\"",
+    "\"\\n\"",
     "\"move\"",
     "\"turnright\"",
-    "\"Put\"",
-    "\"Pick\"",
-    "\"Pop\"",
+    "\"put\"",
+    "\"pick\"",
     "\"defvar\"",
     "\"=\"",
     "\"turn\"",
@@ -139,9 +137,10 @@ public interface RobotConstants {
     "<LETRA>",
     "<DIGITO>",
     "<NAME>",
-    "\"\\n\"",
+    "\"po\"",
     "\" \"",
     "\":\"",
+    "\" :\"",
   };
 
 }
