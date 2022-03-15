@@ -52,7 +52,7 @@ public class Robot
 	private ArrayList<String> blockfuns = new ArrayList<String>();
 	private ArrayList<String> nombrefuns = new ArrayList<String>();
 	private ArrayList<String> paramfuns = new ArrayList<String>();
-	private ArrayList<String> boolscondiciones = new ArrayList<String>();
+	
 	private int cuentaif = -1;
 	void setWorld(RobotWorldDec w) {
 		world = (RobotWorldDec) w;	
@@ -177,6 +177,7 @@ boolean command(StringBuffer sistema) :
 void haceInput(int x, String salida, String[] nueva):
 {
   int p = 0;
+  boolean bool;
  		
  }
 {
@@ -194,10 +195,20 @@ void haceInput(int x, String salida, String[] nueva):
 		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
 		| <DEFVAR> " " declararVariable(variables, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
 		| < DEFUN> " " cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns)
-		| (<IF>condition(boolscondiciones)
-			{cuentaif+=1;
-			boolscondiciones.get(cuentaif)	
-		}
+		| (<IF> (bool=condition()
+				{
+				  if(bool)
+				  {
+				    throw new Error("si es verdad");
+				  }
+				  else
+				  {
+				     throw new Error("no es verdad");
+				  }
+				}
+				
+		         )
+			
 
 		)
 		
@@ -209,9 +220,10 @@ void haceInput(int x, String salida, String[] nueva):
     
 }
 
-void soloRevisa(int x, String salida, ArrayList<String> tempnombres, ArrayList<Integer> tempvalores,ArrayList<String> boolscondiciones):
+void soloRevisa(int x, String salida, ArrayList<String> tempnombres, ArrayList<Integer> tempvalores):
 {
   int p = 0;
+  boolean bool;
  		
  }
 {
@@ -229,7 +241,7 @@ void soloRevisa(int x, String salida, ArrayList<String> tempnombres, ArrayList<I
 		| <MOVE_FACE> x=checkNum(tempnombres, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
 		| <DEFVAR> " " declararVariable(tempnombres, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
 		| <DEFUN> " " cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns)
-		| <IF>condition(boolscondiciones)
+		| <IF>bool=condition()
 
 	)
 	
@@ -301,7 +313,7 @@ void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores
 			}
 	}  )*
   < CP>
-  soloRevisa(x,salida,tempnombres, tempvalores,boolscondiciones)
+  soloRevisa(x,salida,tempnombres, tempvalores)
   /*{
     paramfuns.add(parametros);
   }*/
@@ -338,72 +350,95 @@ void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores
 
 
 
-void condition (ArrayList<String> boolscondiciones):
+boolean condition ():
 
 {
   int x=0;
+  boolean bool;
 }
 {
  <OP>
-(
+
   
- facing_p(boolscondiciones)
+<FACING_P>" " (bool=facing_p()
+				{ if (bool)
+				  {
+					  return true;
+				  }
+				  else
+				  {
+				    return false;
+				  }
+				}
+	                         )
 | <CAN_PUT_P>" "(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
-| <CAN_PICK_P>" "(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
+/*| <CAN_PICK_P>" "(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
 | <CAN_MOVE_P>" "(<SOUTH>|<WEST>|<EAST>|<NORTH>)
 |<DEFUN> " " cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns)
 | <NOT> condition(boolscondiciones)
 
 
-)
+)*/
  <CP>
 }
 
-void facing_p(ArrayList<String> boolscondiciones):
+
+
+
+ boolean facing_p():
 {
   int x=0;
+  boolean bool;
 }
 {
-  <FACING_P>" "
+ 
   (<SOUTH>
   {if (world2.facingSouth())
 	  {
-	    boolscondiciones.add("true");
+	    bool=true;
+	    return bool;
 	  }
 	else
 	{
-		boolscondiciones.add("false");
+		 bool=false;
+	    return bool;
 	}
   }
 | <WEST>
 	{if (world2.facingWest())
 		  {
-		    boolscondiciones.add("true");
+		     bool=true;
+	         return bool;
 		  }
 		else
 		{
-			boolscondiciones.add("false");
+			 bool=false;
+	    	return bool;
 		}
 	  }
 |<EAST>
 	{if (world2.facingEast())
 		  {
-		    boolscondiciones.add("true");
+		     bool=true;
+	         return bool;
 		  }
 		else
 		{
-			boolscondiciones.add("false");
+			 bool=false;
+	    	return bool;
 		}
 	  }
 | <NORTH>
 
 	{if (world2.facingEast())
 		  {
-		    boolscondiciones.add("true");
+		    bool=true;
+	         return bool;
 		  }
 	 else
 	 {
-		boolscondiciones.add("false");
+		 bool=false;
+	    return bool;
      }
 	 }
 )
