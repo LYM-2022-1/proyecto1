@@ -59,9 +59,9 @@ public class Robot
 	void setWorld(RobotWorldDec w) {
 		world = (RobotWorldDec) w;	
 	}
-	void setWorld2(RobotWorld w2) {
+	/*void setWorld2(RobotWorld w2) {
 		world2 = (RobotWorld) w2;	
-	}
+	}*/
 	
 
 	String salida=new String();
@@ -72,7 +72,7 @@ SKIP:
 {
 	"\r"
 	|	"\t"
-	| "\n"
+	//| "\n"
 }
 
 TOKEN: /* Nombres de Comandos */
@@ -106,14 +106,6 @@ TOKEN: /* Nombres de Comandos */
 		
 
 }
-
-TOKEN :
-{
-		<NUMERO: (<DIGIT>)+ >
-		|  	<#DIGIT: ["0"-"9"] >
-}
-
-
 TOKEN : /* PARAMETROS */
 {
 		<BALLOONS:  "balloons" >
@@ -123,19 +115,26 @@ TOKEN : /* PARAMETROS */
 		|  <AROUND: "around" >
 		|  <BACK: "back" >
 		|  <FRONT: "front" >
-		|  <NORTH: ":north" >
-		|  <SOUTH: ":south" >
-		|  <WEST: ":west" >
-		|  <EAST: ":east" >
+		|  <NORTH: "north" >
+		|  <SOUTH: "south" >
+		|  <WEST: "west" >
+		|  <EAST: "east" >
 
 }
+
+TOKEN :
+{
+		<NUMERO: (<DIGIT>)+ >
+		|  	<#DIGIT: ["0"-"9"] >
+}
+
 
 TOKEN:
 {
   	
   	< LETRA: ["a"-"z","A"-"Z"]>
  	| <DIGITO: ["0"-"9"] >
- 	| < NAME: (< LETRA >)(< LETRA >|< DIGITO >)*>
+ 	//| < NAME: (< LETRA >)(< LETRA >|< DIGITO >)*>
  	//| < LETRA: (< letra >)(< letra >|< digito >)*>
 }
 
@@ -230,7 +229,8 @@ void buscarFuncion():
 }
 {
   (
-    < NAME>|< LETRA>
+    //< NAME>|< LETRA>
+    (< LETRA >)(< LETRA >|< DIGITO >)*
   )
   {
     try 
@@ -306,7 +306,8 @@ void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores
   String salida = "";
 }
 {
-  (    < NAME>|< LETRA>
+  (    //< NAME>|< LETRA>
+    (< LETRA >)(< LETRA >|< DIGITO >)*
   )
   {
     try 
@@ -324,7 +325,8 @@ void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores
   " "
   < OP>
   (
-    < NAME>|< LETRA>
+    //< NAME>|< LETRA>
+    (< LETRA >)(< LETRA >|< DIGITO >)*
   )
   {
     
@@ -344,7 +346,8 @@ void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores
   (
     " "
     (
-    < NAME>|< LETRA>
+    //< NAME>|< LETRA>
+    (< LETRA >)(< LETRA >|< DIGITO >)*
   	)
     {
     
@@ -422,14 +425,19 @@ boolean condition ():
  <OP>
 
   
-<FACING_P>" " (bool=facing_p()
+<FACING_P>" : " (bool=facing_p()
 				{ if (bool)
 				  {
+				      throw new Error("woliii");
 					  return true;
+					  
 				  }
 				  else
 				  {
+				    throw new Error("ay no");
 				    return false;
+				    
+				    
 				  }
 				}
 	                         )
@@ -449,25 +457,29 @@ boolean condition ():
 
  boolean facing_p():
 {
-  int x=0;
+  int x=1;
   boolean bool;
 }
 {
  
   (<SOUTH>
-  {if (world2.facingSouth())
+  {if (world.facingSouth())
 	  {
+
 	    bool=true;
+	    //throw new Error("si es south");
 	    return bool;
+	    
 	  }
 	else
 	{
 		 bool=false;
+		 throw new Error("no es south");
 	    return bool;
 	}
   }
 | <WEST>
-	{if (world2.facingWest())
+	{if (world.facingWest())
 		  {
 		     bool=true;
 	         return bool;
@@ -479,7 +491,7 @@ boolean condition ():
 		}
 	  }
 |<EAST>
-	{if (world2.facingEast())
+	{if (world.facingEast())
 		  {
 		     bool=true;
 	         return bool;
@@ -492,7 +504,7 @@ boolean condition ():
 	  }
 | <NORTH>
 
-	{if (world2.facingEast())
+	{if (world.facingEast())
 		  {
 		    bool=true;
 	         return bool;
@@ -514,7 +526,8 @@ void cambiarVariable(ArrayList<String> variables, ArrayList<Integer> valorvars) 
   String pru = "";
 }
 {
-  (    <NAME>|< LETRA>
+  (    //<NAME>|< LETRA>
+    (< LETRA >)(< LETRA >|< DIGITO >)*
   )
   {
     for(i=0; i<variables.size(); i++)
@@ -553,26 +566,8 @@ int checkNum(ArrayList<String> variables, ArrayList<Integer> valorvars) :
 }
 {
   (
-    < NAME>
-  {
-    
-  
-  	for(i=0; i<variables.size(); i++)
-  	{
-    	if(token.image.equals(variables.get(i)))
-    	{
-    	  rta= valorvars.get(i);
-
-    	}
-  	}
-  	if(rta == -57)
-  	{
-  	  throw new Error("ERROR: NO EXISTE LA VARIABLE");
-
-  	}
-  	return rta;
-  }
-	| < LETRA>
+    //< NAME>
+    (< LETRA >)(< LETRA >|< DIGITO >)*
   {
     
   
@@ -612,7 +607,8 @@ void declararVariable(ArrayList<String> variables, ArrayList<Integer> valorvars)
 	  
 	}
 	{
-	  (	    < NAME>|< LETRA>
+	  (	    //< NAME>|< LETRA>
+	    (< LETRA >)(< LETRA >|< DIGITO >)*
 	  )
 	  {
 	    try 
