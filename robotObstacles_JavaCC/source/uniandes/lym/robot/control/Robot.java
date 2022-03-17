@@ -130,16 +130,19 @@ public class Robot implements RobotConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BALLOONS:
         jj_consume_token(BALLOONS);
+        x = checkNum(variables, valorvars);
+                                                                                     world.putBalloons(x);
         break;
       case CHIPS:
         jj_consume_token(CHIPS);
+        x = checkNum(variables, valorvars);
+                                                                                   world.putChips(x);
         break;
       default:
         jj_la1[3] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-      x = checkNum(variables, valorvars);
       break;
     case PICK:
       jj_consume_token(PICK);
@@ -147,16 +150,19 @@ public class Robot implements RobotConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BALLOONS:
         jj_consume_token(BALLOONS);
+        x = checkNum(variables, valorvars);
+                                                                       world.grabBalloons(x);
         break;
       case CHIPS:
         jj_consume_token(CHIPS);
+        x = checkNum(variables, valorvars);
+                                                                                   world.pickChips(x);
         break;
       default:
         jj_la1[4] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-      x = checkNum(variables, valorvars);
       break;
     case MOVE_DIR:
       jj_consume_token(MOVE_DIR);
@@ -249,7 +255,9 @@ public class Robot implements RobotConstants {
       break;
     case IF:
       jj_consume_token(IF);
-      bool = condition();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case OP:
+        bool = condition();
                                   if(bool)
                                   {
                                     {if (true) throw new Error("si es verdad");}
@@ -258,12 +266,52 @@ public class Robot implements RobotConstants {
                                   {
                                      {if (true) throw new Error("no es verdad");}
                                   }
+        break;
+      case CAN_PUT_P:
+        jj_consume_token(CAN_PUT_P);
+        jj_consume_token(42);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case BALLOONS:
+          jj_consume_token(BALLOONS);
+          break;
+        case CHIPS:
+          jj_consume_token(CHIPS);
+          break;
+        default:
+          jj_la1[9] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        x = checkNum(variables, valorvars);
+        break;
+      case CAN_PICK_P:
+        jj_consume_token(CAN_PICK_P);
+        jj_consume_token(42);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case BALLOONS:
+          jj_consume_token(BALLOONS);
+          break;
+        case CHIPS:
+          jj_consume_token(CHIPS);
+          break;
+        default:
+          jj_la1[10] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        x = checkNum(variables, valorvars);
+        break;
+      default:
+        jj_la1[11] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
       break;
     case LETRA:
       buscarFuncion();
       break;
     default:
-      jj_la1[9] = jj_gen;
+      jj_la1[12] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -282,7 +330,7 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[10] = jj_gen;
+        jj_la1[13] = jj_gen;
         break label_2;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -293,7 +341,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(DIGITO);
         break;
       default:
-        jj_la1[11] = jj_gen;
+        jj_la1[14] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -355,7 +403,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(RIGHT);
         break;
       default:
-        jj_la1[12] = jj_gen;
+        jj_la1[15] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -377,7 +425,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(NORTH);
         break;
       default:
-        jj_la1[13] = jj_gen;
+        jj_la1[16] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -393,7 +441,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(CHIPS);
         break;
       default:
-        jj_la1[14] = jj_gen;
+        jj_la1[17] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -411,7 +459,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(CHIPS);
         break;
       default:
-        jj_la1[15] = jj_gen;
+        jj_la1[18] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -435,7 +483,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(BACK);
         break;
       default:
-        jj_la1[16] = jj_gen;
+        jj_la1[19] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -458,7 +506,7 @@ public class Robot implements RobotConstants {
           jj_consume_token(BACK);
           break;
         default:
-          jj_la1[17] = jj_gen;
+          jj_la1[20] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -470,7 +518,7 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[18] = jj_gen;
+          jj_la1[21] = jj_gen;
           break label_3;
         }
       }
@@ -492,7 +540,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(NORTH);
         break;
       default:
-        jj_la1[19] = jj_gen;
+        jj_la1[22] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -520,13 +568,13 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[20] = jj_gen;
+          jj_la1[23] = jj_gen;
           break label_4;
         }
       }
       break;
     default:
-      jj_la1[21] = jj_gen;
+      jj_la1[24] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -548,7 +596,7 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[22] = jj_gen;
+        jj_la1[25] = jj_gen;
         break label_5;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -559,7 +607,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(DIGITO);
         break;
       default:
-        jj_la1[23] = jj_gen;
+        jj_la1[26] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -586,7 +634,7 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[24] = jj_gen;
+        jj_la1[27] = jj_gen;
         break label_6;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -597,7 +645,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(DIGITO);
         break;
       default:
-        jj_la1[25] = jj_gen;
+        jj_la1[28] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -621,7 +669,7 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[26] = jj_gen;
+        jj_la1[29] = jj_gen;
         break label_7;
       }
       jj_consume_token(42);
@@ -634,7 +682,7 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[27] = jj_gen;
+          jj_la1[30] = jj_gen;
           break label_8;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -645,7 +693,7 @@ public class Robot implements RobotConstants {
           jj_consume_token(DIGITO);
           break;
         default:
-          jj_la1[28] = jj_gen;
+          jj_la1[31] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -698,49 +746,22 @@ public class Robot implements RobotConstants {
   final public boolean condition() throws ParseException {
   int x=0;
   boolean bool;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case OP:
-      jj_consume_token(OP);
-      jj_consume_token(FACING_P);
-      jj_consume_token(45);
-      bool = facing_p();
+    jj_consume_token(OP);
+    jj_consume_token(FACING_P);
+    jj_consume_token(45);
+    bool = facing_p();
                                   if (bool)
                                   {
-                                      {if (true) throw new Error("woliii");}
                                           {if (true) return true;}
 
                                   }
                                   else
                                   {
-                                    {if (true) throw new Error("ay no");}
                                     {if (true) return false;}
 
 
                                   }
-      break;
-    case CAN_PUT_P:
-      jj_consume_token(CAN_PUT_P);
-      jj_consume_token(42);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case BALLOONS:
-        jj_consume_token(BALLOONS);
-        break;
-      case CHIPS:
-        jj_consume_token(CHIPS);
-        break;
-      default:
-        jj_la1[29] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      x = checkNum(variables, valorvars);
-      jj_consume_token(CP);
-      break;
-    default:
-      jj_la1[30] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+    jj_consume_token(CP);
     throw new Error("Missing return statement in function");
   }
 
@@ -750,18 +771,16 @@ public class Robot implements RobotConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case SOUTH:
       jj_consume_token(SOUTH);
-   if (world.facingSouth().equals(1))
+   if (world.facingSouth())
           {
 
             bool=true;
-            //throw new Error("si es south");
             {if (true) return bool;}
 
           }
         else
         {
                  bool=false;
-                 {if (true) throw new Error("no es south");}
             {if (true) return bool;}
         }
       break;
@@ -793,7 +812,7 @@ public class Robot implements RobotConstants {
       break;
     case NORTH:
       jj_consume_token(NORTH);
-         if (world.facingEast())
+         if (world.facingNorth())
                   {
                     bool=true;
                  {if (true) return bool;}
@@ -805,7 +824,7 @@ public class Robot implements RobotConstants {
      }
       break;
     default:
-      jj_la1[31] = jj_gen;
+      jj_la1[32] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -825,7 +844,7 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[32] = jj_gen;
+        jj_la1[33] = jj_gen;
         break label_9;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -836,7 +855,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(DIGITO);
         break;
       default:
-        jj_la1[33] = jj_gen;
+        jj_la1[34] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -879,7 +898,7 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[34] = jj_gen;
+          jj_la1[35] = jj_gen;
           break label_10;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -890,7 +909,7 @@ public class Robot implements RobotConstants {
           jj_consume_token(DIGITO);
           break;
         default:
-          jj_la1[35] = jj_gen;
+          jj_la1[36] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -916,7 +935,7 @@ public class Robot implements RobotConstants {
           {if (true) return rta;}
       break;
     default:
-      jj_la1[36] = jj_gen;
+      jj_la1[37] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -938,7 +957,7 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[37] = jj_gen;
+        jj_la1[38] = jj_gen;
         break label_11;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -949,7 +968,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(DIGITO);
         break;
       default:
-        jj_la1[38] = jj_gen;
+        jj_la1[39] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -992,7 +1011,7 @@ public class Robot implements RobotConstants {
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[39];
+  final private int[] jj_la1 = new int[40];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -1000,10 +1019,10 @@ public class Robot implements RobotConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x1000001,0x70000000,0x0,0xc000000,0xc000000,0xb0000000,0xb0000000,0xb0000000,0x0,0x27fe8,0x0,0x0,0x70000000,0x0,0xc000000,0xc000000,0xb0000000,0xb0000000,0xb0000000,0x0,0x1000000,0x1027fe8,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc000000,0x1080000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_0 = new int[] {0x1000001,0x70000000,0x0,0xc000000,0xc000000,0xb0000000,0xb0000000,0xb0000000,0x0,0xc000000,0xc000000,0x1180000,0x27fe8,0x0,0x0,0x70000000,0x0,0xc000000,0xc000000,0xb0000000,0xb0000000,0xb0000000,0x0,0x1000000,0x1027fe8,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x200,0x0,0x1e,0x0,0x0,0x1,0x1,0x1,0x1e,0x80,0x180,0x180,0x0,0x1e,0x0,0x0,0x1,0x1,0x1,0x1e,0x0,0x0,0x180,0x180,0x180,0x180,0x400,0x180,0x180,0x0,0x0,0x1e,0x180,0x180,0x180,0x180,0xa0,0x180,0x180,};
+      jj_la1_1 = new int[] {0x200,0x0,0x1e,0x0,0x0,0x1,0x1,0x1,0x1e,0x0,0x0,0x0,0x80,0x180,0x180,0x0,0x1e,0x0,0x0,0x1,0x1,0x1,0x1e,0x0,0x0,0x180,0x180,0x180,0x180,0x400,0x180,0x180,0x1e,0x180,0x180,0x180,0x180,0xa0,0x180,0x180,};
    }
 
   /** Constructor with InputStream. */
@@ -1017,7 +1036,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -1031,7 +1050,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -1041,7 +1060,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -1051,7 +1070,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -1060,7 +1079,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -1069,7 +1088,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -1125,7 +1144,7 @@ public class Robot implements RobotConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 39; i++) {
+    for (int i = 0; i < 40; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

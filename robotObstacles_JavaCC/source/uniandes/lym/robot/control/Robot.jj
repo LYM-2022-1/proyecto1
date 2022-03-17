@@ -188,8 +188,11 @@ void haceInput(int x, String salida, String[] nueva):
 		| <MOVE>" " x=checkNum(variables, valorvars) {world.moveHorizontally(x);salida = "Command: Moveforward ";}
 		| <TURN>":"(<LEFT>|<AROUND>|<RIGHT>) 
 		| <FACE>":"(<SOUTH>|<WEST>|<EAST>|<NORTH>)
-		| <PUT>":"(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
-		| <PICK>":"(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
+		| <PUT>":"
+					 (<BALLOONS>x=checkNum(variables, valorvars){world.putBalloons(x);}
+					  |<CHIPS>x=checkNum(variables, valorvars){world.putChips(x);})
+		| <PICK>":"(<BALLOONS>x=checkNum(variables, valorvars){world.grabBalloons(x);}
+					  |<CHIPS>x=checkNum(variables, valorvars){world.pickChips(x);})
 		| <MOVE_DIR> x=checkNum(variables, valorvars) (<FRONT>|<RIGHT>|<LEFT>|<BACK>)
 		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
 		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
@@ -206,7 +209,8 @@ void haceInput(int x, String salida, String[] nueva):
 				     throw new Error("no es verdad");
 				  }
 				}
-				
+				| <CAN_PUT_P>" "(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
+				| <CAN_PICK_P>" "(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
 		         )
 			
 
@@ -425,30 +429,29 @@ boolean condition ():
  <OP>
 
   
-<FACING_P>" : " (bool=facing_p()
+(  <FACING_P>" : " (bool=facing_p()
 				{ if (bool)
 				  {
-				      throw new Error("woliii");
 					  return true;
 					  
 				  }
 				  else
 				  {
-				    throw new Error("ay no");
 				    return false;
 				    
 				    
 				  }
 				}
 	                         )
-| <CAN_PUT_P>" "(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
+//| <CAN_PUT_P>" "(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
 /*| <CAN_PICK_P>" "(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
 | <CAN_MOVE_P>" "(<SOUTH>|<WEST>|<EAST>|<NORTH>)
 |<DEFUN> " " cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns)
-| <NOT> condition(boolscondiciones)
+| <NOT> condition()
 
 
 )*/
+)
  <CP>
 }
 
@@ -467,14 +470,12 @@ boolean condition ():
 	  {
 
 	    bool=true;
-	    //throw new Error("si es south");
 	    return bool;
 	    
 	  }
 	else
 	{
 		 bool=false;
-		 throw new Error("no es south");
 	    return bool;
 	}
   }
@@ -504,7 +505,7 @@ boolean condition ():
 	  }
 | <NORTH>
 
-	{if (world.facingEast())
+	{if (world.facingNorth())
 		  {
 		    bool=true;
 	         return bool;
