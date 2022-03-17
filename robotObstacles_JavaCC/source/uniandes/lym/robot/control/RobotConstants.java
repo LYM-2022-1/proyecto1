@@ -135,8 +135,8 @@ public interface RobotConstants {
     "<DIGITO>",
     "\"po\"",
     "\" \"",
-    "\":\"",
     "\" :\"",
+    "\":\"",
     "\" : \"",
   };
 

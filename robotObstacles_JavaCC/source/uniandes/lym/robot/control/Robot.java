@@ -70,6 +70,7 @@ public class Robot implements RobotConstants {
   final public void haceInput(int x, String salida, String[] nueva) throws ParseException {
   int p = 0;
   boolean bool;
+  String input = ")(face :south)";
     jj_consume_token(OP);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case EQUALS:
@@ -82,6 +83,11 @@ public class Robot implements RobotConstants {
       jj_consume_token(42);
       x = checkNum(variables, valorvars);
                                                               world.moveHorizontally(x);salida = "Command: Moveforward ";
+                                                                                                                this.ReInit(new java.io.StringReader(input));
+                                                                                                                //StringBuffer salimos=new StringBuffer("(turn :left)");
+                                                                                                                //command(salimos);
+                //System.out.println( salida+" End Input \n"+salimos);
+
       break;
     case TURN:
       jj_consume_token(TURN);
@@ -101,6 +107,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(-1);
         throw new ParseException();
       }
+                                                       world.moveVertically(1);salida = "Command: MoveALV ";
       break;
     case FACE:
       jj_consume_token(FACE);
@@ -123,10 +130,11 @@ public class Robot implements RobotConstants {
         jj_consume_token(-1);
         throw new ParseException();
       }
+                                                             world.moveVertically(2);salida = "Command: MoveALV ";
       break;
     case PUT:
       jj_consume_token(PUT);
-      jj_consume_token(43);
+      jj_consume_token(44);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BALLOONS:
         jj_consume_token(BALLOONS);
@@ -146,7 +154,7 @@ public class Robot implements RobotConstants {
       break;
     case PICK:
       jj_consume_token(PICK);
-      jj_consume_token(43);
+      jj_consume_token(44);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BALLOONS:
         jj_consume_token(BALLOONS);
@@ -391,7 +399,7 @@ public class Robot implements RobotConstants {
       break;
     case TURN:
       jj_consume_token(TURN);
-      jj_consume_token(43);
+      jj_consume_token(44);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case LEFT:
         jj_consume_token(LEFT);
@@ -410,7 +418,7 @@ public class Robot implements RobotConstants {
       break;
     case FACE:
       jj_consume_token(FACE);
-      jj_consume_token(43);
+      jj_consume_token(44);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SOUTH:
         jj_consume_token(SOUTH);
@@ -432,7 +440,7 @@ public class Robot implements RobotConstants {
       break;
     case PUT:
       jj_consume_token(PUT);
-      jj_consume_token(44);
+      jj_consume_token(43);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BALLOONS:
         jj_consume_token(BALLOONS);
@@ -450,7 +458,7 @@ public class Robot implements RobotConstants {
       break;
     case PICK:
       jj_consume_token(PICK);
-      jj_consume_token(44);
+      jj_consume_token(43);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BALLOONS:
         jj_consume_token(BALLOONS);

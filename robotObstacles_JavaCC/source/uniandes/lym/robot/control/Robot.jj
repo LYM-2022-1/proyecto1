@@ -178,6 +178,7 @@ void haceInput(int x, String salida, String[] nueva):
 {
   int p = 0;
   boolean bool;
+  String input = ")(face :south)";
  		
  }
 {
@@ -185,9 +186,14 @@ void haceInput(int x, String salida, String[] nueva):
   	  <OP>
 	(
    		<EQUALS> " " cambiarVariable(variables, valorvars) 
-		| <MOVE>" " x=checkNum(variables, valorvars) {world.moveHorizontally(x);salida = "Command: Moveforward ";}
-		| <TURN>":"(<LEFT>|<AROUND>|<RIGHT>) 
-		| <FACE>":"(<SOUTH>|<WEST>|<EAST>|<NORTH>)
+		| <MOVE>" " x=checkNum(variables, valorvars) {world.moveHorizontally(x);salida = "Command: Moveforward ";
+														this.ReInit(new java.io.StringReader(input));
+														//StringBuffer salimos=new StringBuffer("(turn :left)");
+														//command(salimos);
+		//System.out.println( salida+" End Input \n"+salimos);
+		}
+		| <TURN>" :"(<LEFT>|<AROUND>|<RIGHT>) {world.moveVertically(1);salida = "Command: MoveALV ";}
+		| <FACE>" :"(<SOUTH>|<WEST>|<EAST>|<NORTH>) {world.moveVertically(2);salida = "Command: MoveALV ";}
 		| <PUT>":"
 					 (<BALLOONS>x=checkNum(variables, valorvars){world.putBalloons(x);}
 					  |<CHIPS>x=checkNum(variables, valorvars){world.putChips(x);})
