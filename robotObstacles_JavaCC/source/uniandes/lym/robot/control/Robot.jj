@@ -37,6 +37,7 @@ import java.io.*;
 import java.util.Vector;
 import java.util.LinkedList;
 import java.util.ArrayList;
+import java.awt.Point;
 //import control.Interpreter;
 
 @SuppressWarnings("serial")
@@ -72,7 +73,7 @@ SKIP:
 {
 	"\r"
 	|	"\t"
-	| "\n"
+	//| "\n"
 }
 
 TOKEN: /* Nombres de Comandos */
@@ -192,10 +193,10 @@ void haceInput(int x, String salida, String[] nueva):
 		| <TURN>" :"(<LEFT>|<AROUND>|<RIGHT>) //{world.moveVertically(1);salida = "Command: MoveALV ";}
 		| <FACE>" :"(<SOUTH>|<WEST>|<EAST>|<NORTH>) //{world.moveVertically(2);salida = "Command: MoveALV ";}
 		| <PUT>":"
-					 (<BALLOONS>x=checkNum(variables, valorvars){world.putBalloons(x);}
-					  |<CHIPS>x=checkNum(variables, valorvars){world.putChips(x);})
-		| <PICK>":"(<BALLOONS>x=checkNum(variables, valorvars){world.grabBalloons(x);}
-					  |<CHIPS>x=checkNum(variables, valorvars){world.pickChips(x);})
+					 (<BALLOONS>" "x=checkNum(variables, valorvars){world.putBalloons(x);}
+					  |<CHIPS>" "x=checkNum(variables, valorvars){world.putChips(x);})
+		| <PICK>":"(<BALLOONS>" "x=checkNum(variables, valorvars){world.grabBalloons(x);}
+					  |<CHIPS>" "x=checkNum(variables, valorvars){world.pickChips(x);})
 		| <MOVE_DIR> x=checkNum(variables, valorvars) (<FRONT>|<RIGHT>|<LEFT>|<BACK>)
 		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
 		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
@@ -212,8 +213,6 @@ void haceInput(int x, String salida, String[] nueva):
 				     throw new Error("no es verdad");
 				  }
 				}
-				| <CAN_PUT_P>" "(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
-				| <CAN_PICK_P>" "(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
 		         )
 			
 
@@ -586,22 +585,96 @@ boolean condition ():
 
   
 (  <FACING_P>{ elreturn=elreturn.concat(token.image);}" : "{ elreturn=elreturn.concat(token.image);} (bool=facing_p()
-				{ if (bool)
-				  {
-					  return true;
-					  
-				  }
-				  else
-				  {
-				    return false;
-				    
-				    
-				  }
-				}
+				{if (bool){return true;}else{return false;}}
 	                         )
-//| <CAN_PUT_P>" "(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
+| <CAN_PUT_P>" "(<BALLOONS>" "x=checkNum(variables, valorvars)
+					{
+					  if(world.getMyBalloons() >= x)
+					  {
+					    return true;
+					  }
+					  else
+					  {
+					    return false;
+					  }
+					}
+				|<CHIPS>" "x=checkNum(variables, valorvars)
+					{
+					  if(world.getMyChips() >= x && world.freeSpacesForChips() >= x)
+					  {
+					    return true;
+					  }
+					  else
+					  {
+					    return false;
+					  }
+					})
+| <CAN_MOVE_P>" "(<SOUTH>
+					{
+					  //String posx= String.valueOf(world.getPosition().getX());
+					 // String posy= String.valueOf(world.getPosition().getY()-1);
+					 
+					  
+					  //if(world.isBlocked(new Point(Integer.parseInt(posx),Integer.parseInt(posy))))
+					  int posx = (int)world.getPosition().getX();
+					  int posy=(int)world.getPosition().getY();
+					  if(world.blockedInRange(posx,posy,-1,1))
+					  {
+					    return true;
+					  }
+					   else
+					  {
+					    return false;
+					  }
+					}
+				    /*|<WEST>
+				    {
+				       String posx= String.valueOf(world.getPosition().getX()-1);
+				      String posy= String.valueOf(world.getPosition().getY());
+				      
+				      if(world.isBlocked(new Point(Integer.parseInt(posx),Integer.parseInt(posy))))
+					  {
+					    return true;
+					  }
+					   else
+					  {
+					    return false;
+					  }
+					}
+					
+					|<EAST>
+					{
+					  posx= String.valueOf(world.getPosition().getX()+1);
+				      posy= String.valueOf(world.getPosition().getY());
+					  if(world.isBlocked(new Point(Integer.parseInt(posx),Integer.parseInt(posy))))
+					  {
+					    return true;
+					  }
+					   else
+					  {
+					    return false;
+					  }
+					}*/
+					
+					|<NORTH>
+				    {
+					  //posx= String.valueOf(world.getPosition().getX());
+				     // posy= String.valueOf(world.getPosition().getY()+1);
+					  //if(world.isBlocked(new Point(Integer.parseInt(posx),Integer.parseInt(posy))))
+					  posx = (int)world.getPosition().getX();
+					  posy=(int)world.getPosition().getY();
+					  if(world.blockedInRange(posx,posy,1,0))
+					  {
+					    return true;
+					  }
+					   else
+					  {
+					    return false;
+					  }
+				    }
+					)
+
 /*| <CAN_PICK_P>" "(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
-| <CAN_MOVE_P>" "(<SOUTH>|<WEST>|<EAST>|<NORTH>)
 |<DEFUN> " " cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns)
 | <NOT> condition()
 

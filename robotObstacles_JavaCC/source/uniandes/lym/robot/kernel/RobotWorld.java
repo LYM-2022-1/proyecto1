@@ -478,7 +478,7 @@ public class RobotWorld {
 	/**
 	 * @return true if it is in the first column
 	 */
-	public boolean isLeft() {
+	public boolean  sLeft() {
 		return this.position.x==1;
 	}
 	

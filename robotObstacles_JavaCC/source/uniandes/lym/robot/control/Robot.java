@@ -7,6 +7,7 @@ import java.io.*;
 import java.util.Vector;
 import java.util.LinkedList;
 import java.util.ArrayList;
+import java.awt.Point;
 //import control.Interpreter;
 
 @SuppressWarnings("serial")
@@ -51,8 +52,8 @@ public class Robot implements RobotConstants {
                         sistema.append(salida);
                         {if (true) return true;}
       break;
-    case 42:
-      jj_consume_token(42);
+    case 41:
+      jj_consume_token(41);
                {if (true) return true;}
       break;
     case 0:
@@ -75,12 +76,12 @@ public class Robot implements RobotConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case EQUALS:
       jj_consume_token(EQUALS);
-      jj_consume_token(43);
+      jj_consume_token(42);
       cambiarVariable(variables, valorvars);
       break;
     case MOVE:
       jj_consume_token(MOVE);
-      jj_consume_token(43);
+      jj_consume_token(42);
       x = checkNum(variables, valorvars);
                                                               world.moveHorizontally(x);salida = "Command: Moveforward ";
                                                                                                                 //this.ReInit(new java.io.StringReader(input));
@@ -88,7 +89,7 @@ public class Robot implements RobotConstants {
       break;
     case TURN:
       jj_consume_token(TURN);
-      jj_consume_token(44);
+      jj_consume_token(43);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case LEFT:
         jj_consume_token(LEFT);
@@ -107,7 +108,7 @@ public class Robot implements RobotConstants {
       break;
     case FACE:
       jj_consume_token(FACE);
-      jj_consume_token(44);
+      jj_consume_token(43);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SOUTH:
         jj_consume_token(SOUTH);
@@ -129,17 +130,19 @@ public class Robot implements RobotConstants {
       break;
     case PUT:
       jj_consume_token(PUT);
-      jj_consume_token(45);
+      jj_consume_token(44);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BALLOONS:
         jj_consume_token(BALLOONS);
+        jj_consume_token(42);
         x = checkNum(variables, valorvars);
-                                                                                     world.putBalloons(x);
+                                                                                        world.putBalloons(x);
         break;
       case CHIPS:
         jj_consume_token(CHIPS);
+        jj_consume_token(42);
         x = checkNum(variables, valorvars);
-                                                                                   world.putChips(x);
+                                                                                      world.putChips(x);
         break;
       default:
         jj_la1[3] = jj_gen;
@@ -149,17 +152,19 @@ public class Robot implements RobotConstants {
       break;
     case PICK:
       jj_consume_token(PICK);
-      jj_consume_token(45);
+      jj_consume_token(44);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BALLOONS:
         jj_consume_token(BALLOONS);
+        jj_consume_token(42);
         x = checkNum(variables, valorvars);
-                                                                       world.grabBalloons(x);
+                                                                          world.grabBalloons(x);
         break;
       case CHIPS:
         jj_consume_token(CHIPS);
+        jj_consume_token(42);
         x = checkNum(variables, valorvars);
-                                                                                   world.pickChips(x);
+                                                                                      world.pickChips(x);
         break;
       default:
         jj_la1[4] = jj_gen;
@@ -248,19 +253,17 @@ public class Robot implements RobotConstants {
       break;
     case DEFVAR:
       jj_consume_token(DEFVAR);
-      jj_consume_token(43);
+      jj_consume_token(42);
       declararVariable(variables, valorvars);
       break;
     case DEFUN:
       jj_consume_token(DEFUN);
-      jj_consume_token(43);
+      jj_consume_token(42);
       cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns);
       break;
     case IF:
       jj_consume_token(IF);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case OP:
-        bool = condition();
+      bool = condition();
                                   if(bool)
                                   {
                                     {if (true) throw new Error("si es verdad");}
@@ -269,46 +272,6 @@ public class Robot implements RobotConstants {
                                   {
                                      {if (true) throw new Error("no es verdad");}
                                   }
-        break;
-      case CAN_PUT_P:
-        jj_consume_token(CAN_PUT_P);
-        jj_consume_token(43);
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case BALLOONS:
-          jj_consume_token(BALLOONS);
-          break;
-        case CHIPS:
-          jj_consume_token(CHIPS);
-          break;
-        default:
-          jj_la1[9] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-        x = checkNum(variables, valorvars);
-        break;
-      case CAN_PICK_P:
-        jj_consume_token(CAN_PICK_P);
-        jj_consume_token(43);
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case BALLOONS:
-          jj_consume_token(BALLOONS);
-          break;
-        case CHIPS:
-          jj_consume_token(CHIPS);
-          break;
-        default:
-          jj_la1[10] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-        x = checkNum(variables, valorvars);
-        break;
-      default:
-        jj_la1[11] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
       break;
     case OP:
       jj_consume_token(OP);
@@ -318,7 +281,7 @@ public class Robot implements RobotConstants {
       buscarFuncion();
       break;
     default:
-      jj_la1[12] = jj_gen;
+      jj_la1[9] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -332,12 +295,12 @@ public class Robot implements RobotConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case EQUALS:
       jj_consume_token(EQUALS);
-      jj_consume_token(43);
+      jj_consume_token(42);
       cambiarVariable(variables, valorvars);
       break;
     case MOVE:
       jj_consume_token(MOVE);
-      jj_consume_token(43);
+      jj_consume_token(42);
       x = checkNum(variables, valorvars);
                                                               world.moveHorizontally(x);salida = "Command: Moveforward ";
                                                                                                                 //this.ReInit(new java.io.StringReader(input));
@@ -345,7 +308,7 @@ public class Robot implements RobotConstants {
       break;
     case TURN:
       jj_consume_token(TURN);
-      jj_consume_token(44);
+      jj_consume_token(43);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case LEFT:
         jj_consume_token(LEFT);
@@ -357,14 +320,14 @@ public class Robot implements RobotConstants {
         jj_consume_token(RIGHT);
         break;
       default:
-        jj_la1[13] = jj_gen;
+        jj_la1[10] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     case FACE:
       jj_consume_token(FACE);
-      jj_consume_token(44);
+      jj_consume_token(43);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SOUTH:
         jj_consume_token(SOUTH);
@@ -379,51 +342,51 @@ public class Robot implements RobotConstants {
         jj_consume_token(NORTH);
         break;
       default:
-        jj_la1[14] = jj_gen;
+        jj_la1[11] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     case PUT:
       jj_consume_token(PUT);
-      jj_consume_token(44);
+      jj_consume_token(43);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BALLOONS:
         jj_consume_token(BALLOONS);
-        jj_consume_token(43);
+        jj_consume_token(42);
         x = checkNum(variables, valorvars);
                                                                                         world.putBalloons(x);
         break;
       case CHIPS:
         jj_consume_token(CHIPS);
-        jj_consume_token(43);
+        jj_consume_token(42);
         x = checkNum(variables, valorvars);
                                                                                       world.putChips(x);
         break;
       default:
-        jj_la1[15] = jj_gen;
+        jj_la1[12] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     case PICK:
       jj_consume_token(PICK);
-      jj_consume_token(44);
+      jj_consume_token(43);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BALLOONS:
         jj_consume_token(BALLOONS);
-        jj_consume_token(43);
+        jj_consume_token(42);
         x = checkNum(variables, valorvars);
                                                                            world.grabBalloons(x);
         break;
       case CHIPS:
         jj_consume_token(CHIPS);
-        jj_consume_token(43);
+        jj_consume_token(42);
         x = checkNum(variables, valorvars);
                                                                                       world.pickChips(x);
         break;
       default:
-        jj_la1[16] = jj_gen;
+        jj_la1[13] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -445,7 +408,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(BACK);
         break;
       default:
-        jj_la1[17] = jj_gen;
+        jj_la1[14] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -468,7 +431,7 @@ public class Robot implements RobotConstants {
           jj_consume_token(BACK);
           break;
         default:
-          jj_la1[18] = jj_gen;
+          jj_la1[15] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -480,7 +443,7 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[19] = jj_gen;
+          jj_la1[16] = jj_gen;
           break label_2;
         }
       }
@@ -502,19 +465,19 @@ public class Robot implements RobotConstants {
         jj_consume_token(NORTH);
         break;
       default:
-        jj_la1[20] = jj_gen;
+        jj_la1[17] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     case DEFVAR:
       jj_consume_token(DEFVAR);
-      jj_consume_token(43);
+      jj_consume_token(42);
       declararVariable(variables, valorvars);
       break;
     case DEFUN:
       jj_consume_token(DEFUN);
-      jj_consume_token(43);
+      jj_consume_token(42);
       cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns);
       break;
     case IF:
@@ -533,7 +496,7 @@ public class Robot implements RobotConstants {
         break;
       case CAN_PUT_P:
         jj_consume_token(CAN_PUT_P);
-        jj_consume_token(43);
+        jj_consume_token(42);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case BALLOONS:
           jj_consume_token(BALLOONS);
@@ -542,7 +505,7 @@ public class Robot implements RobotConstants {
           jj_consume_token(CHIPS);
           break;
         default:
-          jj_la1[21] = jj_gen;
+          jj_la1[18] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -550,7 +513,7 @@ public class Robot implements RobotConstants {
         break;
       case CAN_PICK_P:
         jj_consume_token(CAN_PICK_P);
-        jj_consume_token(43);
+        jj_consume_token(42);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case BALLOONS:
           jj_consume_token(BALLOONS);
@@ -559,14 +522,14 @@ public class Robot implements RobotConstants {
           jj_consume_token(CHIPS);
           break;
         default:
-          jj_la1[22] = jj_gen;
+          jj_la1[19] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         x = checkNum(variables, valorvars);
         break;
       default:
-        jj_la1[23] = jj_gen;
+        jj_la1[20] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -579,7 +542,7 @@ public class Robot implements RobotConstants {
       buscarFuncion();
       break;
     default:
-      jj_la1[24] = jj_gen;
+      jj_la1[21] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -590,7 +553,7 @@ public class Robot implements RobotConstants {
       haceInputRecursion(x, salida, nueva);
       break;
     default:
-      jj_la1[25] = jj_gen;
+      jj_la1[22] = jj_gen;
       ;
     }
   }
@@ -615,7 +578,7 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[26] = jj_gen;
+        jj_la1[23] = jj_gen;
         break label_3;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -628,7 +591,7 @@ public class Robot implements RobotConstants {
                                                                                                                                             elsupernombre=elsupernombre.concat(token.image);
         break;
       default:
-        jj_la1[27] = jj_gen;
+        jj_la1[24] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -675,7 +638,7 @@ public class Robot implements RobotConstants {
                                 // Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
                                 {if (true) throw new Error("NO PUDE METER EN EL ARRAY ESTO: "+token.image+"!!");}
                         }
-    jj_consume_token(43);
+    jj_consume_token(42);
     jj_consume_token(NUMERO);
       if(tempnombres.get(0)!=null) {
         elnombre = tempnombres.get(0);
@@ -691,14 +654,14 @@ public class Robot implements RobotConstants {
     label_4:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 43:
+      case 42:
         ;
         break;
       default:
-        jj_la1[28] = jj_gen;
+        jj_la1[25] = jj_gen;
         break label_4;
       }
-      jj_consume_token(43);
+      jj_consume_token(42);
       jj_consume_token(NUMERO);
     if(tempnombres.get(0)!=null) {
         elnombre = tempnombres.get(0);
@@ -736,16 +699,16 @@ public class Robot implements RobotConstants {
       case CP:
       case NUMERO:
       case LETRA:
+      case 42:
       case 43:
       case 44:
       case 45:
       case 46:
       case 47:
-      case 48:
         ;
         break;
       default:
-        jj_la1[29] = jj_gen;
+        jj_la1[26] = jj_gen;
         break label_5;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -793,17 +756,21 @@ public class Robot implements RobotConstants {
         jj_consume_token(IF);
                         elreturn=elreturn.concat(token.image);
         break;
-      case 43:
-        jj_consume_token(43);
+      case 42:
+        jj_consume_token(42);
                        elreturn=elreturn.concat(token.image);
-        break;
-      case 45:
-        jj_consume_token(45);
-                        elreturn=elreturn.concat(token.image);
         break;
       case 44:
         jj_consume_token(44);
                         elreturn=elreturn.concat(token.image);
+        break;
+      case 43:
+        jj_consume_token(43);
+                        elreturn=elreturn.concat(token.image);
+        break;
+      case 45:
+        jj_consume_token(45);
+                         elreturn=elreturn.concat(token.image);
         break;
       case 46:
         jj_consume_token(46);
@@ -811,10 +778,6 @@ public class Robot implements RobotConstants {
         break;
       case 47:
         jj_consume_token(47);
-                         elreturn=elreturn.concat(token.image);
-        break;
-      case 48:
-        jj_consume_token(48);
                           elreturn=elreturn.concat(token.image);
         break;
       case CP:
@@ -834,7 +797,7 @@ public class Robot implements RobotConstants {
                               elreturn=elreturn.concat(token.image);
         break;
       default:
-        jj_la1[30] = jj_gen;
+        jj_la1[27] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -854,21 +817,21 @@ public class Robot implements RobotConstants {
     case EQUALS:
       jj_consume_token(EQUALS);
                           elreturn=elreturn.concat(token.image);
-      jj_consume_token(43);
+      jj_consume_token(42);
                                                                        elreturn=elreturn.concat(token.image);
       cambiarVariable(tempnombres, tempvalores);
       break;
     case MOVE:
       jj_consume_token(MOVE);
                           elreturn=elreturn.concat(token.image);
-      jj_consume_token(43);
+      jj_consume_token(42);
                                                                       elreturn=elreturn.concat(token.image);
       x = checkNum(tempnombres, tempvalores);
       break;
     case TURN:
       jj_consume_token(TURN);
                           elreturn=elreturn.concat(token.image);
-      jj_consume_token(45);
+      jj_consume_token(44);
                                                                       elreturn=elreturn.concat(token.image);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case LEFT:
@@ -881,7 +844,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(RIGHT);
         break;
       default:
-        jj_la1[31] = jj_gen;
+        jj_la1[28] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -890,7 +853,7 @@ public class Robot implements RobotConstants {
     case FACE:
       jj_consume_token(FACE);
                           elreturn=elreturn.concat(token.image);
-      jj_consume_token(45);
+      jj_consume_token(44);
                                                                       elreturn=elreturn.concat(token.image);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SOUTH:
@@ -906,7 +869,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(NORTH);
         break;
       default:
-        jj_la1[32] = jj_gen;
+        jj_la1[29] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -915,7 +878,7 @@ public class Robot implements RobotConstants {
     case PUT:
       jj_consume_token(PUT);
                          elreturn=elreturn.concat(token.image);
-      jj_consume_token(44);
+      jj_consume_token(43);
                                                                       elreturn=elreturn.concat(token.image);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BALLOONS:
@@ -925,19 +888,19 @@ public class Robot implements RobotConstants {
         jj_consume_token(CHIPS);
         break;
       default:
-        jj_la1[33] = jj_gen;
+        jj_la1[30] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
                                                                                                                                     elreturn=elreturn.concat(token.image);
-      jj_consume_token(43);
+      jj_consume_token(42);
                                                                                                                                                                                 elreturn=elreturn.concat(token.image);
       x = checkNum(tempnombres, tempvalores);
       break;
     case PICK:
       jj_consume_token(PICK);
                           elreturn=elreturn.concat(token.image);
-      jj_consume_token(44);
+      jj_consume_token(43);
                                                                        elreturn=elreturn.concat(token.image);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BALLOONS:
@@ -947,12 +910,12 @@ public class Robot implements RobotConstants {
         jj_consume_token(CHIPS);
         break;
       default:
-        jj_la1[34] = jj_gen;
+        jj_la1[31] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
                                                                                                                                     elreturn=elreturn.concat(token.image);
-      jj_consume_token(43);
+      jj_consume_token(42);
                                                                                                                                                                                  elreturn=elreturn.concat(token.image);
       x = checkNum(tempnombres, tempvalores);
       break;
@@ -974,7 +937,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(BACK);
         break;
       default:
-        jj_la1[35] = jj_gen;
+        jj_la1[32] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1003,7 +966,7 @@ public class Robot implements RobotConstants {
                                                                                                                                                                                                                                 elreturn=elreturn.concat(token.image);
           break;
         default:
-          jj_la1[36] = jj_gen;
+          jj_la1[33] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1015,7 +978,7 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[37] = jj_gen;
+          jj_la1[34] = jj_gen;
           break label_6;
         }
       }
@@ -1038,7 +1001,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(NORTH);
         break;
       default:
-        jj_la1[38] = jj_gen;
+        jj_la1[35] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1047,7 +1010,7 @@ public class Robot implements RobotConstants {
     case DEFVAR:
       jj_consume_token(DEFVAR);
                              elreturn=elreturn.concat(token.image);
-      jj_consume_token(43);
+      jj_consume_token(42);
                                                                          elreturn=elreturn.concat(token.image);
       declararVariable(tempnombres, valorvars);
                                                                                                                                                             elreturn=elreturn.concat(token.image);
@@ -1066,13 +1029,13 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[39] = jj_gen;
+          jj_la1[36] = jj_gen;
           break label_7;
         }
       }
       break;
     default:
-      jj_la1[40] = jj_gen;
+      jj_la1[37] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1098,7 +1061,7 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[41] = jj_gen;
+        jj_la1[38] = jj_gen;
         break label_8;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1111,7 +1074,7 @@ public class Robot implements RobotConstants {
                                                                                                                                 elrenombre=elrenombre.concat(token.image);
         break;
       default:
-        jj_la1[42] = jj_gen;
+        jj_la1[39] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1128,7 +1091,7 @@ public class Robot implements RobotConstants {
                                 // Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
                                 {if (true) throw new Error("NO PUDE METER EN EL ARRAY ESTO: "+token.image+"!!");}
                         }
-    jj_consume_token(43);
+    jj_consume_token(42);
     jj_consume_token(OP);
     jj_consume_token(LETRA);
     label_9:
@@ -1139,7 +1102,7 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[43] = jj_gen;
+        jj_la1[40] = jj_gen;
         break label_9;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1150,7 +1113,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(DIGITO);
         break;
       default:
-        jj_la1[44] = jj_gen;
+        jj_la1[41] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1170,14 +1133,14 @@ public class Robot implements RobotConstants {
     label_10:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 43:
+      case 42:
         ;
         break;
       default:
-        jj_la1[45] = jj_gen;
+        jj_la1[42] = jj_gen;
         break label_10;
       }
-      jj_consume_token(43);
+      jj_consume_token(42);
       jj_consume_token(LETRA);
       label_11:
       while (true) {
@@ -1187,7 +1150,7 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[46] = jj_gen;
+          jj_la1[43] = jj_gen;
           break label_11;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1198,7 +1161,7 @@ public class Robot implements RobotConstants {
           jj_consume_token(DIGITO);
           break;
         default:
-          jj_la1[47] = jj_gen;
+          jj_la1[44] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1255,22 +1218,100 @@ public class Robot implements RobotConstants {
   int x=0;
   boolean bool;
     jj_consume_token(OP);
-    jj_consume_token(FACING_P);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case FACING_P:
+      jj_consume_token(FACING_P);
               elreturn=elreturn.concat(token.image);
-    jj_consume_token(48);
+      jj_consume_token(47);
                                                             elreturn=elreturn.concat(token.image);
-    bool = facing_p();
-                                  if (bool)
-                                  {
-                                          {if (true) return true;}
+      bool = facing_p();
+                                 if (bool){{if (true) return true;}}else{{if (true) return false;}}
+      break;
+    case CAN_PUT_P:
+      jj_consume_token(CAN_PUT_P);
+      jj_consume_token(42);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case BALLOONS:
+        jj_consume_token(BALLOONS);
+        jj_consume_token(42);
+        x = checkNum(variables, valorvars);
+                                          if(world.getMyBalloons() >= x)
+                                          {
+                                            {if (true) return true;}
+                                          }
+                                          else
+                                          {
+                                            {if (true) return false;}
+                                          }
+        break;
+      case CHIPS:
+        jj_consume_token(CHIPS);
+        jj_consume_token(42);
+        x = checkNum(variables, valorvars);
+                                          if(world.getMyChips() >= x && world.freeSpacesForChips() >= x)
+                                          {
+                                            {if (true) return true;}
+                                          }
+                                          else
+                                          {
+                                            {if (true) return false;}
+                                          }
+        break;
+      default:
+        jj_la1[45] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      break;
+    case CAN_MOVE_P:
+      jj_consume_token(CAN_MOVE_P);
+      jj_consume_token(42);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case SOUTH:
+        jj_consume_token(SOUTH);
+                                          //String posx= String.valueOf(world.getPosition().getX());
+                                         // String posy= String.valueOf(world.getPosition().getY()-1);
 
-                                  }
-                                  else
-                                  {
-                                    {if (true) return false;}
 
-
-                                  }
+                                          //if(world.isBlocked(new Point(Integer.parseInt(posx),Integer.parseInt(posy))))
+                                          int posx = (int)world.getPosition().getX();
+                                          int posy=(int)world.getPosition().getY();
+                                          if(world.blockedInRange(posx,posy,-1,1))
+                                          {
+                                            {if (true) return true;}
+                                          }
+                                           else
+                                          {
+                                            {if (true) return false;}
+                                          }
+        break;
+      case NORTH:
+        jj_consume_token(NORTH);
+                                          //posx= String.valueOf(world.getPosition().getX());
+                                     // posy= String.valueOf(world.getPosition().getY()+1);
+                                          //if(world.isBlocked(new Point(Integer.parseInt(posx),Integer.parseInt(posy))))
+                                          posx = (int)world.getPosition().getX();
+                                          posy=(int)world.getPosition().getY();
+                                          if(world.blockedInRange(posx,posy,1,0))
+                                          {
+                                            {if (true) return true;}
+                                          }
+                                           else
+                                          {
+                                            {if (true) return false;}
+                                          }
+        break;
+      default:
+        jj_la1[46] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      break;
+    default:
+      jj_la1[47] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
     jj_consume_token(CP);
     throw new Error("Missing return statement in function");
   }
@@ -1396,7 +1437,7 @@ public class Robot implements RobotConstants {
           {if (true) throw new Error("ERROR: NO EXISTE LA VARIABLE");}
 
         }
-    jj_consume_token(43);
+    jj_consume_token(42);
        elreturn=elreturn.concat(token.image);
     jj_consume_token(NUMERO);
     valorvars.add(Integer.parseInt(token.image));
@@ -1510,7 +1551,7 @@ public class Robot implements RobotConstants {
                                 // Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
                                 {if (true) throw new Error("NO PUDE METER EN EL ARRAY ESTO: "+token.image+"!!");}
                         }
-    jj_consume_token(43);
+    jj_consume_token(42);
     jj_consume_token(NUMERO);
                         try
                         {
@@ -1545,10 +1586,10 @@ public class Robot implements RobotConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x2000001,0xe0000000,0x0,0x18000000,0x18000000,0x60000000,0x60000000,0x60000000,0x0,0x18000000,0x18000000,0x2300000,0x204ffd0,0xe0000000,0x0,0x18000000,0x18000000,0x60000000,0x60000000,0x60000000,0x0,0x18000000,0x18000000,0x2300000,0x204ffd0,0x2000000,0x0,0x0,0x0,0x600ffd0,0x600ffd0,0xe0000000,0x0,0x18000000,0x18000000,0x60000000,0x60000000,0x60000000,0x0,0x2000000,0x200ffd0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_0 = new int[] {0x1000001,0x70000000,0x0,0xc000000,0xc000000,0xb0000000,0xb0000000,0xb0000000,0x0,0x1027fe8,0x70000000,0x0,0xc000000,0xc000000,0xb0000000,0xb0000000,0xb0000000,0x0,0xc000000,0xc000000,0x1180000,0x1027fe8,0x1000000,0x0,0x0,0x0,0x3007fe8,0x3007fe8,0x70000000,0x0,0xc000000,0xc000000,0xb0000000,0xb0000000,0xb0000000,0x0,0x1000000,0x1007fe8,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc000000,0x0,0x2c0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x400,0x0,0x3c,0x0,0x0,0x3,0x3,0x3,0x3c,0x0,0x0,0x0,0x100,0x0,0x3c,0x0,0x0,0x3,0x3,0x3,0x3c,0x0,0x0,0x0,0x100,0x0,0x300,0x300,0x800,0x1f940,0x1f940,0x0,0x3c,0x0,0x0,0x3,0x3,0x3,0x3c,0x0,0x0,0x300,0x300,0x300,0x300,0x800,0x300,0x300,0x3c,0x300,0x300,0x300,0x300,0x140,0x300,0x300,};
+      jj_la1_1 = new int[] {0x200,0x0,0x1e,0x0,0x0,0x1,0x1,0x1,0x1e,0x80,0x0,0x1e,0x0,0x0,0x1,0x1,0x1,0x1e,0x0,0x0,0x0,0x80,0x0,0x180,0x180,0x400,0xfca0,0xfca0,0x0,0x1e,0x0,0x0,0x1,0x1,0x1,0x1e,0x0,0x0,0x180,0x180,0x180,0x180,0x400,0x180,0x180,0x0,0x6,0x0,0x1e,0x180,0x180,0x180,0x180,0xa0,0x180,0x180,};
    }
 
   /** Constructor with InputStream. */
@@ -1665,7 +1706,7 @@ public class Robot implements RobotConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[49];
+    boolean[] la1tokens = new boolean[48];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -1682,7 +1723,7 @@ public class Robot implements RobotConstants {
         }
       }
     }
-    for (int i = 0; i < 49; i++) {
+    for (int i = 0; i < 48; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
