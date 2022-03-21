@@ -254,7 +254,7 @@ void haceInputRecursion(int x, String salida, String[] nueva):
 		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
 		| <DEFVAR> " " declararVariable(variables, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
 		| < DEFUN> " " cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns)
-		| (<IF> (bool=condition()
+		| (<IF> (bool=condition()(<OP >haceInput()< CP>|<OP >haceInput()< CP>)
 				{
 				  if(bool)
 				  {
