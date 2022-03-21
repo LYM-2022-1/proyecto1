@@ -78,6 +78,7 @@ public class Robot implements RobotConstants {
   int q = 0;
   String busque = "";
   int sizee = 0;
+  String cprespuesto = ")";
     jj_consume_token(OP);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case EQUALS:
@@ -92,6 +93,9 @@ public class Robot implements RobotConstants {
                                                               world.moveHorizontally(x);salida = "Command: Moveforward ";
                                                                                                                 //this.ReInit(new java.io.StringReader(input));
 
+      break;
+    case SALTAR:
+      jj_consume_token(SALTAR);
       break;
     case TURN:
       jj_consume_token(TURN);
@@ -200,6 +204,14 @@ public class Robot implements RobotConstants {
         throw new ParseException();
       }
       break;
+    case REPEAT:
+      jj_consume_token(REPEAT);
+      jj_consume_token(44);
+      x = checkNum(variables, valorvars);
+      jj_consume_token(44);
+                                                                      elreturn = "";
+      soloRevisa(x, salida, tempnombres, tempvalores);
+      break;
     case RUN_DIRS:
       jj_consume_token(RUN_DIRS);
       label_1:
@@ -287,6 +299,7 @@ public class Robot implements RobotConstants {
     case IF:
       jj_consume_token(IF);
       bool = condition();
+      jj_consume_token(CP);
       jj_consume_token(OP);
                                 elreturn=""; acumuresto = "";
       soloRevisaIf(x, salida, tempnombres, tempvalores);
@@ -299,12 +312,15 @@ public class Robot implements RobotConstants {
                                                                            bloquedos=elreturn;
       jj_consume_token(CP);
                                elreturn="";
+      jj_consume_token(CP);
       soloRevisaIf(x, salida, tempnombres, tempvalores);
                           acumuresto = elreturn;
                           elreturn="";
                           if (bool)
                           {
+                            bloqueuno = cprespuesto.concat(bloqueuno);
                             bloqueuno = bloqueuno.concat(acumuresto);
+                            System.out.println(bloqueuno);
                             this.ReInit(new java.io.StringReader(bloqueuno));
                             bloqueuno = "";
                             bloquedos = "";
@@ -312,7 +328,9 @@ public class Robot implements RobotConstants {
                           }
                           else
                           {
+                            bloquedos = cprespuesto.concat(bloquedos);
                             bloquedos = bloquedos.concat(acumuresto);
+                            System.out.println(bloquedos);
                             this.ReInit(new java.io.StringReader(bloquedos));
                             bloqueuno = "";
                             bloquedos = "";
@@ -353,6 +371,9 @@ public class Robot implements RobotConstants {
                                                               world.moveHorizontally(x);salida = "Command: Moveforward ";
                                                                                                                 //this.ReInit(new java.io.StringReader(input));
 
+      break;
+    case SALTAR:
+      jj_consume_token(SALTAR);
       break;
     case TURN:
       jj_consume_token(TURN);
@@ -743,236 +764,254 @@ public class Robot implements RobotConstants {
   boolean bool;
   //String elretur = "";
   String amedias = "";
-    jj_consume_token(OP);
-                 elreturn=elreturn.concat(token.image);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case EQUALS:
-      jj_consume_token(EQUALS);
+    case 0:
+      jj_consume_token(0);
+                   elreturn="";
+      break;
+    case OP:
+      jj_consume_token(OP);
+                 elreturn=elreturn.concat(token.image);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case EQUALS:
+        jj_consume_token(EQUALS);
                           elreturn=elreturn.concat(token.image);
-      jj_consume_token(44);
+        jj_consume_token(44);
                                                                        elreturn=elreturn.concat(token.image);
-      cambiarVariable(tempnombres, tempvalores);
-      break;
-    case MOVE:
-      jj_consume_token(MOVE);
+        cambiarVariable(tempnombres, tempvalores);
+        break;
+      case SALTAR:
+        jj_consume_token(SALTAR);
+                            elreturn=elreturn.concat(token.image);
+        break;
+      case MOVE:
+        jj_consume_token(MOVE);
                           elreturn=elreturn.concat(token.image);
-      jj_consume_token(44);
+        jj_consume_token(44);
                                                                       elreturn=elreturn.concat(token.image);
-      x = checkNum(tempnombres, tempvalores);
-      break;
-    case TURN:
-      jj_consume_token(TURN);
+        x = checkNum(tempnombres, tempvalores);
+        break;
+      case TURN:
+        jj_consume_token(TURN);
                           elreturn=elreturn.concat(token.image);
-      jj_consume_token(46);
+        jj_consume_token(46);
                                                                       elreturn=elreturn.concat(token.image);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case LEFT:
-        jj_consume_token(LEFT);
-        break;
-      case AROUND:
-        jj_consume_token(AROUND);
-        break;
-      case RIGHT:
-        jj_consume_token(RIGHT);
-        break;
-      default:
-        jj_la1[23] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-                                                                                                                                       elreturn=elreturn.concat(token.image);
-      break;
-    case FACE:
-      jj_consume_token(FACE);
-                          elreturn=elreturn.concat(token.image);
-      jj_consume_token(46);
-                                                                      elreturn=elreturn.concat(token.image);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case SOUTH:
-        jj_consume_token(SOUTH);
-        break;
-      case WEST:
-        jj_consume_token(WEST);
-        break;
-      case EAST:
-        jj_consume_token(EAST);
-        break;
-      case NORTH:
-        jj_consume_token(NORTH);
-        break;
-      default:
-        jj_la1[24] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-                                                                                                                                              elreturn=elreturn.concat(token.image);
-      break;
-    case PUT:
-      jj_consume_token(PUT);
-                         elreturn=elreturn.concat(token.image);
-      jj_consume_token(45);
-                                                                      elreturn=elreturn.concat(token.image);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case BALLOONS:
-        jj_consume_token(BALLOONS);
-        break;
-      case CHIPS:
-        jj_consume_token(CHIPS);
-        break;
-      default:
-        jj_la1[25] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-                                                                                                                                    elreturn=elreturn.concat(token.image);
-      jj_consume_token(44);
-                                                                                                                                                                                elreturn=elreturn.concat(token.image);
-      x = checkNum(tempnombres, tempvalores);
-      break;
-    case PICK:
-      jj_consume_token(PICK);
-                          elreturn=elreturn.concat(token.image);
-      jj_consume_token(45);
-                                                                       elreturn=elreturn.concat(token.image);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case BALLOONS:
-        jj_consume_token(BALLOONS);
-        break;
-      case CHIPS:
-        jj_consume_token(CHIPS);
-        break;
-      default:
-        jj_la1[26] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-                                                                                                                                    elreturn=elreturn.concat(token.image);
-      jj_consume_token(44);
-                                                                                                                                                                                 elreturn=elreturn.concat(token.image);
-      x = checkNum(tempnombres, tempvalores);
-      break;
-    case MOVE_DIR:
-      jj_consume_token(MOVE_DIR);
-                              elreturn=elreturn.concat(token.image);
-      x = checkNum(tempnombres, tempvalores);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case FRONT:
-        jj_consume_token(FRONT);
-        break;
-      case RIGHT:
-        jj_consume_token(RIGHT);
-        break;
-      case LEFT:
-        jj_consume_token(LEFT);
-        break;
-      case BACK:
-        jj_consume_token(BACK);
-        break;
-      default:
-        jj_la1[27] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-                                                                                                                                            elreturn=elreturn.concat(token.image);
-      break;
-    case RUN_DIRS:
-      jj_consume_token(RUN_DIRS);
-                              elreturn=elreturn.concat(token.image);
-      label_5:
-      while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case FRONT:
-          jj_consume_token(FRONT);
-                                                                               elreturn=elreturn.concat(token.image);
+        case LEFT:
+          jj_consume_token(LEFT);
+          break;
+        case AROUND:
+          jj_consume_token(AROUND);
           break;
         case RIGHT:
           jj_consume_token(RIGHT);
-                                                                                                                                elreturn=elreturn.concat(token.image);
-          break;
-        case LEFT:
-          jj_consume_token(LEFT);
-                                                                                                                                                                                elreturn=elreturn.concat(token.image);
-          break;
-        case BACK:
-          jj_consume_token(BACK);
-                                                                                                                                                                                                                                elreturn=elreturn.concat(token.image);
           break;
         default:
-          jj_la1[28] = jj_gen;
+          jj_la1[23] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
+                                                                                                                                       elreturn=elreturn.concat(token.image);
+        break;
+      case FACE:
+        jj_consume_token(FACE);
+                          elreturn=elreturn.concat(token.image);
+        jj_consume_token(46);
+                                                                      elreturn=elreturn.concat(token.image);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case RIGHT:
-        case LEFT:
-        case BACK:
-        case FRONT:
-          ;
+        case SOUTH:
+          jj_consume_token(SOUTH);
+          break;
+        case WEST:
+          jj_consume_token(WEST);
+          break;
+        case EAST:
+          jj_consume_token(EAST);
+          break;
+        case NORTH:
+          jj_consume_token(NORTH);
           break;
         default:
-          jj_la1[29] = jj_gen;
-          break label_5;
+          jj_la1[24] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
         }
-      }
-      break;
-    case MOVE_FACE:
-      jj_consume_token(MOVE_FACE);
+                                                                                                                                              elreturn=elreturn.concat(token.image);
+        break;
+      case PUT:
+        jj_consume_token(PUT);
+                         elreturn=elreturn.concat(token.image);
+        jj_consume_token(45);
+                                                                      elreturn=elreturn.concat(token.image);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case BALLOONS:
+          jj_consume_token(BALLOONS);
+          break;
+        case CHIPS:
+          jj_consume_token(CHIPS);
+          break;
+        default:
+          jj_la1[25] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+                                                                                                                                    elreturn=elreturn.concat(token.image);
+        jj_consume_token(44);
+                                                                                                                                                                                elreturn=elreturn.concat(token.image);
+        x = checkNum(tempnombres, tempvalores);
+        break;
+      case PICK:
+        jj_consume_token(PICK);
+                          elreturn=elreturn.concat(token.image);
+        jj_consume_token(45);
+                                                                       elreturn=elreturn.concat(token.image);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case BALLOONS:
+          jj_consume_token(BALLOONS);
+          break;
+        case CHIPS:
+          jj_consume_token(CHIPS);
+          break;
+        default:
+          jj_la1[26] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+                                                                                                                                    elreturn=elreturn.concat(token.image);
+        jj_consume_token(44);
+                                                                                                                                                                                 elreturn=elreturn.concat(token.image);
+        x = checkNum(tempnombres, tempvalores);
+        break;
+      case MOVE_DIR:
+        jj_consume_token(MOVE_DIR);
+                              elreturn=elreturn.concat(token.image);
+        x = checkNum(tempnombres, tempvalores);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case FRONT:
+          jj_consume_token(FRONT);
+          break;
+        case RIGHT:
+          jj_consume_token(RIGHT);
+          break;
+        case LEFT:
+          jj_consume_token(LEFT);
+          break;
+        case BACK:
+          jj_consume_token(BACK);
+          break;
+        default:
+          jj_la1[27] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+                                                                                                                                            elreturn=elreturn.concat(token.image);
+        break;
+      case RUN_DIRS:
+        jj_consume_token(RUN_DIRS);
+                              elreturn=elreturn.concat(token.image);
+        label_5:
+        while (true) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case FRONT:
+            jj_consume_token(FRONT);
+                                                                               elreturn=elreturn.concat(token.image);
+            break;
+          case RIGHT:
+            jj_consume_token(RIGHT);
+                                                                                                                                elreturn=elreturn.concat(token.image);
+            break;
+          case LEFT:
+            jj_consume_token(LEFT);
+                                                                                                                                                                                elreturn=elreturn.concat(token.image);
+            break;
+          case BACK:
+            jj_consume_token(BACK);
+                                                                                                                                                                                                                                elreturn=elreturn.concat(token.image);
+            break;
+          default:
+            jj_la1[28] = jj_gen;
+            jj_consume_token(-1);
+            throw new ParseException();
+          }
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case RIGHT:
+          case LEFT:
+          case BACK:
+          case FRONT:
+            ;
+            break;
+          default:
+            jj_la1[29] = jj_gen;
+            break label_5;
+          }
+        }
+        break;
+      case MOVE_FACE:
+        jj_consume_token(MOVE_FACE);
                                 elreturn=elreturn.concat(token.image);
-      x = checkNum(tempnombres, valorvars);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case SOUTH:
-        jj_consume_token(SOUTH);
+        x = checkNum(tempnombres, valorvars);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case SOUTH:
+          jj_consume_token(SOUTH);
+          break;
+        case WEST:
+          jj_consume_token(WEST);
+          break;
+        case EAST:
+          jj_consume_token(EAST);
+          break;
+        case NORTH:
+          jj_consume_token(NORTH);
+          break;
+        default:
+          jj_la1[30] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+                                                                                                                                           elreturn=elreturn.concat(token.image);
         break;
-      case WEST:
-        jj_consume_token(WEST);
+      case DEFVAR:
+        jj_consume_token(DEFVAR);
+                             elreturn=elreturn.concat(token.image);
+        jj_consume_token(44);
+                                                                         elreturn=elreturn.concat(token.image);
+        declararVariable(tempnombres, valorvars);
+                                                                                                                                                            elreturn=elreturn.concat(token.image);
         break;
-      case EAST:
-        jj_consume_token(EAST);
+      case IF:
+        jj_consume_token(IF);
+                        elreturn=elreturn.concat(token.image);
+        bool = condition();
         break;
-      case NORTH:
-        jj_consume_token(NORTH);
+      case 0:
+      case OP:
+        label_6:
+        while (true) {
+          soloRevisa(x, salida, tempnombres, tempvalores);
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case 0:
+          case OP:
+            ;
+            break;
+          default:
+            jj_la1[31] = jj_gen;
+            break label_6;
+          }
+        }
         break;
       default:
-        jj_la1[30] = jj_gen;
+        jj_la1[32] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-                                                                                                                                           elreturn=elreturn.concat(token.image);
-      break;
-    case DEFVAR:
-      jj_consume_token(DEFVAR);
-                             elreturn=elreturn.concat(token.image);
-      jj_consume_token(44);
-                                                                         elreturn=elreturn.concat(token.image);
-      declararVariable(tempnombres, valorvars);
-                                                                                                                                                            elreturn=elreturn.concat(token.image);
-      break;
-    case IF:
-      jj_consume_token(IF);
-                        elreturn=elreturn.concat(token.image);
-      bool = condition();
-      break;
-    case OP:
-      label_6:
-      while (true) {
-        soloRevisa(x, salida, tempnombres, tempvalores);
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case OP:
-          ;
-          break;
-        default:
-          jj_la1[31] = jj_gen;
-          break label_6;
-        }
-      }
+      jj_consume_token(CP);
+                elreturn=elreturn.concat(token.image);
       break;
     default:
-      jj_la1[32] = jj_gen;
+      jj_la1[33] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
-    jj_consume_token(CP);
-                elreturn=elreturn.concat(token.image);
   }
 
   final public void soloRevisaIf(int x, String salida, ArrayList<String> tempnombres, ArrayList<Integer> tempvalores) throws ParseException {
@@ -980,231 +1019,248 @@ public class Robot implements RobotConstants {
   boolean bool;
   //String elretur = "";
   String amedias = "";
-    jj_consume_token(OP);
-                 elreturn=elreturn.concat(token.image);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case EQUALS:
-      jj_consume_token(EQUALS);
-                          elreturn=elreturn.concat(token.image);
-      jj_consume_token(44);
-                                                                       elreturn=elreturn.concat(token.image);
-      cambiarVariable(tempnombres, tempvalores);
+    case 0:
+      jj_consume_token(0);
+                   elreturn ="";
       break;
-    case MOVE:
-      jj_consume_token(MOVE);
+    case OP:
+      jj_consume_token(OP);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case EQUALS:
+        jj_consume_token(EQUALS);
+                            elreturn=elreturn.concat(token.image);
+        jj_consume_token(44);
+                                                                         elreturn=elreturn.concat(token.image);
+        cambiarVariable(tempnombres, tempvalores);
+        break;
+      case MOVE:
+        jj_consume_token(MOVE);
                           elreturn=elreturn.concat(token.image);
-      jj_consume_token(44);
+        jj_consume_token(44);
                                                                       elreturn=elreturn.concat(token.image);
-      x = checkNum(tempnombres, tempvalores);
-      break;
-    case TURN:
-      jj_consume_token(TURN);
+        x = checkNum(tempnombres, tempvalores);
+        break;
+      case SALTAR:
+        jj_consume_token(SALTAR);
+                            elreturn=elreturn.concat(token.image);
+        break;
+      case TURN:
+        jj_consume_token(TURN);
                           elreturn=elreturn.concat(token.image);
-      jj_consume_token(46);
+        jj_consume_token(46);
                                                                       elreturn=elreturn.concat(token.image);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case LEFT:
-        jj_consume_token(LEFT);
-        break;
-      case AROUND:
-        jj_consume_token(AROUND);
-        break;
-      case RIGHT:
-        jj_consume_token(RIGHT);
-        break;
-      default:
-        jj_la1[33] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-                                                                                                                                       elreturn=elreturn.concat(token.image);
-      break;
-    case FACE:
-      jj_consume_token(FACE);
-                          elreturn=elreturn.concat(token.image);
-      jj_consume_token(46);
-                                                                      elreturn=elreturn.concat(token.image);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case SOUTH:
-        jj_consume_token(SOUTH);
-        break;
-      case WEST:
-        jj_consume_token(WEST);
-        break;
-      case EAST:
-        jj_consume_token(EAST);
-        break;
-      case NORTH:
-        jj_consume_token(NORTH);
-        break;
-      default:
-        jj_la1[34] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-                                                                                                                                              elreturn=elreturn.concat(token.image);
-      break;
-    case PUT:
-      jj_consume_token(PUT);
-                         elreturn=elreturn.concat(token.image);
-      jj_consume_token(45);
-                                                                      elreturn=elreturn.concat(token.image);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case BALLOONS:
-        jj_consume_token(BALLOONS);
-        break;
-      case CHIPS:
-        jj_consume_token(CHIPS);
-        break;
-      default:
-        jj_la1[35] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-                                                                                                                                    elreturn=elreturn.concat(token.image);
-      jj_consume_token(44);
-                                                                                                                                                                                elreturn=elreturn.concat(token.image);
-      x = checkNum(tempnombres, tempvalores);
-      break;
-    case PICK:
-      jj_consume_token(PICK);
-                          elreturn=elreturn.concat(token.image);
-      jj_consume_token(45);
-                                                                       elreturn=elreturn.concat(token.image);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case BALLOONS:
-        jj_consume_token(BALLOONS);
-        break;
-      case CHIPS:
-        jj_consume_token(CHIPS);
-        break;
-      default:
-        jj_la1[36] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-                                                                                                                                    elreturn=elreturn.concat(token.image);
-      jj_consume_token(44);
-                                                                                                                                                                                 elreturn=elreturn.concat(token.image);
-      x = checkNum(tempnombres, tempvalores);
-      break;
-    case MOVE_DIR:
-      jj_consume_token(MOVE_DIR);
-                              elreturn=elreturn.concat(token.image);
-      x = checkNum(tempnombres, tempvalores);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case FRONT:
-        jj_consume_token(FRONT);
-        break;
-      case RIGHT:
-        jj_consume_token(RIGHT);
-        break;
-      case LEFT:
-        jj_consume_token(LEFT);
-        break;
-      case BACK:
-        jj_consume_token(BACK);
-        break;
-      default:
-        jj_la1[37] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-                                                                                                                                            elreturn=elreturn.concat(token.image);
-      break;
-    case RUN_DIRS:
-      jj_consume_token(RUN_DIRS);
-                              elreturn=elreturn.concat(token.image);
-      label_7:
-      while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case FRONT:
-          jj_consume_token(FRONT);
-                                                                               elreturn=elreturn.concat(token.image);
+        case LEFT:
+          jj_consume_token(LEFT);
+          break;
+        case AROUND:
+          jj_consume_token(AROUND);
           break;
         case RIGHT:
           jj_consume_token(RIGHT);
-                                                                                                                                elreturn=elreturn.concat(token.image);
+          break;
+        default:
+          jj_la1[34] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+                                                                                                                                       elreturn=elreturn.concat(token.image);
+        break;
+      case FACE:
+        jj_consume_token(FACE);
+                          elreturn=elreturn.concat(token.image);
+        jj_consume_token(46);
+                                                                      elreturn=elreturn.concat(token.image);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case SOUTH:
+          jj_consume_token(SOUTH);
+          break;
+        case WEST:
+          jj_consume_token(WEST);
+          break;
+        case EAST:
+          jj_consume_token(EAST);
+          break;
+        case NORTH:
+          jj_consume_token(NORTH);
+          break;
+        default:
+          jj_la1[35] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+                                                                                                                                              elreturn=elreturn.concat(token.image);
+        break;
+      case PUT:
+        jj_consume_token(PUT);
+                         elreturn=elreturn.concat(token.image);
+        jj_consume_token(45);
+                                                                      elreturn=elreturn.concat(token.image);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case BALLOONS:
+          jj_consume_token(BALLOONS);
+          break;
+        case CHIPS:
+          jj_consume_token(CHIPS);
+          break;
+        default:
+          jj_la1[36] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+                                                                                                                                    elreturn=elreturn.concat(token.image);
+        jj_consume_token(44);
+                                                                                                                                                                                elreturn=elreturn.concat(token.image);
+        x = checkNum(tempnombres, tempvalores);
+        break;
+      case PICK:
+        jj_consume_token(PICK);
+                          elreturn=elreturn.concat(token.image);
+        jj_consume_token(45);
+                                                                       elreturn=elreturn.concat(token.image);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case BALLOONS:
+          jj_consume_token(BALLOONS);
+          break;
+        case CHIPS:
+          jj_consume_token(CHIPS);
+          break;
+        default:
+          jj_la1[37] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+                                                                                                                                    elreturn=elreturn.concat(token.image);
+        jj_consume_token(44);
+                                                                                                                                                                                 elreturn=elreturn.concat(token.image);
+        x = checkNum(tempnombres, tempvalores);
+        break;
+      case MOVE_DIR:
+        jj_consume_token(MOVE_DIR);
+                              elreturn=elreturn.concat(token.image);
+        x = checkNum(tempnombres, tempvalores);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case FRONT:
+          jj_consume_token(FRONT);
+          break;
+        case RIGHT:
+          jj_consume_token(RIGHT);
           break;
         case LEFT:
           jj_consume_token(LEFT);
-                                                                                                                                                                                elreturn=elreturn.concat(token.image);
           break;
         case BACK:
           jj_consume_token(BACK);
-                                                                                                                                                                                                                                elreturn=elreturn.concat(token.image);
           break;
         default:
           jj_la1[38] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case RIGHT:
-        case LEFT:
-        case BACK:
-        case FRONT:
-          ;
-          break;
-        default:
-          jj_la1[39] = jj_gen;
-          break label_7;
+                                                                                                                                            elreturn=elreturn.concat(token.image);
+        break;
+      case RUN_DIRS:
+        jj_consume_token(RUN_DIRS);
+                              elreturn=elreturn.concat(token.image);
+        label_7:
+        while (true) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case FRONT:
+            jj_consume_token(FRONT);
+                                                                               elreturn=elreturn.concat(token.image);
+            break;
+          case RIGHT:
+            jj_consume_token(RIGHT);
+                                                                                                                                elreturn=elreturn.concat(token.image);
+            break;
+          case LEFT:
+            jj_consume_token(LEFT);
+                                                                                                                                                                                elreturn=elreturn.concat(token.image);
+            break;
+          case BACK:
+            jj_consume_token(BACK);
+                                                                                                                                                                                                                                elreturn=elreturn.concat(token.image);
+            break;
+          default:
+            jj_la1[39] = jj_gen;
+            jj_consume_token(-1);
+            throw new ParseException();
+          }
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case RIGHT:
+          case LEFT:
+          case BACK:
+          case FRONT:
+            ;
+            break;
+          default:
+            jj_la1[40] = jj_gen;
+            break label_7;
+          }
         }
-      }
-      break;
-    case MOVE_FACE:
-      jj_consume_token(MOVE_FACE);
+        break;
+      case MOVE_FACE:
+        jj_consume_token(MOVE_FACE);
                                 elreturn=elreturn.concat(token.image);
-      x = checkNum(tempnombres, valorvars);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case SOUTH:
-        jj_consume_token(SOUTH);
-        break;
-      case WEST:
-        jj_consume_token(WEST);
-        break;
-      case EAST:
-        jj_consume_token(EAST);
-        break;
-      case NORTH:
-        jj_consume_token(NORTH);
-        break;
-      default:
-        jj_la1[40] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-                                                                                                                                           elreturn=elreturn.concat(token.image);
-      break;
-    case DEFVAR:
-      jj_consume_token(DEFVAR);
-                             elreturn=elreturn.concat(token.image);
-      jj_consume_token(44);
-                                                                         elreturn=elreturn.concat(token.image);
-      declararVariable(tempnombres, valorvars);
-                                                                                                                                                            elreturn=elreturn.concat(token.image);
-      break;
-    case IF:
-      jj_consume_token(IF);
-                        elreturn=elreturn.concat(token.image);
-      bool = condition();
-      break;
-    case OP:
-      label_8:
-      while (true) {
-        soloRevisaIf(x, salida, tempnombres, tempvalores);
+        x = checkNum(tempnombres, valorvars);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case OP:
-          ;
+        case SOUTH:
+          jj_consume_token(SOUTH);
+          break;
+        case WEST:
+          jj_consume_token(WEST);
+          break;
+        case EAST:
+          jj_consume_token(EAST);
+          break;
+        case NORTH:
+          jj_consume_token(NORTH);
           break;
         default:
           jj_la1[41] = jj_gen;
-          break label_8;
+          jj_consume_token(-1);
+          throw new ParseException();
         }
+                                                                                                                                           elreturn=elreturn.concat(token.image);
+        break;
+      case DEFVAR:
+        jj_consume_token(DEFVAR);
+                             elreturn=elreturn.concat(token.image);
+        jj_consume_token(44);
+                                                                         elreturn=elreturn.concat(token.image);
+        declararVariable(tempnombres, valorvars);
+                                                                                                                                                            elreturn=elreturn.concat(token.image);
+        break;
+      case IF:
+        jj_consume_token(IF);
+                        elreturn=elreturn.concat(token.image);
+        bool = condition();
+        break;
+      case 0:
+      case OP:
+        label_8:
+        while (true) {
+          soloRevisaIf(x, salida, tempnombres, tempvalores);
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case 0:
+          case OP:
+            ;
+            break;
+          default:
+            jj_la1[42] = jj_gen;
+            break label_8;
+          }
+        }
+        break;
+      default:
+        jj_la1[43] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
       }
       break;
     default:
-      jj_la1[42] = jj_gen;
+      jj_la1[44] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1217,7 +1273,7 @@ public class Robot implements RobotConstants {
       soloRevisaIfRecursion(x, salida, tempnombres, tempvalores);
       break;
     default:
-      jj_la1[43] = jj_gen;
+      jj_la1[45] = jj_gen;
       ;
     }
   }
@@ -1242,6 +1298,10 @@ public class Robot implements RobotConstants {
                                                                       elreturn=elreturn.concat(token.image);
       x = checkNum(tempnombres, tempvalores);
       break;
+    case SALTAR:
+      jj_consume_token(SALTAR);
+                            elreturn=elreturn.concat(token.image);
+      break;
     case TURN:
       jj_consume_token(TURN);
                           elreturn=elreturn.concat(token.image);
@@ -1258,7 +1318,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(RIGHT);
         break;
       default:
-        jj_la1[44] = jj_gen;
+        jj_la1[46] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1283,7 +1343,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(NORTH);
         break;
       default:
-        jj_la1[45] = jj_gen;
+        jj_la1[47] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1302,7 +1362,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(CHIPS);
         break;
       default:
-        jj_la1[46] = jj_gen;
+        jj_la1[48] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1324,7 +1384,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(CHIPS);
         break;
       default:
-        jj_la1[47] = jj_gen;
+        jj_la1[49] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1351,7 +1411,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(BACK);
         break;
       default:
-        jj_la1[48] = jj_gen;
+        jj_la1[50] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1380,7 +1440,7 @@ public class Robot implements RobotConstants {
                                                                                                                                                                                                                                 elreturn=elreturn.concat(token.image);
           break;
         default:
-          jj_la1[49] = jj_gen;
+          jj_la1[51] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1392,7 +1452,7 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[50] = jj_gen;
+          jj_la1[52] = jj_gen;
           break label_9;
         }
       }
@@ -1415,7 +1475,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(NORTH);
         break;
       default:
-        jj_la1[51] = jj_gen;
+        jj_la1[53] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1434,22 +1494,24 @@ public class Robot implements RobotConstants {
                         elreturn=elreturn.concat(token.image);
       bool = condition();
       break;
+    case 0:
     case OP:
       label_10:
       while (true) {
         soloRevisa(x, salida, tempnombres, tempvalores);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case 0:
         case OP:
           ;
           break;
         default:
-          jj_la1[52] = jj_gen;
+          jj_la1[54] = jj_gen;
           break label_10;
         }
       }
       break;
     default:
-      jj_la1[53] = jj_gen;
+      jj_la1[55] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1462,7 +1524,7 @@ public class Robot implements RobotConstants {
       soloRevisaIfRecursion(x, salida, tempnombres, tempvalores);
       break;
     default:
-      jj_la1[54] = jj_gen;
+      jj_la1[56] = jj_gen;
       ;
     }
   }
@@ -1485,7 +1547,7 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[55] = jj_gen;
+        jj_la1[57] = jj_gen;
         break label_11;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1498,7 +1560,7 @@ public class Robot implements RobotConstants {
                                                                                                                                 elrenombre=elrenombre.concat(token.image);
         break;
       default:
-        jj_la1[56] = jj_gen;
+        jj_la1[58] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1526,7 +1588,7 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[57] = jj_gen;
+        jj_la1[59] = jj_gen;
         break label_12;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1537,7 +1599,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(DIGITO);
         break;
       default:
-        jj_la1[58] = jj_gen;
+        jj_la1[60] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1561,7 +1623,7 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[59] = jj_gen;
+        jj_la1[61] = jj_gen;
         break label_13;
       }
       jj_consume_token(44);
@@ -1574,7 +1636,7 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[60] = jj_gen;
+          jj_la1[62] = jj_gen;
           break label_14;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1585,7 +1647,7 @@ public class Robot implements RobotConstants {
           jj_consume_token(DIGITO);
           break;
         default:
-          jj_la1[61] = jj_gen;
+          jj_la1[63] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1682,7 +1744,7 @@ public class Robot implements RobotConstants {
                                                          }
         break;
       default:
-        jj_la1[62] = jj_gen;
+        jj_la1[64] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1726,17 +1788,16 @@ public class Robot implements RobotConstants {
                                           }
         break;
       default:
-        jj_la1[63] = jj_gen;
+        jj_la1[65] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[64] = jj_gen;
+      jj_la1[66] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
-    jj_consume_token(CP);
     throw new Error("Missing return statement in function");
   }
 
@@ -1803,7 +1864,7 @@ public class Robot implements RobotConstants {
      }
       break;
     default:
-      jj_la1[65] = jj_gen;
+      jj_la1[67] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1824,7 +1885,7 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[66] = jj_gen;
+        jj_la1[68] = jj_gen;
         break label_15;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1837,7 +1898,7 @@ public class Robot implements RobotConstants {
                                                                                                                         elreturn=elreturn.concat(token.image);
         break;
       default:
-        jj_la1[67] = jj_gen;
+        jj_la1[69] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1883,7 +1944,7 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[68] = jj_gen;
+          jj_la1[70] = jj_gen;
           break label_16;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1896,7 +1957,7 @@ public class Robot implements RobotConstants {
                                                                                                                         elreturn=elreturn.concat(token.image);
           break;
         default:
-          jj_la1[69] = jj_gen;
+          jj_la1[71] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -1923,7 +1984,7 @@ public class Robot implements RobotConstants {
           {if (true) return rta;}
       break;
     default:
-      jj_la1[70] = jj_gen;
+      jj_la1[72] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1946,7 +2007,7 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[71] = jj_gen;
+        jj_la1[73] = jj_gen;
         break label_17;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1959,7 +2020,7 @@ public class Robot implements RobotConstants {
                                                                                                                                 elreturn=elreturn.concat(token.image);
         break;
       default:
-        jj_la1[72] = jj_gen;
+        jj_la1[74] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -2002,7 +2063,7 @@ public class Robot implements RobotConstants {
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[73];
+  final private int[] jj_la1 = new int[75];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -2010,10 +2071,10 @@ public class Robot implements RobotConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x2000001,0xc0000000,0x0,0x30000000,0x30000000,0xc0000000,0xc0000000,0xc0000000,0x0,0xa04ffd0,0xc0000000,0x0,0x30000000,0x30000000,0xc0000000,0xc0000000,0xc0000000,0x0,0xa04ffd0,0x2000000,0x0,0x0,0x0,0xc0000000,0x0,0x30000000,0x30000000,0xc0000000,0xc0000000,0xc0000000,0x0,0x2000000,0x200ffd0,0xc0000000,0x0,0x30000000,0x30000000,0xc0000000,0xc0000000,0xc0000000,0x0,0x2000000,0x200ffd0,0x2000000,0xc0000000,0x0,0x30000000,0x30000000,0xc0000000,0xc0000000,0xc0000000,0x0,0x2000000,0x200ffd0,0x2000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x30000000,0x0,0x580000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_0 = new int[] {0x1000001,0xc0000000,0x0,0x30000000,0x30000000,0xc0000000,0xc0000000,0xc0000000,0x0,0xd06ffd0,0xc0000000,0x0,0x30000000,0x30000000,0xc0000000,0xc0000000,0xc0000000,0x0,0xd04ffd0,0x1000000,0x0,0x0,0x0,0xc0000000,0x0,0x30000000,0x30000000,0xc0000000,0xc0000000,0xc0000000,0x0,0x1000001,0x900ffd1,0x1000001,0xc0000000,0x0,0x30000000,0x30000000,0xc0000000,0xc0000000,0xc0000000,0x0,0x1000001,0x900ffd1,0x1000001,0x1000000,0xc0000000,0x0,0x30000000,0x30000000,0xc0000000,0xc0000000,0xc0000000,0x0,0x1000001,0x900ffd1,0x1000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x30000000,0x0,0x580000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x800,0x1,0x78,0x0,0x0,0x6,0x6,0x6,0x78,0x200,0x1,0x78,0x0,0x0,0x6,0x6,0x6,0x78,0x200,0x0,0x600,0x600,0x1000,0x1,0x78,0x0,0x0,0x6,0x6,0x6,0x78,0x0,0x0,0x1,0x78,0x0,0x0,0x6,0x6,0x6,0x78,0x0,0x0,0x0,0x1,0x78,0x0,0x0,0x6,0x6,0x6,0x78,0x0,0x0,0x0,0x600,0x600,0x600,0x600,0x1000,0x600,0x600,0x0,0x18,0x0,0x78,0x600,0x600,0x600,0x600,0x280,0x600,0x600,};
+      jj_la1_1 = new int[] {0x800,0x1,0x78,0x0,0x0,0x6,0x6,0x6,0x78,0x200,0x1,0x78,0x0,0x0,0x6,0x6,0x6,0x78,0x200,0x0,0x600,0x600,0x1000,0x1,0x78,0x0,0x0,0x6,0x6,0x6,0x78,0x0,0x0,0x0,0x1,0x78,0x0,0x0,0x6,0x6,0x6,0x78,0x0,0x0,0x0,0x0,0x1,0x78,0x0,0x0,0x6,0x6,0x6,0x78,0x0,0x0,0x0,0x600,0x600,0x600,0x600,0x1000,0x600,0x600,0x0,0x18,0x0,0x78,0x600,0x600,0x600,0x600,0x280,0x600,0x600,};
    }
 
   /** Constructor with InputStream. */
@@ -2027,7 +2088,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 73; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 75; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -2041,7 +2102,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 73; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 75; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -2051,7 +2112,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 73; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 75; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -2061,7 +2122,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 73; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 75; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -2070,7 +2131,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 73; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 75; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -2079,7 +2140,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 73; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 75; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -2135,7 +2196,7 @@ public class Robot implements RobotConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 73; i++) {
+    for (int i = 0; i < 75; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

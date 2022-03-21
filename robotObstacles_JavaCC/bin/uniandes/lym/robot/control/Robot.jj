@@ -103,10 +103,10 @@ TOKEN: /* Nombres de Comandos */
 		|  <CAN_PICK_P: "can-pick-p" >
 		|  <CAN_MOVE_P: "can-move-p" >
 		|  <NOT: "not" >
-		| < PASS:"skip">
 		|  <OP: "(" >
 		|  <CP: ")" >
 		|  <RESETVAR: "!!!" >
+		| < SALTAR: "skip" >
 		
 	
 		
@@ -182,6 +182,7 @@ void haceInput(int x, String salida, String[] nueva):
   int q = 0;
   String busque = "";
   int sizee = 0;
+  String cprespuesto = ")";
  }
 {
   	
@@ -191,6 +192,7 @@ void haceInput(int x, String salida, String[] nueva):
 		| <MOVE>" " x=checkNum(variables, valorvars) {world.moveHorizontally(x);salida = "Command: Moveforward ";
 														//this.ReInit(new java.io.StringReader(input));
 														}
+		| <SALTAR>
 		| <TURN>" :"(<LEFT>|<AROUND>|<RIGHT>) //{world.moveVertically(1);salida = "Command: MoveALV ";}
 		| <FACE>" :"(<SOUTH>|<WEST>|<EAST>|<NORTH>) //{world.moveVertically(2);salida = "Command: MoveALV ";}
 		| <PUT>":"
@@ -199,6 +201,8 @@ void haceInput(int x, String salida, String[] nueva):
 		| <PICK>":"(<BALLOONS>" "x=checkNum(variables, valorvars){world.grabBalloons(x);}
 					  |<CHIPS>" "x=checkNum(variables, valorvars){world.pickChips(x);})
 		| <MOVE_DIR> x=checkNum(variables, valorvars) (<FRONT>|<RIGHT>|<LEFT>|<BACK>)
+		| <REPEAT > " "x=checkNum(variables, valorvars) " " { elreturn = "";}
+					soloRevisa(x, salida, tempnombres, tempvalores)
 		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
 		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
 		| < RESETVAR> {
@@ -219,7 +223,7 @@ void haceInput(int x, String salida, String[] nueva):
 		  				}
 		| <DEFVAR> " " declararVariable(variables, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
 		| < DEFUN> " " cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns)
-		| (<IF> (bool=condition())
+		| (<IF> (bool=condition())(< CP>)
 			(<OP> { elreturn=""; acumuresto = "";}
 			soloRevisaIf(x, salida, tempnombres, tempvalores) {bloqueuno=elreturn; }
 			< CP>{ elreturn="";}
@@ -228,7 +232,7 @@ void haceInput(int x, String salida, String[] nueva):
 			soloRevisaIf(x, salida, tempnombres, tempvalores) {bloquedos=elreturn; }
 			< CP>{ elreturn="";}
 			)
-			
+			< CP>
 			)
 			soloRevisaIf(x, salida, tempnombres, tempvalores)
 			{
@@ -236,7 +240,9 @@ void haceInput(int x, String salida, String[] nueva):
 			  elreturn="";
 			  if (bool)
 			  {
+			    bloqueuno = cprespuesto.concat(bloqueuno);
 			    bloqueuno = bloqueuno.concat(acumuresto);
+			    System.out.println(bloqueuno);
 			    this.ReInit(new java.io.StringReader(bloqueuno));
 			    bloqueuno = "";
 			    bloquedos = "";
@@ -244,7 +250,9 @@ void haceInput(int x, String salida, String[] nueva):
 			  }
 			  else
 			  {
+			    bloquedos = cprespuesto.concat(bloquedos);
 			    bloquedos = bloquedos.concat(acumuresto);
+			    System.out.println(bloquedos);
 			    this.ReInit(new java.io.StringReader(bloquedos));
 			    bloqueuno = "";
 			    bloquedos = "";
@@ -278,6 +286,7 @@ void haceInputRecursion(int x, String salida, String[] nueva):
 		| <MOVE>" " x=checkNum(variables, valorvars) {world.moveHorizontally(x);salida = "Command: Moveforward ";
 														//this.ReInit(new java.io.StringReader(input));
 														}
+		| <SALTAR>
 		| <TURN>" :"(<LEFT>|<AROUND>|<RIGHT>) //{world.moveVertically(1);salida = "Command: MoveALV ";}
 		| <FACE>" :"(<SOUTH>|<WEST>|<EAST>|<NORTH>) //{world.moveVertically(2);salida = "Command: MoveALV ";}
 		| <PUT>" :"
@@ -476,10 +485,12 @@ void soloRevisa(int x, String salida, ArrayList<String> tempnombres, ArrayList<I
  		
  }
 {
-  	
-  	  <OP> { elreturn=elreturn.concat(token.image);}
+  	(
+  	  < EOF> { elreturn="";}
+  	| <OP> { elreturn=elreturn.concat(token.image);}
 	(
    		<EQUALS>{ elreturn=elreturn.concat(token.image);} " "{ elreturn=elreturn.concat(token.image);} cambiarVariable(tempnombres, tempvalores)
+		| <SALTAR>{ elreturn=elreturn.concat(token.image);}
 		| <MOVE>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
 		| <TURN>{ elreturn=elreturn.concat(token.image);}":"{ elreturn=elreturn.concat(token.image);}(<LEFT>|<AROUND>|<RIGHT>){elreturn=elreturn.concat(token.image);} 
 		| <FACE>{ elreturn=elreturn.concat(token.image);}":"{ elreturn=elreturn.concat(token.image);}(<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
@@ -495,7 +506,8 @@ void soloRevisa(int x, String salida, ArrayList<String> tempnombres, ArrayList<I
 	
 	
 		  <CP>{ elreturn=elreturn.concat(token.image);}
-    
+	  
+  )
 }
 
 void soloRevisaIf(int x, String salida, ArrayList<String> tempnombres, ArrayList<Integer> tempvalores):
@@ -507,11 +519,11 @@ void soloRevisaIf(int x, String salida, ArrayList<String> tempnombres, ArrayList
  		
  }
 {
-  	
-  	  <OP> { elreturn=elreturn.concat(token.image);}
-	(
-   		<EQUALS>{ elreturn=elreturn.concat(token.image);} " "{ elreturn=elreturn.concat(token.image);} cambiarVariable(tempnombres, tempvalores)
+  	(  	  < EOF> { elreturn ="";}
+  	| < OP >
+  		(  		  <EQUALS>{ elreturn=elreturn.concat(token.image);} " "{ elreturn=elreturn.concat(token.image);} cambiarVariable(tempnombres, tempvalores)
 		| <MOVE>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
+		| <SALTAR>{ elreturn=elreturn.concat(token.image);}
 		| <TURN>{ elreturn=elreturn.concat(token.image);}":"{ elreturn=elreturn.concat(token.image);}(<LEFT>|<AROUND>|<RIGHT>){elreturn=elreturn.concat(token.image);} 
 		| <FACE>{ elreturn=elreturn.concat(token.image);}":"{ elreturn=elreturn.concat(token.image);}(<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
 		| <PUT>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<BALLOONS>|<CHIPS>) { elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
@@ -522,6 +534,7 @@ void soloRevisaIf(int x, String salida, ArrayList<String> tempnombres, ArrayList
 		| <DEFVAR> { elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} declararVariable(tempnombres, valorvars) { elreturn=elreturn.concat(token.image);}//{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
 		| <IF>{ elreturn=elreturn.concat(token.image);}bool=condition()
 		| (soloRevisaIf(x, salida, tempnombres, tempvalores))+
+		)
 	)
 	
 	
@@ -529,7 +542,6 @@ void soloRevisaIf(int x, String salida, ArrayList<String> tempnombres, ArrayList
 	  <CP>{ elreturn=elreturn.concat(token.image);}
 	  [< OP>{ elreturn=elreturn.concat(token.image);}
 	  soloRevisaIfRecursion(x, salida, tempnombres, tempvalores)]
-    
 }
 void soloRevisaIfRecursion(int x, String salida, ArrayList<String> tempnombres, ArrayList<Integer> tempvalores):
 {
@@ -545,6 +557,7 @@ void soloRevisaIfRecursion(int x, String salida, ArrayList<String> tempnombres, 
 	(
    		<EQUALS>{ elreturn=elreturn.concat(token.image);} " "{ elreturn=elreturn.concat(token.image);} cambiarVariable(tempnombres, tempvalores)
 		| <MOVE>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
+		| <SALTAR>{ elreturn=elreturn.concat(token.image);}
 		| <TURN>{ elreturn=elreturn.concat(token.image);}":"{ elreturn=elreturn.concat(token.image);}(<LEFT>|<AROUND>|<RIGHT>){elreturn=elreturn.concat(token.image);} 
 		| <FACE>{ elreturn=elreturn.concat(token.image);}":"{ elreturn=elreturn.concat(token.image);}(<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
 		| <PUT>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<BALLOONS>|<CHIPS>) { elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
@@ -797,7 +810,7 @@ boolean condition ():
 
 )*/
 )
- <CP>
+ 
 }
 
 

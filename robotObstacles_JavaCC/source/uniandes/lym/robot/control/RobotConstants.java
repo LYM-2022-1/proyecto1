@@ -51,13 +51,13 @@ public interface RobotConstants {
   /** RegularExpression Id. */
   int NOT = 23;
   /** RegularExpression Id. */
-  int PASS = 24;
+  int OP = 24;
   /** RegularExpression Id. */
-  int OP = 25;
+  int CP = 25;
   /** RegularExpression Id. */
-  int CP = 26;
+  int RESETVAR = 26;
   /** RegularExpression Id. */
-  int RESETVAR = 27;
+  int SALTAR = 27;
   /** RegularExpression Id. */
   int BALLOONS = 28;
   /** RegularExpression Id. */
@@ -118,10 +118,10 @@ public interface RobotConstants {
     "\"can-pick-p\"",
     "\"can-move-p\"",
     "\"not\"",
-    "\"skip\"",
     "\"(\"",
     "\")\"",
     "\"!!!\"",
+    "\"skip\"",
     "\"balloons\"",
     "\"chips\"",
     "\"right\"",
