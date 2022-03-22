@@ -58,9 +58,20 @@ public class Robot
 	private ArrayList<String> tempnomdos = new ArrayList<String>();
 	private String bloqueuno = "";
 	private String bloquedos = "";
+	private String blouno = "";
+	private String blodos = "";
 	private String elreturn = "";
+	private String backup = "";
 	private String acumuresto = "";
+	private String codeloop = "";
+	private String condiloop = "";
+	private String acumuloop = "";
+	private String armando = "";
+	//private String nuevotoken = "???";
+	private boolean estoyenloop = false;
+	
 	private int cuentaif = -1;
+	private boolean pruebaif = false;
 	void setWorld(RobotWorldDec w) {
 		world = (RobotWorldDec) w;	
 	}
@@ -106,6 +117,7 @@ TOKEN: /* Nombres de Comandos */
 		|  <OP: "(" >
 		|  <CP: ")" >
 		|  <RESETVAR: "!!!" >
+		|  <PARAIF: "???" >
 		| < SALTAR: "skip" >
 		
 	
@@ -183,24 +195,91 @@ void haceInput(int x, String salida, String[] nueva):
   String busque = "";
   int sizee = 0;
   String cprespuesto = ")";
+  String direcciones = "";
  }
 {
   	
   	  <OP>
 	(
-   		<EQUALS> " " cambiarVariable(variables, valorvars) 
+   		<EQUALS> " " cambiarVariable(variables, valorvars)
+   		| <RUN_DIRS><OP>":"(<FRONT>{direcciones = token.image;}|<RIGHT>{direcciones = token.image;}|<LEFT>{direcciones = token.image;}|<BACK>{direcciones = token.image;})
+			      (" :"(<FRONT>|<RIGHT>|<LEFT>|<BACK>){direcciones= direcciones.concat(token.image);
+												System.out.println(direcciones);})*<CP>
 		| <MOVE>" " x=checkNum(variables, valorvars) {world.moveForward(x);salida = "Command: Moveforward ";}
 		| <SALTAR>
 		| <TURN>" :"(<LEFT> { world.turnRight();world.turnRight();world.turnRight();}
 					|<AROUND> { world.turnRight();world.turnRight();}
 					|<RIGHT> { world.turnRight();}) 
-		| <FACE>" :"(<SOUTH>|<WEST>|<EAST>|<NORTH>) 
+		| <FACE>" :"(<SOUTH> {
+		  						if(world.getFacing()==0)
+								{
+								 world.turnRight();world.turnRight();
+								}
+								else if(world.getFacing()==2)
+								{
+								 world.turnRight(); 
+								}
+								else if(world.getFacing()==3)
+								{
+								 world.turnRight();world.turnRight();world.turnRight();  
+								}
+								
+									}
+					|<WEST> { if(world.getFacing()==0)
+								{
+								 world.turnRight();world.turnRight();world.turnRight();
+								}
+								else if(world.getFacing()==2)
+								{
+								 world.turnRight();world.turnRight(); 
+								}
+								else if(world.getFacing()==1)
+								{
+								 world.turnRight();world.turnRight();world.turnRight(); world.turnRight();world.turnRight();  
+								}
+					   }
+					|<EAST> { if(world.getFacing()==0)
+								{
+								 world.turnRight();
+								}
+								else if(world.getFacing()==1)
+								{
+								 world.turnRight();world.turnRight();world.turnRight(); 
+								}
+								else if(world.getFacing()==3)
+								{
+								 world.turnRight();world.turnRight();  
+								} }
+					|<NORTH> {  if(world.getFacing()==1)
+								{
+								 world.turnRight();world.turnRight();
+								}
+								else if(world.getFacing()==2)
+								{
+								 world.turnRight();world.turnRight();world.turnRight(); 
+								}
+								else if(world.getFacing()==3)
+								{
+								 world.turnRight(); 
+								}}) 
 		| <PUT>" :"
 					 (<BALLOONS>" "x=checkNum(variables, valorvars){world.putBalloons(x);}
 					  |<CHIPS>" "x=checkNum(variables, valorvars){world.putChips(x);})
 		| <PICK>" :"(<BALLOONS>" "x=checkNum(variables, valorvars){world.grabBalloons(x);}
 					  |<CHIPS>" "x=checkNum(variables, valorvars){world.pickChips(x);})
-		| <MOVE_DIR> x=checkNum(variables, valorvars) (<FRONT>|<RIGHT>|<LEFT>|<BACK>)
+		| <MOVE_DIR>" "x=checkNum(variables, valorvars)" :"
+					(<FRONT> {
+					  for(int i=1;i<=x;i++)
+					  { world.down(); } }
+					|<RIGHT>{
+					  for(int i=1;i<=x;i++)
+					  { world.right(); } }
+					|<LEFT>{
+					  for(int i=1;i<=x;i++)
+					  { world.left(); } }
+					|<BACK>{
+					  for(int i=1;i<=x;i++)
+					  { world.up(); } })
 		| <REPEAT > " "x=checkNum(variables, valorvars) " " { elreturn = "";}
 					<OP> { acumuresto = "";}
 					soloRevisaIf(x, salida, tempnombres, tempvalores)
@@ -233,8 +312,68 @@ void haceInput(int x, String salida, String[] nueva):
 			  			this.ReInit(new java.io.StringReader(acumuresto));
 					}
 			  		
-		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
-		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
+		//| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
+		| <MOVE_FACE>" "x=checkNum(variables, valorvars)" :"(<SOUTH> {
+		  						if(world.getFacing()==0)
+								{
+								 world.turnRight();world.turnRight();
+								}
+								else if(world.getFacing()==2)
+								{
+								 world.turnRight(); 
+								}
+								else if(world.getFacing()==3)
+								{
+								 world.turnRight();world.turnRight();world.turnRight();  
+								}
+								for(int i=1;i<=x;i++)
+					  			{ world.down(); }
+									}
+					|<WEST> { if(world.getFacing()==0)
+								{
+								 world.turnRight();world.turnRight();world.turnRight();
+								}
+								else if(world.getFacing()==2)
+								{
+								 world.turnRight();world.turnRight(); 
+								}
+								else if(world.getFacing()==1)
+								{
+								 world.turnRight();world.turnRight();world.turnRight(); world.turnRight();world.turnRight();  
+								}
+								for(int i=1;i<=x;i++)
+					  			{ world.left(); }
+					   }
+					|<EAST> { if(world.getFacing()==0)
+								{
+								 world.turnRight();
+								}
+								else if(world.getFacing()==1)
+								{
+								 world.turnRight();world.turnRight();world.turnRight(); 
+								}
+								else if(world.getFacing()==3)
+								{
+								 world.turnRight();world.turnRight();  
+								}
+								for(int i=1;i<=x;i++)
+					  			{ world.right(); }
+							}
+					|<NORTH> {  if(world.getFacing()==1)
+								{
+								 world.turnRight();world.turnRight();
+								}
+								else if(world.getFacing()==2)
+								{
+								 world.turnRight();world.turnRight();world.turnRight(); 
+								}
+								else if(world.getFacing()==3)
+								{
+								 world.turnRight(); 
+								}
+								for(int i=1;i<=x;i++)
+					  			{ world.up(); }
+								})
 		| < RESETVAR> {
 		  				sizee = tempnomdos.size();
 		  				for(p=0; p<tempnomdos.size(); p++)
@@ -294,6 +433,34 @@ void haceInput(int x, String salida, String[] nueva):
 			    acumuresto = "";
 			  }
 			}
+		| < LOOP > { elreturn = ""; backup= "";}estoyenloop=condition()
+					{
+					  if(elreturn == "")
+					  {
+					    condiloop = backup;
+					  }
+					  else
+					  {
+					    condiloop = elreturn;
+					  }
+
+					}
+					< CP><OP > { elreturn=token.image;}
+					soloRevisaIf(x, salida, tempnombres, tempvalores) { //elreturn=elreturn.concat(token.image);
+																		elreturn=elreturn.concat(")");
+					  													codeloop= elreturn;}
+					<CP >{ elreturn="";}
+					< CP>
+					soloRevisaIf(x, salida, tempnombres, tempvalores) 
+					{
+					  acumuloop = acumuloop.concat(elreturn);
+					  elreturn="";
+					  //codeloop=cprespuesto.concat(codeloop);
+					  if(estoyenloop)
+					  {
+					    this.ReInit(new java.io.StringReader(cprespuesto));
+					  }
+					}
 		| < OP> haceInputRecursion( x, salida, nueva)
 		|buscarFuncion() 
 		
@@ -302,6 +469,32 @@ void haceInput(int x, String salida, String[] nueva):
 	
 	
 	<CP>
+	{
+	  if(estoyenloop)
+	  {
+	    armando = codeloop;
+
+	    armando = armando.concat("(loop");
+	    armando = armando.concat(condiloop);
+	    armando = armando.concat(")");
+	    armando = armando.concat(codeloop);
+	    armando = armando.concat(")");
+	    //armando = armando.concat(codeloop);
+	    System.out.println(armando);
+	    this.ReInit(new java.io.StringReader(armando));
+	  }
+	  else if(acumuloop!="")
+	  {
+	    this.ReInit(new java.io.StringReader(acumuloop));
+	  }
+	  else if(acumuloop!="")
+	  {
+	    this.ReInit(new java.io.StringReader(acumuloop));
+	    acumuloop="";
+	  }
+	  else
+	  { }
+	}
     
 }
 
@@ -503,7 +696,7 @@ void buscarFuncion():
 				// Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
 				throw new Error("NO PUDE METER EN EL ARRAY ESTO: "+token.image+"!!");
 			}
-  }//NO OLVIDAR: FALTA HACER VALIDACION DE CUANDO SALEN MENOS VARIABLES DE LAS QUE TOCA ;)
+  }
   [" "
   (
     < NUMERO>
@@ -597,6 +790,7 @@ void soloRevisaIf(int x, String salida, ArrayList<String> tempnombres, ArrayList
 		| < CAN_MOVE_P > { elreturn=elreturn.concat(token.image);} " :"{ elreturn=elreturn.concat(token.image);}(<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
 		| < FACING_P >  { elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
 		| <CAN_PUT_P>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);}(<BALLOONS>|< CHIPS >){ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);}x=checkNum(tempnombres, tempvalores)
+		| < NOT > { elreturn=elreturn.concat(token.image);}bool=condition()< CP >{ elreturn=elreturn.concat(token.image);}
 		| < EOF>
 		| (< OP>{ elreturn=elreturn.concat(token.image);}(soloRevisaIf(x, salida, tempnombres, tempvalores))< CP >{ elreturn=elreturn.concat(token.image);})+
 		| chequearFuncion()
@@ -788,15 +982,16 @@ boolean condition ():
   int posy=0;
   int newpos=0;
   boolean paranot=false;
+  boolean parafuncion=false;
 }
 {
-	<OP>
+	<OP>{ elreturn=elreturn.concat(token.image);}
 
 	(  		<FACING_P>{ elreturn=elreturn.concat(token.image);}
   				" :"{ elreturn=elreturn.concat(token.image);}
   				(bool=facing_p(){if (bool){return true;}else{return false;}})
-		| <CAN_PUT_P>" "
-					(<BALLOONS>" "x=checkNum(variables, valorvars)
+		| <CAN_PUT_P>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);}
+					(<BALLOONS>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);}x=checkNum(variables, valorvars)
 							{
 					  			if(world.getMyBalloons() >= x)
 					  			{
@@ -807,7 +1002,7 @@ boolean condition ():
 					  			  return false;
 					  			}
 							}
-					|<CHIPS>" "x=checkNum(variables, valorvars)
+					|<CHIPS>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);}x=checkNum(variables, valorvars)
 							{
 					  		if(world.getMyChips() >= x && world.freeSpacesForChips() >= x)
 					  		{
@@ -818,8 +1013,9 @@ boolean condition ():
 					  		  return false;
 					 		 }
 							})
-		| <CAN_MOVE_P>" :"(<SOUTH>
+		| <CAN_MOVE_P>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<SOUTH>
 					{
+					  elreturn=elreturn.concat(token.image);
 					  posx = (int)world.getPosition().getX();
 					  posy=(int)world.getPosition().getY();
 					  newpos = posy+1;
@@ -843,6 +1039,7 @@ boolean condition ():
 					}
 				    |<WEST>
 				    {
+				      elreturn=elreturn.concat(token.image);
 				      posx = (int)world.getPosition().getX();
 					  posy=(int)world.getPosition().getY();
 					  newpos = posx-1;
@@ -866,6 +1063,7 @@ boolean condition ():
 					
 					|<EAST>
 					{
+					  elreturn=elreturn.concat(token.image);
 					  posx = (int)world.getPosition().getX();
 					  posy=(int)world.getPosition().getY();
 					  newpos = posx+1;
@@ -889,6 +1087,7 @@ boolean condition ():
 					
 					|<NORTH>
 				    {
+				      elreturn=elreturn.concat(token.image);
 					  posx = (int)world.getPosition().getX();
 					  posy=(int)world.getPosition().getY();
 					  newpos = posy-1;
@@ -912,7 +1111,8 @@ boolean condition ():
 					)
 
 
-	| <NOT> paranot=condition() < CP>{
+	| <NOT>{ elreturn=elreturn.concat(token.image);} paranot=condition() < CP>{
+								elreturn=elreturn.concat(token.image);
 	  							if(paranot)
 	  							{
 	  							  return false;
@@ -923,7 +1123,7 @@ boolean condition ():
 	  							}
 	  							}
 	  							
-
+	| parafuncion=buscarFuncionIf() { return parafuncion;}
 
 
 )
@@ -1127,4 +1327,156 @@ void declararVariable(ArrayList<String> variables, ArrayList<Integer> valorvars)
 			
 		}
 	}
-	
+boolean buscarFuncionIf():
+{
+  int x=0;
+  int y=0;
+  boolean cheker=false;
+  int indexxx= 0;
+  String elnombre = "";
+  String elsupernombre = "";
+  int elnumero = 0;
+  String input = "";
+  String cpp= ")";
+  
+}
+{
+  (
+    (< LETRA >{ elsupernombre=elsupernombre.concat(token.image); elreturn=elreturn.concat(token.image);})(< LETRA >{ elsupernombre=elsupernombre.concat(token.image); elreturn=elreturn.concat(token.image);}|< DIGITO >{ elsupernombre=elsupernombre.concat(token.image); elreturn=elreturn.concat(token.image);})*
+  
+  )
+  {
+    try 
+			{
+			  	for(x=0; x<nombrefuns.size(); x++)
+    			{
+      				if(elsupernombre.equals(nombrefuns.get(x)))
+      				{
+      				  cheker=true;
+      				  indexxx= x;
+      				  input = blockfuns.get(x);
+      				  try 
+						{
+						  	tempnombres = new ArrayList<String>();
+							tempvalores = new ArrayList<Integer>();
+							String[] tempvarss= paramfuns.get(indexxx).split(" ");
+							System.out.println(tempvarss.length);
+			  				for(y=0; y<tempvarss.length; y++)
+			  				{
+			  				  tempnombres.add(tempvarss[y]);
+			  				  tempnomdos.add(tempvarss[y]);
+			  				  tempvalores.add(-1);
+			  				 }
+			  				 if(paramfuns.get(indexxx).equals(""))
+			  				 {
+			  				   tempnombres.remove(0);
+			  				   tempnomdos.remove(tempnomdos.size()-1);
+			  				   tempvalores.remove(0);
+			  				 }
+						} 
+					catch (NumberFormatException ee) 
+						{
+							// Dada la forma de NUMERO, sabemos que solo puede tener d�gitos
+							// Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
+							throw new Error("NO PUDE METER EN EL ARRAY ESTO: "+token.image+"!!");
+						}
+
+      				}
+     			}
+     			if(!cheker)
+     			{
+     			  
+     			  throw new Error("NO ENCONTRE ESA FUNCION... PAILA ");
+
+     			}
+			} 
+			catch (NumberFormatException ee) 
+			{
+				// Dada la forma de NUMERO, sabemos que solo puede tener d�gitos
+				// Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
+				throw new Error("NO PUDE METER EN EL ARRAY ESTO: "+token.image+"!!");
+			}
+  }
+  [" " { elreturn=elreturn.concat(token.image);}
+  (
+    < NUMERO> { elreturn=elreturn.concat(token.image);}
+    {
+      if(tempnombres.get(0)!=null) { 
+        elnombre = tempnombres.get(0);
+        elnumero = Integer.parseInt(token.image);
+        tempnombres.remove(0);
+        variables.add(elnombre);
+        valorvars.add(elnumero);
+      }
+      else
+      {
+        throw new Error("NO HAY SUFICIENTES VARIABLES");
+      }
+      
+    
+	}
+  )
+  (
+    " " { elreturn=elreturn.concat(token.image);}
+    < NUMERO>
+    {
+      elreturn=elreturn.concat(token.image);
+      backup= elreturn;
+    if(tempnombres.get(0)!=null) { 
+        elnombre = tempnombres.get(0);
+        elnumero = Integer.parseInt(token.image);
+        tempnombres.remove(0);
+        variables.add(elnombre);
+        valorvars.add(elnumero);
+      }
+      else
+      {
+        throw new Error("NO HAY SUFICIENTES VARIABLES");
+      }
+	}
+  )*]
+  < CP >
+  {
+    if(tempnombres.size() >0)
+    {
+      throw new Error("FALTARON VARIABLE POR DEFINIR PARA USAR LA FUNCION");
+    }
+    //input = nuevotoken.concat(input);
+
+    //input = input.concat(cpp);
+    
+    //System.out.println(input);
+    elreturn = "";
+  }
+  < OP> { elreturn=elreturn.concat(token.image);}
+  soloRevisaIf(x, salida, tempnombres, tempvalores)
+  < CP> { elreturn=elreturn.concat(token.image); blouno = elreturn; elreturn = "";System.out.println("EL PRIMER BLOQUE ES:   "+blouno);}
+  < OP> { elreturn=elreturn.concat(token.image);}
+  soloRevisaIf(x, salida, tempnombres, tempvalores)
+  < CP> { elreturn=elreturn.concat(token.image); blodos = elreturn; elreturn = "";System.out.println("EL SEGUNDO BLOQUE ES:   "+blodos);}
+  < CP>
+  soloRevisaIf(x, salida, tempnombres, tempvalores)
+  {
+    if(!elreturn.equals(""))
+			  { 
+			  	acumuresto = "";
+			  	acumuresto = acumuresto.concat(blouno);
+			  	acumuresto = acumuresto.concat(blodos);
+			  	acumuresto = acumuresto.concat(")");
+			  	acumuresto = acumuresto.concat(elreturn);
+			  	if(!paramfuns.get(indexxx).equals(""))
+			  	{
+			  	  input = input.concat("(!!!)");
+			  	}
+			  	//input = input.concat("(!!!)");
+    			input = input.concat(acumuresto);
+			  }
+    System.out.println("EL NUEVO INPUT ES:   "+input);
+    
+    this.ReInit(new java.io.StringReader(input));
+    elreturn = "";
+    //this.ReInit(new java.io.StringReader(elreturn));
+  }
+  pruebaif=condition() { return pruebaif;}
+  
+}	

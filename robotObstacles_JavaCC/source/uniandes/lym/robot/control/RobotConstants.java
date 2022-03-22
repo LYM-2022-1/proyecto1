@@ -57,37 +57,39 @@ public interface RobotConstants {
   /** RegularExpression Id. */
   int RESETVAR = 26;
   /** RegularExpression Id. */
-  int SALTAR = 27;
+  int PARAIF = 27;
   /** RegularExpression Id. */
-  int BALLOONS = 28;
+  int SALTAR = 28;
   /** RegularExpression Id. */
-  int CHIPS = 29;
+  int BALLOONS = 29;
   /** RegularExpression Id. */
-  int RIGHT = 30;
+  int CHIPS = 30;
   /** RegularExpression Id. */
-  int LEFT = 31;
+  int RIGHT = 31;
   /** RegularExpression Id. */
-  int AROUND = 32;
+  int LEFT = 32;
   /** RegularExpression Id. */
-  int BACK = 33;
+  int AROUND = 33;
   /** RegularExpression Id. */
-  int FRONT = 34;
+  int BACK = 34;
   /** RegularExpression Id. */
-  int NORTH = 35;
+  int FRONT = 35;
   /** RegularExpression Id. */
-  int SOUTH = 36;
+  int NORTH = 36;
   /** RegularExpression Id. */
-  int WEST = 37;
+  int SOUTH = 37;
   /** RegularExpression Id. */
-  int EAST = 38;
+  int WEST = 38;
   /** RegularExpression Id. */
-  int NUMERO = 39;
+  int EAST = 39;
   /** RegularExpression Id. */
-  int DIGIT = 40;
+  int NUMERO = 40;
   /** RegularExpression Id. */
-  int LETRA = 41;
+  int DIGIT = 41;
   /** RegularExpression Id. */
-  int DIGITO = 42;
+  int LETRA = 42;
+  /** RegularExpression Id. */
+  int DIGITO = 43;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -121,6 +123,7 @@ public interface RobotConstants {
     "\"(\"",
     "\")\"",
     "\"!!!\"",
+    "\"???\"",
     "\"skip\"",
     "\"balloons\"",
     "\"chips\"",
@@ -139,8 +142,8 @@ public interface RobotConstants {
     "<DIGITO>",
     "\"po\"",
     "\" \"",
-    "\" :\"",
     "\":\"",
+    "\" :\"",
   };
 
 }
