@@ -195,10 +195,10 @@ void haceInput(int x, String salida, String[] nueva):
 					|<AROUND> { world.turnRight();world.turnRight();}
 					|<RIGHT> { world.turnRight();}) 
 		| <FACE>" :"(<SOUTH>|<WEST>|<EAST>|<NORTH>) 
-		| <PUT>":"
+		| <PUT>" :"
 					 (<BALLOONS>" "x=checkNum(variables, valorvars){world.putBalloons(x);}
 					  |<CHIPS>" "x=checkNum(variables, valorvars){world.putChips(x);})
-		| <PICK>":"(<BALLOONS>" "x=checkNum(variables, valorvars){world.grabBalloons(x);}
+		| <PICK>" :"(<BALLOONS>" "x=checkNum(variables, valorvars){world.grabBalloons(x);}
 					  |<CHIPS>" "x=checkNum(variables, valorvars){world.pickChips(x);})
 		| <MOVE_DIR> x=checkNum(variables, valorvars) (<FRONT>|<RIGHT>|<LEFT>|<BACK>)
 		| <REPEAT > " "x=checkNum(variables, valorvars) " " { elreturn = "";}
@@ -312,24 +312,56 @@ void haceInputRecursion(int x, String salida, String[] nueva):
   int q = 0;
   String busque = "";
   int sizee = 0;
- 		
+  String cprespuesto=")";
  }
 {
   	
 	(
    		<EQUALS> " " cambiarVariable(variables, valorvars) 
-		| <MOVE>" " x=checkNum(variables, valorvars) {world.moveHorizontally(x);salida = "Command: Moveforward ";
-														//this.ReInit(new java.io.StringReader(input));
-														}
+		| <MOVE>" " x=checkNum(variables, valorvars) {world.moveForward(x);salida = "Command: Moveforward ";}
 		| <SALTAR>
-		| <TURN>" :"(<LEFT>|<AROUND>|<RIGHT>) //{world.moveVertically(1);salida = "Command: MoveALV ";}
-		| <FACE>" :"(<SOUTH>|<WEST>|<EAST>|<NORTH>) //{world.moveVertically(2);salida = "Command: MoveALV ";}
+		| <TURN>" :"(<LEFT> { world.turnRight();world.turnRight();world.turnRight();}
+					|<AROUND> { world.turnRight();world.turnRight();}
+					|<RIGHT> { world.turnRight();}) 
+		| <FACE>" :"(<SOUTH>|<WEST>|<EAST>|<NORTH>) 
 		| <PUT>" :"
 					 (<BALLOONS>" "x=checkNum(variables, valorvars){world.putBalloons(x);}
 					  |<CHIPS>" "x=checkNum(variables, valorvars){world.putChips(x);})
 		| <PICK>" :"(<BALLOONS>" "x=checkNum(variables, valorvars){world.grabBalloons(x);}
 					  |<CHIPS>" "x=checkNum(variables, valorvars){world.pickChips(x);})
 		| <MOVE_DIR> x=checkNum(variables, valorvars) (<FRONT>|<RIGHT>|<LEFT>|<BACK>)
+		| <REPEAT > " "x=checkNum(variables, valorvars) " " { elreturn = "";}
+					<OP> { acumuresto = "";}
+					soloRevisaIf(x, salida, tempnombres, tempvalores)
+					< CP> { System.out.println(elreturn);}
+					< CP>
+					{
+					  if(!elreturn.equals(""))
+			  		  { 
+			  			acumuresto = "(";
+			  			for(p=0; p<x;p++)
+			  			{
+			  			  acumuresto = acumuresto.concat("(");
+			  			  acumuresto = acumuresto.concat(elreturn);
+			  			  acumuresto = acumuresto.concat(")");
+			  			}
+			  			acumuresto = acumuresto.concat(")");
+			  			elreturn="";
+			  		  }
+			  		}
+			  		soloRevisaIf(x, salida, tempnombres, tempvalores)
+					{
+			  			if(!elreturn.equals(""))
+			  			{ 
+			  				acumuresto = acumuresto.concat("(");
+			  				acumuresto = acumuresto.concat(elreturn);
+			  				acumuresto = acumuresto.concat(")");
+			  			}
+			  			acumuresto = cprespuesto.concat(acumuresto);
+			  			System.out.println(acumuresto);
+			  			this.ReInit(new java.io.StringReader(acumuresto));
+					}
+			  		
 		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
 		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
 		| < RESETVAR> {
@@ -350,24 +382,31 @@ void haceInputRecursion(int x, String salida, String[] nueva):
 		  				}
 		| <DEFVAR> " " declararVariable(variables, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
 		| < DEFUN> " " cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns)
-		| (<IF> (bool=condition())
-			(<OP> { elreturn=""; acumuresto = "";}
-			soloRevisaIf(x, salida, tempnombres, tempvalores) {bloqueuno=elreturn; }
+		| (<IF> (bool=condition())(< CP>)
+			(<OP> { elreturn=token.image; acumuresto = "";}
+			soloRevisaIf(x, salida, tempnombres, tempvalores) {bloqueuno=elreturn.concat(")"); }
 			< CP>{ elreturn="";}
 			)
-			(<OP> { elreturn="";}
-			soloRevisaIf(x, salida, tempnombres, tempvalores) {bloquedos=elreturn; }
+			(<OP> { elreturn=token.image;}
+			soloRevisaIf(x, salida, tempnombres, tempvalores) {bloquedos=elreturn.concat(")"); }
 			< CP>{ elreturn="";}
 			)
-			
+			< CP>
 			)
 			soloRevisaIf(x, salida, tempnombres, tempvalores)
 			{
-			  acumuresto = elreturn;
+			  if(!elreturn.equals(""))
+			  { 
+			  	acumuresto = "(";
+			  	acumuresto = acumuresto.concat(elreturn);
+			  	acumuresto = acumuresto.concat(")");
+			  }
 			  elreturn="";
 			  if (bool)
 			  {
+			    bloqueuno = cprespuesto.concat(bloqueuno);
 			    bloqueuno = bloqueuno.concat(acumuresto);
+			    System.out.println(bloqueuno);
 			    this.ReInit(new java.io.StringReader(bloqueuno));
 			    bloqueuno = "";
 			    bloquedos = "";
@@ -375,7 +414,9 @@ void haceInputRecursion(int x, String salida, String[] nueva):
 			  }
 			  else
 			  {
+			    bloquedos = cprespuesto.concat(bloquedos);
 			    bloquedos = bloquedos.concat(acumuresto);
+			    System.out.println(bloquedos);
 			    this.ReInit(new java.io.StringReader(bloquedos));
 			    bloqueuno = "";
 			    bloquedos = "";
@@ -514,10 +555,14 @@ void buscarFuncion():
 			  	acumuresto = "(";
 			  	acumuresto = acumuresto.concat(elreturn);
 			  	acumuresto = acumuresto.concat(")");
+			  	if(!paramfuns.get(indexxx).equals(""))
+			  	{
+			  	  input = input.concat("(!!!)");
+			  	}
+			  	//input = input.concat("(!!!)");
+    			input = input.concat(acumuresto);
 			  }
-    input = input.concat("(!!!)");
-    input = input.concat(acumuresto);
-    System.out.println(input);
+    System.out.println("EL NUEVO INPUT ES:   "+input);
     
     this.ReInit(new java.io.StringReader(input));
     //this.ReInit(new java.io.StringReader(elreturn));
@@ -540,7 +585,7 @@ void soloRevisaIf(int x, String salida, ArrayList<String> tempnombres, ArrayList
   		(  		  <EQUALS>{ elreturn=elreturn.concat(token.image);} " "{ elreturn=elreturn.concat(token.image);} cambiarVariable(tempnombres, tempvalores)
 		| <MOVE>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
 		| <SALTAR>{ elreturn=elreturn.concat(token.image);}
-		| <TURN>{ elreturn=elreturn.concat(token.image);}":"{ elreturn=elreturn.concat(token.image);}(<LEFT>|<AROUND>|<RIGHT>){elreturn=elreturn.concat(token.image);} 
+		| <TURN>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<LEFT>|<AROUND>|<RIGHT>){elreturn=elreturn.concat(token.image);} 
 		| <FACE>{ elreturn=elreturn.concat(token.image);}":"{ elreturn=elreturn.concat(token.image);}(<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
 		| <PUT>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<BALLOONS>|<CHIPS>) { elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
 		| <PICK>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<BALLOONS>|<CHIPS>){ elreturn=elreturn.concat(token.image);} " "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
@@ -549,6 +594,9 @@ void soloRevisaIf(int x, String salida, ArrayList<String> tempnombres, ArrayList
 		| <MOVE_FACE> { elreturn=elreturn.concat(token.image);}x=checkNum(tempnombres, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
 		| <DEFVAR> { elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} declararVariable(tempnombres, valorvars) { elreturn=elreturn.concat(token.image);}//{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
 		| <IF>{ elreturn=elreturn.concat(token.image);}bool=condition()
+		| < CAN_MOVE_P > { elreturn=elreturn.concat(token.image);} " :"{ elreturn=elreturn.concat(token.image);}(<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
+		| < FACING_P >  { elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
+		| <CAN_PUT_P>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);}(<BALLOONS>|< CHIPS >){ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);}x=checkNum(tempnombres, tempvalores)
 		| < EOF>
 		| (< OP>{ elreturn=elreturn.concat(token.image);}(soloRevisaIf(x, salida, tempnombres, tempvalores))< CP >{ elreturn=elreturn.concat(token.image);})+
 		| chequearFuncion()
@@ -595,9 +643,9 @@ void chequearFuncion():
   ]
   {
     String[] tempvarsss= paramfuns.get(indexxx).split(" ");
-    System.out.println(tempvarsss.length);
+    //System.out.println(tempvarsss.length);
     String[] confirmo= momenparams.split(" ");
-    System.out.println(confirmo.length);
+    //System.out.println(confirmo.length);
     if(tempvarsss.length!=confirmo.length)
     {
       throw new Error("LA CANTIDAD DE PARAMETROS NO COINCIDE CON LA ESPERADA");
@@ -739,12 +787,13 @@ boolean condition ():
   int posx=0;
   int posy=0;
   int newpos=0;
+  boolean paranot=false;
 }
 {
 	<OP>
 
 	(  		<FACING_P>{ elreturn=elreturn.concat(token.image);}
-  				" : "{ elreturn=elreturn.concat(token.image);}
+  				" :"{ elreturn=elreturn.concat(token.image);}
   				(bool=facing_p(){if (bool){return true;}else{return false;}})
 		| <CAN_PUT_P>" "
 					(<BALLOONS>" "x=checkNum(variables, valorvars)
@@ -862,12 +911,21 @@ boolean condition ():
 				    }
 					)
 
-/*| <CAN_PICK_P>" "(<BALLOONS>|<CHIPS>) x=checkNum(variables, valorvars)
-|<DEFUN> " " cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns)
-| <NOT> condition()
+
+	| <NOT> paranot=condition() < CP>{
+	  							if(paranot)
+	  							{
+	  							  return false;
+	  							}
+	  							else
+	  							{
+	  							  return true;
+	  							}
+	  							}
+	  							
 
 
-)*/
+
 )
  
 }
@@ -1004,7 +1062,7 @@ int checkNum(ArrayList<String> variables, ArrayList<Integer> valorvars) :
   	}
   	if(rta == -57)
   	{
-  	  throw new Error("ERROR: NO EXISTE LA VARIABLE");
+  	  throw new Error("ERROR: NO EXISTE LA VARIABLE" + token.image);
 
   	}
   	return rta;
