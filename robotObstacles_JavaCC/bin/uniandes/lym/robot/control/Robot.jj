@@ -258,8 +258,8 @@ void haceInput(int x, String salida, String[] nueva):
 			soloRevisaIf(x, salida, tempnombres, tempvalores) {bloqueuno=elreturn.concat(")"); }
 			< CP>{ elreturn="";}
 			)
-			(<OP> { elreturn="";}
-			soloRevisaIf(x, salida, tempnombres, tempvalores) {bloquedos=elreturn; }
+			(<OP> { elreturn=token.image;}
+			soloRevisaIf(x, salida, tempnombres, tempvalores) {bloquedos=elreturn.concat(")"); }
 			< CP>{ elreturn="";}
 			)
 			< CP>
@@ -710,6 +710,9 @@ boolean condition ():
 {
   int x=0;
   boolean bool;
+  int posx=0;
+  int posy=0;
+  int newpos=0;
 }
 {
 	<OP>
@@ -740,16 +743,21 @@ boolean condition ():
 					  		  return false;
 					 		 }
 							})
-		| <CAN_MOVE_P>" "(<SOUTH>
+		| <CAN_MOVE_P>" :"(<SOUTH>
 					{
-					  //String posx= String.valueOf(world.getPosition().getX());
-					 // String posy= String.valueOf(world.getPosition().getY()-1);
-					 
-					  
-					  //if(world.isBlocked(new Point(Integer.parseInt(posx),Integer.parseInt(posy))))
-					  int posx = (int)world.getPosition().getX();
-					  int posy=(int)world.getPosition().getY();
-					  if(world.blockedInRange(posx,posy,-1,1))
+					  posx = (int)world.getPosition().getX();
+					  posy=(int)world.getPosition().getY();
+					  newpos = posy+1;
+					  //System.out.println(newpos);
+					  if(newpos<1)
+					  {
+					    return false;
+					  }
+					  if(newpos >8)
+					  {
+					    return false;
+					  }
+					  if(!world.blockedInRange(posx,posy,newpos,1))
 					  {
 					    return true;
 					  }
@@ -758,12 +766,20 @@ boolean condition ():
 					    return false;
 					  }
 					}
-				    /*|<WEST>
+				    |<WEST>
 				    {
-				       String posx= String.valueOf(world.getPosition().getX()-1);
-				      String posy= String.valueOf(world.getPosition().getY());
-				      
-				      if(world.isBlocked(new Point(Integer.parseInt(posx),Integer.parseInt(posy))))
+				      posx = (int)world.getPosition().getX();
+					  posy=(int)world.getPosition().getY();
+					  newpos = posx-1;
+					  if(newpos<1)
+					  {
+					    return false;
+					  }
+					  if(newpos >8)
+					  {
+					    return false;
+					  }
+					  if(!world.blockedInRange(posx,posy,newpos,3))
 					  {
 					    return true;
 					  }
@@ -775,9 +791,18 @@ boolean condition ():
 					
 					|<EAST>
 					{
-					  posx= String.valueOf(world.getPosition().getX()+1);
-				      posy= String.valueOf(world.getPosition().getY());
-					  if(world.isBlocked(new Point(Integer.parseInt(posx),Integer.parseInt(posy))))
+					  posx = (int)world.getPosition().getX();
+					  posy=(int)world.getPosition().getY();
+					  newpos = posx+1;
+					  if(newpos<1)
+					  {
+					    return false;
+					  }
+					  if(newpos >8)
+					  {
+					    return false;
+					  }
+					  if(!world.blockedInRange(posx,posy,newpos,2))
 					  {
 					    return true;
 					  }
@@ -785,16 +810,22 @@ boolean condition ():
 					  {
 					    return false;
 					  }
-					}*/
+					}
 					
 					|<NORTH>
 				    {
-					  //posx= String.valueOf(world.getPosition().getX());
-				     // posy= String.valueOf(world.getPosition().getY()+1);
-					  //if(world.isBlocked(new Point(Integer.parseInt(posx),Integer.parseInt(posy))))
 					  posx = (int)world.getPosition().getX();
 					  posy=(int)world.getPosition().getY();
-					  if(world.blockedInRange(posx,posy,1,0))
+					  newpos = posy-1;
+					  if(newpos<1)
+					  {
+					    return false;
+					  }
+					  if(newpos >8)
+					  {
+					    return false;
+					  }
+					  if(!world.blockedInRange(posx,posy,newpos,0))
 					  {
 					    return true;
 					  }

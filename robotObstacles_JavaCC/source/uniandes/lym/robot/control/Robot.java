@@ -334,9 +334,9 @@ public class Robot implements RobotConstants {
       jj_consume_token(CP);
                                elreturn="";
       jj_consume_token(OP);
-                                elreturn="";
+                                elreturn=token.image;
       soloRevisaIf(x, salida, tempnombres, tempvalores);
-                                                                           bloquedos=elreturn;
+                                                                           bloquedos=elreturn.concat(")");
       jj_consume_token(CP);
                                elreturn="";
       jj_consume_token(CP);
@@ -1249,6 +1249,9 @@ public class Robot implements RobotConstants {
   final public boolean condition() throws ParseException {
   int x=0;
   boolean bool;
+  int posx=0;
+  int posy=0;
+  int newpos=0;
     jj_consume_token(OP);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case FACING_P:
@@ -1297,18 +1300,67 @@ public class Robot implements RobotConstants {
       break;
     case CAN_MOVE_P:
       jj_consume_token(CAN_MOVE_P);
-      jj_consume_token(44);
+      jj_consume_token(45);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SOUTH:
         jj_consume_token(SOUTH);
-                                          //String posx= String.valueOf(world.getPosition().getX());
-                                         // String posy= String.valueOf(world.getPosition().getY()-1);
-
-
-                                          //if(world.isBlocked(new Point(Integer.parseInt(posx),Integer.parseInt(posy))))
-                                          int posx = (int)world.getPosition().getX();
-                                          int posy=(int)world.getPosition().getY();
-                                          if(world.blockedInRange(posx,posy,-1,1))
+                                          posx = (int)world.getPosition().getX();
+                                          posy=(int)world.getPosition().getY();
+                                          newpos = posy+1;
+                                          //System.out.println(newpos);
+                                          if(newpos<1)
+                                          {
+                                            {if (true) return false;}
+                                          }
+                                          if(newpos >8)
+                                          {
+                                            {if (true) return false;}
+                                          }
+                                          if(!world.blockedInRange(posx,posy,newpos,1))
+                                          {
+                                            {if (true) return true;}
+                                          }
+                                           else
+                                          {
+                                            {if (true) return false;}
+                                          }
+        break;
+      case WEST:
+        jj_consume_token(WEST);
+                                      posx = (int)world.getPosition().getX();
+                                          posy=(int)world.getPosition().getY();
+                                          newpos = posx-1;
+                                          if(newpos<1)
+                                          {
+                                            {if (true) return false;}
+                                          }
+                                          if(newpos >8)
+                                          {
+                                            {if (true) return false;}
+                                          }
+                                          if(!world.blockedInRange(posx,posy,newpos,3))
+                                          {
+                                            {if (true) return true;}
+                                          }
+                                           else
+                                          {
+                                            {if (true) return false;}
+                                          }
+        break;
+      case EAST:
+        jj_consume_token(EAST);
+                                          posx = (int)world.getPosition().getX();
+                                          posy=(int)world.getPosition().getY();
+                                          newpos = posx+1;
+                                          if(newpos<1)
+                                          {
+                                            {if (true) return false;}
+                                          }
+                                          if(newpos >8)
+                                          {
+                                            {if (true) return false;}
+                                          }
+                                          if(!world.blockedInRange(posx,posy,newpos,2))
                                           {
                                             {if (true) return true;}
                                           }
@@ -1319,12 +1371,18 @@ public class Robot implements RobotConstants {
         break;
       case NORTH:
         jj_consume_token(NORTH);
-                                          //posx= String.valueOf(world.getPosition().getX());
-                                     // posy= String.valueOf(world.getPosition().getY()+1);
-                                          //if(world.isBlocked(new Point(Integer.parseInt(posx),Integer.parseInt(posy))))
                                           posx = (int)world.getPosition().getX();
                                           posy=(int)world.getPosition().getY();
-                                          if(world.blockedInRange(posx,posy,1,0))
+                                          newpos = posy-1;
+                                          if(newpos<1)
+                                          {
+                                            {if (true) return false;}
+                                          }
+                                          if(newpos >8)
+                                          {
+                                            {if (true) return false;}
+                                          }
+                                          if(!world.blockedInRange(posx,posy,newpos,0))
                                           {
                                             {if (true) return true;}
                                           }
@@ -1620,7 +1678,7 @@ public class Robot implements RobotConstants {
       jj_la1_0 = new int[] {0x1000001,0xc0000000,0x0,0x30000000,0x30000000,0xc0000000,0xc0000000,0xc0000000,0x0,0xd06ffd0,0xc0000000,0x0,0x30000000,0x30000000,0xc0000000,0xc0000000,0xc0000000,0x0,0xd04ffd0,0x1000000,0x0,0x0,0x0,0xc0000000,0x0,0x30000000,0x30000000,0xc0000000,0xc0000000,0xc0000000,0x0,0x1000000,0x900ffd1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x30000000,0x0,0x580000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x800,0x1,0x78,0x0,0x0,0x6,0x6,0x6,0x78,0x200,0x1,0x78,0x0,0x0,0x6,0x6,0x6,0x78,0x200,0x0,0x600,0x600,0x1000,0x1,0x78,0x0,0x0,0x6,0x6,0x6,0x78,0x0,0x0,0x600,0x600,0x600,0x600,0x1000,0x600,0x600,0x0,0x18,0x0,0x78,0x600,0x600,0x600,0x600,0x280,0x600,0x600,};
+      jj_la1_1 = new int[] {0x800,0x1,0x78,0x0,0x0,0x6,0x6,0x6,0x78,0x200,0x1,0x78,0x0,0x0,0x6,0x6,0x6,0x78,0x200,0x0,0x600,0x600,0x1000,0x1,0x78,0x0,0x0,0x6,0x6,0x6,0x78,0x0,0x0,0x600,0x600,0x600,0x600,0x1000,0x600,0x600,0x0,0x78,0x0,0x78,0x600,0x600,0x600,0x600,0x280,0x600,0x600,};
    }
 
   /** Constructor with InputStream. */
