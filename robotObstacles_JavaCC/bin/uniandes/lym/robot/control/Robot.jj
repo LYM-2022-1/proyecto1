@@ -202,7 +202,37 @@ void haceInput(int x, String salida, String[] nueva):
 					  |<CHIPS>" "x=checkNum(variables, valorvars){world.pickChips(x);})
 		| <MOVE_DIR> x=checkNum(variables, valorvars) (<FRONT>|<RIGHT>|<LEFT>|<BACK>)
 		| <REPEAT > " "x=checkNum(variables, valorvars) " " { elreturn = "";}
-					soloRevisa(x, salida, tempnombres, tempvalores)
+					<OP> { acumuresto = "";}
+					soloRevisaIf(x, salida, tempnombres, tempvalores)
+					< CP> { System.out.println(elreturn);}
+					< CP>
+					{
+					  if(!elreturn.equals(""))
+			  		  { 
+			  			acumuresto = "(";
+			  			for(p=0; p<x;p++)
+			  			{
+			  			  acumuresto = acumuresto.concat("(");
+			  			  acumuresto = acumuresto.concat(elreturn);
+			  			  acumuresto = acumuresto.concat(")");
+			  			}
+			  			acumuresto = acumuresto.concat(")");
+			  			elreturn="";
+			  		  }
+			  		}
+			  		soloRevisaIf(x, salida, tempnombres, tempvalores)
+					{
+			  			if(!elreturn.equals(""))
+			  			{ 
+			  				acumuresto = acumuresto.concat("(");
+			  				acumuresto = acumuresto.concat(elreturn);
+			  				acumuresto = acumuresto.concat(")");
+			  			}
+			  			acumuresto = cprespuesto.concat(acumuresto);
+			  			System.out.println(acumuresto);
+			  			this.ReInit(new java.io.StringReader(acumuresto));
+					}
+			  		
 		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
 		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
 		| < RESETVAR> {
@@ -224,8 +254,8 @@ void haceInput(int x, String salida, String[] nueva):
 		| <DEFVAR> " " declararVariable(variables, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
 		| < DEFUN> " " cargarFuncion(tempnombres, tempvalores, nombrefuns, paramfuns, blockfuns)
 		| (<IF> (bool=condition())(< CP>)
-			(<OP> { elreturn=""; acumuresto = "";}
-			soloRevisaIf(x, salida, tempnombres, tempvalores) {bloqueuno=elreturn; }
+			(<OP> { elreturn=token.image; acumuresto = "";}
+			soloRevisaIf(x, salida, tempnombres, tempvalores) {bloqueuno=elreturn.concat(")"); }
 			< CP>{ elreturn="";}
 			)
 			(<OP> { elreturn="";}
@@ -236,7 +266,12 @@ void haceInput(int x, String salida, String[] nueva):
 			)
 			soloRevisaIf(x, salida, tempnombres, tempvalores)
 			{
-			  acumuresto = elreturn;
+			  if(!elreturn.equals(""))
+			  { 
+			  	acumuresto = "(";
+			  	acumuresto = acumuresto.concat(elreturn);
+			  	acumuresto = acumuresto.concat(")");
+			  }
 			  elreturn="";
 			  if (bool)
 			  {
@@ -461,10 +496,14 @@ void buscarFuncion():
     //System.out.println(input);
     elreturn = "";
   }
-  soloRevisa(x, salida, tempnombres, tempvalores)
+  soloRevisaIf(x, salida, tempnombres, tempvalores) 
   {
-    //input = input.concat(elreturn);
-    acumuresto = elreturn;
+    if(!elreturn.equals(""))
+			  { 
+			  	acumuresto = "(";
+			  	acumuresto = acumuresto.concat(elreturn);
+			  	acumuresto = acumuresto.concat(")");
+			  }
     input = input.concat("(!!!)");
     input = input.concat(acumuresto);
     System.out.println(input);
@@ -476,39 +515,38 @@ void buscarFuncion():
   
 }
 
-void soloRevisa(int x, String salida, ArrayList<String> tempnombres, ArrayList<Integer> tempvalores):
-{
-  int p = 0;
-  boolean bool;
+//void soloRevisa(int x, String salida, ArrayList<String> tempnombres, ArrayList<Integer> tempvalores):
+//{
+  //int p = 0;
+  //boolean bool;
   //String elretur = "";
-  String amedias = "";
+  //String amedias = "";
  		
- }
-{
-  	(
-  	  < EOF> { elreturn="";}
-  	| <OP> { elreturn=elreturn.concat(token.image);}
-	(
-   		<EQUALS>{ elreturn=elreturn.concat(token.image);} " "{ elreturn=elreturn.concat(token.image);} cambiarVariable(tempnombres, tempvalores)
-		| <SALTAR>{ elreturn=elreturn.concat(token.image);}
-		| <MOVE>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
-		| <TURN>{ elreturn=elreturn.concat(token.image);}":"{ elreturn=elreturn.concat(token.image);}(<LEFT>|<AROUND>|<RIGHT>){elreturn=elreturn.concat(token.image);} 
-		| <FACE>{ elreturn=elreturn.concat(token.image);}":"{ elreturn=elreturn.concat(token.image);}(<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
-		| <PUT>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<BALLOONS>|<CHIPS>) { elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
-		| <PICK>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<BALLOONS>|<CHIPS>){ elreturn=elreturn.concat(token.image);} " "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
-		| <MOVE_DIR>{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores) (<FRONT>|<RIGHT>|<LEFT>|<BACK>){ elreturn=elreturn.concat(token.image);}
-		| <RUN_DIRS>{ elreturn=elreturn.concat(token.image);}(<FRONT>{ elreturn=elreturn.concat(token.image);}|<RIGHT>{ elreturn=elreturn.concat(token.image);}|<LEFT>{ elreturn=elreturn.concat(token.image);}|<BACK>{ elreturn=elreturn.concat(token.image);})+ 
-		| <MOVE_FACE> { elreturn=elreturn.concat(token.image);}x=checkNum(tempnombres, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
-		| <DEFVAR> { elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} declararVariable(tempnombres, valorvars) { elreturn=elreturn.concat(token.image);}//{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
-		| <IF>{ elreturn=elreturn.concat(token.image);}bool=condition()
-		| (soloRevisa(x, salida, tempnombres, tempvalores))+
-	)
+ //}
+//{
+  	//(
+  	  //<OP> { elreturn=elreturn.concat(token.image);}
+	//(
+   		//<EQUALS>{ elreturn=elreturn.concat(token.image);} " "{ elreturn=elreturn.concat(token.image);} cambiarVariable(tempnombres, tempvalores)
+		//| <SALTAR>{ elreturn=elreturn.concat(token.image);}
+		//| <MOVE>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
+		//| <TURN>{ elreturn=elreturn.concat(token.image);}":"{ elreturn=elreturn.concat(token.image);}(<LEFT>|<AROUND>|<RIGHT>){elreturn=elreturn.concat(token.image);} 
+		//| <FACE>{ elreturn=elreturn.concat(token.image);}":"{ elreturn=elreturn.concat(token.image);}(<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
+		//| <PUT>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<BALLOONS>|<CHIPS>) { elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
+		//| <PICK>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<BALLOONS>|<CHIPS>){ elreturn=elreturn.concat(token.image);} " "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
+		//| <MOVE_DIR>{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores) (<FRONT>|<RIGHT>|<LEFT>|<BACK>){ elreturn=elreturn.concat(token.image);}
+		//| <RUN_DIRS>{ elreturn=elreturn.concat(token.image);}(<FRONT>{ elreturn=elreturn.concat(token.image);}|<RIGHT>{ elreturn=elreturn.concat(token.image);}|<LEFT>{ elreturn=elreturn.concat(token.image);}|<BACK>{ elreturn=elreturn.concat(token.image);})+ 
+		//| <MOVE_FACE> { elreturn=elreturn.concat(token.image);}x=checkNum(tempnombres, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
+		//| <DEFVAR> { elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} declararVariable(tempnombres, valorvars) { elreturn=elreturn.concat(token.image);}//{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
+		//| <IF>{ elreturn=elreturn.concat(token.image);}bool=condition()
+		//| (soloRevisa(x, salida, tempnombres, tempvalores))+
+	//)
 	
 	
-		  <CP>{ elreturn=elreturn.concat(token.image);}
+		  //<CP>{ elreturn=elreturn.concat(token.image);}
 	  
-  )
-}
+  //)
+//}
 
 void soloRevisaIf(int x, String salida, ArrayList<String> tempnombres, ArrayList<Integer> tempvalores):
 {
@@ -519,8 +557,6 @@ void soloRevisaIf(int x, String salida, ArrayList<String> tempnombres, ArrayList
  		
  }
 {
-  	(  	  < EOF> { elreturn ="";}
-  	| < OP >
   		(  		  <EQUALS>{ elreturn=elreturn.concat(token.image);} " "{ elreturn=elreturn.concat(token.image);} cambiarVariable(tempnombres, tempvalores)
 		| <MOVE>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
 		| <SALTAR>{ elreturn=elreturn.concat(token.image);}
@@ -533,50 +569,14 @@ void soloRevisaIf(int x, String salida, ArrayList<String> tempnombres, ArrayList
 		| <MOVE_FACE> { elreturn=elreturn.concat(token.image);}x=checkNum(tempnombres, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
 		| <DEFVAR> { elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} declararVariable(tempnombres, valorvars) { elreturn=elreturn.concat(token.image);}//{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
 		| <IF>{ elreturn=elreturn.concat(token.image);}bool=condition()
-		| (soloRevisaIf(x, salida, tempnombres, tempvalores))+
+		| < EOF>
+		| (< OP>{ elreturn=elreturn.concat(token.image);}(soloRevisaIf(x, salida, tempnombres, tempvalores))< CP >{ elreturn=elreturn.concat(token.image);})+
 		)
-	)
 	
-	
-	
-	  <CP>{ elreturn=elreturn.concat(token.image);}
-	  [< OP>{ elreturn=elreturn.concat(token.image);}
-	  soloRevisaIfRecursion(x, salida, tempnombres, tempvalores)]
+	  //[< OP>{ elreturn=elreturn.concat(token.image);}
+	  //soloRevisaIfRecursion(x, salida, tempnombres, tempvalores)]
 }
-void soloRevisaIfRecursion(int x, String salida, ArrayList<String> tempnombres, ArrayList<Integer> tempvalores):
-{
-  int p = 0;
-  boolean bool;
-  //String elretur = "";
-  String amedias = "";
- 		
- }
-{
-  	
-  	
-	(
-   		<EQUALS>{ elreturn=elreturn.concat(token.image);} " "{ elreturn=elreturn.concat(token.image);} cambiarVariable(tempnombres, tempvalores)
-		| <MOVE>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
-		| <SALTAR>{ elreturn=elreturn.concat(token.image);}
-		| <TURN>{ elreturn=elreturn.concat(token.image);}":"{ elreturn=elreturn.concat(token.image);}(<LEFT>|<AROUND>|<RIGHT>){elreturn=elreturn.concat(token.image);} 
-		| <FACE>{ elreturn=elreturn.concat(token.image);}":"{ elreturn=elreturn.concat(token.image);}(<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
-		| <PUT>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<BALLOONS>|<CHIPS>) { elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
-		| <PICK>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<BALLOONS>|<CHIPS>){ elreturn=elreturn.concat(token.image);} " "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
-		| <MOVE_DIR>{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores) (<FRONT>|<RIGHT>|<LEFT>|<BACK>){ elreturn=elreturn.concat(token.image);}
-		| <RUN_DIRS>{ elreturn=elreturn.concat(token.image);}(<FRONT>{ elreturn=elreturn.concat(token.image);}|<RIGHT>{ elreturn=elreturn.concat(token.image);}|<LEFT>{ elreturn=elreturn.concat(token.image);}|<BACK>{ elreturn=elreturn.concat(token.image);})+ 
-		| <MOVE_FACE> { elreturn=elreturn.concat(token.image);}x=checkNum(tempnombres, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
-		| <DEFVAR> { elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} declararVariable(tempnombres, valorvars) { elreturn=elreturn.concat(token.image);}//{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
-		| <IF>{ elreturn=elreturn.concat(token.image);}bool=condition()
-		| (soloRevisa(x, salida, tempnombres, tempvalores))+
-	)
-	
-	
-	
-	  <CP>{ elreturn=elreturn.concat(token.image);}
-	  [< OP>{ elreturn=elreturn.concat(token.image);}
-	  soloRevisaIfRecursion(x, salida, tempnombres, tempvalores)]
-    
-}
+
 
 
 void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores, ArrayList<String> nombrefuns, ArrayList<String> paramfuns, ArrayList<String> blockfuns) :
@@ -661,9 +661,11 @@ void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores
      }
      elreturn = "";
   }
-  soloRevisa(x,salida,tempnombres, tempvalores)
+  < OP > { elreturn = token.image;}
+  soloRevisaIf(x,salida,tempnombres, tempvalores)
+  < CP>
   {
-    //blockfuns
+    elreturn = elreturn.concat(token.image);
     paramfuns.add(parametros);
     System.out.println(parametros);
     blockfuns.add(elreturn);
