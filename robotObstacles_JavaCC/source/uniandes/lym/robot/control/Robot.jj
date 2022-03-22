@@ -189,12 +189,12 @@ void haceInput(int x, String salida, String[] nueva):
   	  <OP>
 	(
    		<EQUALS> " " cambiarVariable(variables, valorvars) 
-		| <MOVE>" " x=checkNum(variables, valorvars) {world.moveHorizontally(x);salida = "Command: Moveforward ";
-														//this.ReInit(new java.io.StringReader(input));
-														}
+		| <MOVE>" " x=checkNum(variables, valorvars) {world.moveForward(x);salida = "Command: Moveforward ";}
 		| <SALTAR>
-		| <TURN>" :"(<LEFT>|<AROUND>|<RIGHT>) //{world.moveVertically(1);salida = "Command: MoveALV ";}
-		| <FACE>" :"(<SOUTH>|<WEST>|<EAST>|<NORTH>) //{world.moveVertically(2);salida = "Command: MoveALV ";}
+		| <TURN>" :"(<LEFT> { world.turnRight();world.turnRight();world.turnRight();}
+					|<AROUND> { world.turnRight();world.turnRight();}
+					|<RIGHT> { world.turnRight();}) 
+		| <FACE>" :"(<SOUTH>|<WEST>|<EAST>|<NORTH>) 
 		| <PUT>":"
 					 (<BALLOONS>" "x=checkNum(variables, valorvars){world.putBalloons(x);}
 					  |<CHIPS>" "x=checkNum(variables, valorvars){world.putChips(x);})
@@ -426,11 +426,18 @@ void buscarFuncion():
 						  	tempnombres = new ArrayList<String>();
 							tempvalores = new ArrayList<Integer>();
 							String[] tempvarss= paramfuns.get(indexxx).split(" ");
+							System.out.println(tempvarss.length);
 			  				for(y=0; y<tempvarss.length; y++)
 			  				{
 			  				  tempnombres.add(tempvarss[y]);
 			  				  tempnomdos.add(tempvarss[y]);
 			  				  tempvalores.add(-1);
+			  				 }
+			  				 if(paramfuns.get(indexxx).equals(""))
+			  				 {
+			  				   tempnombres.remove(0);
+			  				   tempnomdos.remove(tempnomdos.size()-1);
+			  				   tempvalores.remove(0);
 			  				 }
 						} 
 					catch (NumberFormatException ee) 
@@ -455,8 +462,8 @@ void buscarFuncion():
 				// Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
 				throw new Error("NO PUDE METER EN EL ARRAY ESTO: "+token.image+"!!");
 			}
-  }
-  " "
+  }//NO OLVIDAR: FALTA HACER VALIDACION DE CUANDO SALEN MENOS VARIABLES DE LAS QUE TOCA ;)
+  [" "
   (
     < NUMERO>
     {
@@ -489,9 +496,13 @@ void buscarFuncion():
       {
         throw new Error("NO HAY SUFICIENTES VARIABLES");
       }
-	}  )*
+	}  )*]
   < CP >
   {
+    if(tempnombres.size() >0)
+    {
+      throw new Error("FALTARON VARIABLE POR DEFINIR PARA USAR LA FUNCION");
+    }
     input = cpp.concat(input);
     //System.out.println(input);
     elreturn = "";
@@ -515,38 +526,7 @@ void buscarFuncion():
   
 }
 
-//void soloRevisa(int x, String salida, ArrayList<String> tempnombres, ArrayList<Integer> tempvalores):
-//{
-  //int p = 0;
-  //boolean bool;
-  //String elretur = "";
-  //String amedias = "";
- 		
- //}
-//{
-  	//(
-  	  //<OP> { elreturn=elreturn.concat(token.image);}
-	//(
-   		//<EQUALS>{ elreturn=elreturn.concat(token.image);} " "{ elreturn=elreturn.concat(token.image);} cambiarVariable(tempnombres, tempvalores)
-		//| <SALTAR>{ elreturn=elreturn.concat(token.image);}
-		//| <MOVE>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
-		//| <TURN>{ elreturn=elreturn.concat(token.image);}":"{ elreturn=elreturn.concat(token.image);}(<LEFT>|<AROUND>|<RIGHT>){elreturn=elreturn.concat(token.image);} 
-		//| <FACE>{ elreturn=elreturn.concat(token.image);}":"{ elreturn=elreturn.concat(token.image);}(<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
-		//| <PUT>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<BALLOONS>|<CHIPS>) { elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
-		//| <PICK>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<BALLOONS>|<CHIPS>){ elreturn=elreturn.concat(token.image);} " "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
-		//| <MOVE_DIR>{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores) (<FRONT>|<RIGHT>|<LEFT>|<BACK>){ elreturn=elreturn.concat(token.image);}
-		//| <RUN_DIRS>{ elreturn=elreturn.concat(token.image);}(<FRONT>{ elreturn=elreturn.concat(token.image);}|<RIGHT>{ elreturn=elreturn.concat(token.image);}|<LEFT>{ elreturn=elreturn.concat(token.image);}|<BACK>{ elreturn=elreturn.concat(token.image);})+ 
-		//| <MOVE_FACE> { elreturn=elreturn.concat(token.image);}x=checkNum(tempnombres, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
-		//| <DEFVAR> { elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} declararVariable(tempnombres, valorvars) { elreturn=elreturn.concat(token.image);}//{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
-		//| <IF>{ elreturn=elreturn.concat(token.image);}bool=condition()
-		//| (soloRevisa(x, salida, tempnombres, tempvalores))+
-	//)
-	
-	
-		  //<CP>{ elreturn=elreturn.concat(token.image);}
-	  
-  //)
-//}
+
 
 void soloRevisaIf(int x, String salida, ArrayList<String> tempnombres, ArrayList<Integer> tempvalores):
 {
@@ -571,13 +551,59 @@ void soloRevisaIf(int x, String salida, ArrayList<String> tempnombres, ArrayList
 		| <IF>{ elreturn=elreturn.concat(token.image);}bool=condition()
 		| < EOF>
 		| (< OP>{ elreturn=elreturn.concat(token.image);}(soloRevisaIf(x, salida, tempnombres, tempvalores))< CP >{ elreturn=elreturn.concat(token.image);})+
+		| chequearFuncion()
 		)
 	
 	  //[< OP>{ elreturn=elreturn.concat(token.image);}
 	  //soloRevisaIfRecursion(x, salida, tempnombres, tempvalores)]
 }
 
+void chequearFuncion():
+{
+  String elsupernombre = "";
+  int indexxx = 0;
+  boolean cheker =false;
+  int x = 0;
+  int tamanio = 0;
+  String momenparams = "";
+}
+{
+  (
+    (< LETRA >{ elsupernombre=elsupernombre.concat(token.image); elreturn=elreturn.concat(token.image);})(< LETRA >{ elsupernombre=elsupernombre.concat(token.image); elreturn=elreturn.concat(token.image);}|< DIGITO >{ elsupernombre=elsupernombre.concat(token.image); elreturn=elreturn.concat(token.image);})*
+  
+  )
+  {
+    for(x=0; x<nombrefuns.size(); x++)
+    {
+    	if(elsupernombre.equals(nombrefuns.get(x)))
+    	{
+    	  cheker=true;
+    	  indexxx= x;
+      	}
+   }
+   if(!cheker)
+   {
+     throw new Error("NO ENCONTRE ESA FUNCION... PAILA ");
 
+   }
+  }
+  [" " { elreturn=elreturn.concat(token.image);}
+  < NUMERO> { elreturn=elreturn.concat(token.image); momenparams= momenparams.concat(token.image);}
+  (
+    " " { elreturn=elreturn.concat(token.image); momenparams= momenparams.concat(token.image);}
+    < NUMERO> { elreturn=elreturn.concat(token.image); momenparams= momenparams.concat(token.image);}  )*
+  ]
+  {
+    String[] tempvarsss= paramfuns.get(indexxx).split(" ");
+    System.out.println(tempvarsss.length);
+    String[] confirmo= momenparams.split(" ");
+    System.out.println(confirmo.length);
+    if(tempvarsss.length!=confirmo.length)
+    {
+      throw new Error("LA CANTIDAD DE PARAMETROS NO COINCIDE CON LA ESPERADA");
+    }
+  }
+}
 
 void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores, ArrayList<String> nombrefuns, ArrayList<String> paramfuns, ArrayList<String> blockfuns) :
 {
@@ -609,7 +635,7 @@ void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores
   }
   " "
   < OP>
-  (
+  [(
     //< NAME>|< LETRA>
     (< LETRA >)(< LETRA >|< DIGITO >)*
   )
@@ -649,7 +675,7 @@ void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores
 				// Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
 				throw new Error("NO PUDE METER EN EL ARRAY ESTO: "+token.image+"!!");
 			}
-	}  )*
+	}  )*]
   < CP>
   {
     for(x=0; x<variables.size(); x++)
@@ -660,13 +686,13 @@ void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores
 	  tempvalores.add(agregaint);
      }
      elreturn = "";
+     paramfuns.add(parametros);
   }
   < OP > { elreturn = token.image;}
   soloRevisaIf(x,salida,tempnombres, tempvalores)
   < CP>
   {
     elreturn = elreturn.concat(token.image);
-    paramfuns.add(parametros);
     System.out.println(parametros);
     blockfuns.add(elreturn);
     System.out.println(elreturn);
