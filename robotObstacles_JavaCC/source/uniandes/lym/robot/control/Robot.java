@@ -8,6 +8,7 @@ import java.util.Vector;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.awt.Point;
+import java.util.Collections;
 //import control.Interpreter;
 
 @SuppressWarnings("serial")
@@ -21,6 +22,8 @@ public class Robot implements RobotConstants {
         private ArrayList<Integer> valorvars = new ArrayList<Integer>();
         private ArrayList<String> tempnombres = new ArrayList<String>();
         private ArrayList<Integer> tempvalores = new ArrayList<Integer>();
+        private ArrayList<Integer> dirborrar = new ArrayList<Integer>();
+        private ArrayList<Integer> dirbordos = new ArrayList<Integer>();
         private ArrayList<String> blockfuns = new ArrayList<String>();
         private ArrayList<String> nombrefuns = new ArrayList<String>();
         private ArrayList<String> paramfuns = new ArrayList<String>();
@@ -36,7 +39,7 @@ public class Robot implements RobotConstants {
         private String condiloop = "";
         private String acumuloop = "";
         private String armando = "";
-        //private String nuevotoken = "???";
+        private String paraloop = "???";
         private boolean estoyenloop = false;
 
         private int cuentaif = -1;
@@ -102,28 +105,26 @@ public class Robot implements RobotConstants {
       jj_consume_token(RUN_DIRS);
       jj_consume_token(OP);
       jj_consume_token(46);
+                                    direcciones = token.image;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FRONT:
         jj_consume_token(FRONT);
-                                            direcciones = token.image;
         break;
       case RIGHT:
         jj_consume_token(RIGHT);
-                                                                                direcciones = token.image;
         break;
       case LEFT:
         jj_consume_token(LEFT);
-                                                                                                                   direcciones = token.image;
         break;
       case BACK:
         jj_consume_token(BACK);
-                                                                                                                                                      direcciones = token.image;
         break;
       default:
         jj_la1[1] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
+                                                                                                direcciones= direcciones.concat(token.image);
       label_1:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -135,6 +136,7 @@ public class Robot implements RobotConstants {
           break label_1;
         }
         jj_consume_token(47);
+                                    direcciones= direcciones.concat(token.image);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case FRONT:
           jj_consume_token(FRONT);
@@ -153,9 +155,58 @@ public class Robot implements RobotConstants {
           jj_consume_token(-1);
           throw new ParseException();
         }
-                                                                   direcciones= direcciones.concat(token.image);
-                                                                                                System.out.println(direcciones);
+                                                                                                                  direcciones= direcciones.concat(token.image);
       }
+                                                                                                  for(int i=0;i<direcciones.length();i++ )
+                                                                                                  {
+                                                                                                    if(Character.toString(direcciones.charAt(i)).equals(":"))
+                                                                                                    {
+                                                                                                      if(Character.toString(direcciones.charAt(i+1)).equals("l"))
+                                                                                                      {
+                                                                                                        if(world.getFacing()==0)//north
+                                                                                                                  {world.left();}
+                                                                                                                  else if (world.getFacing()==1)//south
+                                                                                                                  {world.right();}
+                                                                                                                  else if (world.getFacing()==2)//east
+                                                                                                                  {world.down();}
+                                                                                                                  else if (world.getFacing()==3)//west
+                                                                                                                  {world.up();}
+                                                                                                      }
+                                                                                                      else if(Character.toString(direcciones.charAt(i+1)).equals("f"))
+                                                                                                      {
+                                                                                                        if(world.getFacing()==0)
+                                                                                                                  { world.up();}
+                                                                                                                  else if (world.getFacing()==1)
+                                                                                                                  {world.down();}
+                                                                                                                  else if (world.getFacing()==2)
+                                                                                                                  {world.right();}
+                                                                                                                  else if (world.getFacing()==3)
+                                                                                                                  {world.left();}
+                                                                                                      }
+                                                                                                      else if(Character.toString(direcciones.charAt(i+1)).equals("r"))
+                                                                                                      {
+                                                                                                        if(world.getFacing()==0)//north
+                                                                                                                  {world.right();}
+                                                                                                                  else if (world.getFacing()==1)//south
+                                                                                                                  {world.left();}
+                                                                                                                  else if (world.getFacing()==2)//east
+                                                                                                                  {world.down();}
+                                                                                                                  else if (world.getFacing()==3)//west
+                                                                                                                  {world.up();}
+                                                                                                      }
+                                                                                                      else if(Character.toString(direcciones.charAt(i+1)).equals("b"))
+                                                                                                      {
+                                                                                                        if(world.getFacing()==0)//north
+                                                                                                                  {world.down();}
+                                                                                                                  else if (world.getFacing()==1)//south
+                                                                                                                  {world.up();}
+                                                                                                                  else if (world.getFacing()==2)//east
+                                                                                                                  {world.left();}
+                                                                                                                  else if (world.getFacing()==3)//west
+                                                                                                                  {world.right();}
+                                                                                                      }
+                                                                                                    }
+                                                                                                  }
       jj_consume_token(CP);
       break;
     case MOVE:
@@ -311,29 +362,109 @@ public class Robot implements RobotConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FRONT:
         jj_consume_token(FRONT);
-                                          for(int i=1;i<=x;i++)
-                                          { world.down(); }
+                                          if(world.getFacing()==0)
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.up(); }
+                                          }
+                                          else if (world.getFacing()==1)
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.down();}
+                                          }
+                                          else if (world.getFacing()==2)
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.right(); }
+                                          }
+                                          else if (world.getFacing()==3)
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.left(); }
+                                          }
         break;
       case RIGHT:
         jj_consume_token(RIGHT);
-                                          for(int i=1;i<=x;i++)
-                                          { world.right(); }
+                                          if(world.getFacing()==0)//north
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.right(); }
+                                          }
+                                          else if (world.getFacing()==1)//south
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.left();}
+                                          }
+                                          else if (world.getFacing()==2)//east
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.down(); }
+                                          }
+                                          else if (world.getFacing()==3)//west
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.up(); }
+                                          }
         break;
       case LEFT:
         jj_consume_token(LEFT);
-                                          for(int i=1;i<=x;i++)
-                                          { world.left(); }
+                                         if(world.getFacing()==0)//north
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.left(); }
+                                          }
+                                          else if (world.getFacing()==1)//south
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.right();}
+                                          }
+                                          else if (world.getFacing()==2)//east
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.down(); }
+                                          }
+                                          else if (world.getFacing()==3)//west
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.up(); }
+                                          }
         break;
       case BACK:
         jj_consume_token(BACK);
-                                          for(int i=1;i<=x;i++)
-                                          { world.up(); }
+                                          if(world.getFacing()==0)//north
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.down(); }
+                                          }
+                                          else if (world.getFacing()==1)//south
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.up();}
+                                          }
+                                          else if (world.getFacing()==2)//east
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.left(); }
+                                          }
+                                          else if (world.getFacing()==3)//west
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.right(); }
+                                          }
         break;
       default:
         jj_la1[8] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
+      break;
+    case PARALOOP:
+      jj_consume_token(PARALOOP);
+      estoyenloop = condition();
+                                                        if(!estoyenloop) { this.ReInit(new java.io.StringReader(")(skip))")); }
+      jj_consume_token(CP);
+      jj_consume_token(OP);
+      haceInputRecursion(x, salida, nueva);
       break;
     case REPEAT:
       jj_consume_token(REPEAT);
@@ -453,18 +584,40 @@ public class Robot implements RobotConstants {
     case RESETVAR:
       jj_consume_token(RESETVAR);
                                                 sizee = tempnomdos.size();
-                                                for(p=0; p<tempnomdos.size(); p++)
+                                                System.out.println("LEO EL TOKEN " );
+                                                for(p=0; p<sizee; p++)
                                                 {
-                                                  busque = tempnomdos.get(q);
+                                                  System.out.println("ENTRO AL CICLO " );
+                                                  busque = tempnomdos.get(p);
                                                   for(q=0; q<variables.size(); q++)
                                                   {
                                                     if(busque.equals(variables.get(q)))
                                                     {
-                                                      variables.remove(q);
-                                                      valorvars.remove(q);
-                                                      tempnomdos.remove(p);
+                                                      dirbordos.add(p);
+                                                      System.out.println("TOCA BORRAR LA VARIABLE "+variables.get(q));
+                                                      dirborrar.add(q);
+                                                      //variables.remove(q);
+                                                      //valorvars.remove(q);
+                                                      //tempnomdos.remove(p);
                                                     }
                                                   }
+                                                }
+                                                Collections.sort(dirborrar);
+                                                Collections.sort(dirbordos);
+                                                sizee = dirborrar.size();
+                                                for(p=0; p<dirborrar.size(); p++)
+                                                {
+                                                  q = dirborrar.get(sizee-p-1);
+                                                  System.out.println("TOCA BORRAR LA VARIABLE "+variables.get(q));
+                                                  variables.remove(q);
+                                                  System.out.println(valorvars.get(q));
+                                                  valorvars.remove(q);
+                                                }
+                                                sizee = dirbordos.size();
+                                                for(p=0; p<dirbordos.size(); p++)
+                                                {
+                                                  q = dirbordos.get(sizee-p-1);
+                                                  tempnomdos.remove(q);
                                                 }
       break;
     case DEFVAR:
@@ -525,7 +678,7 @@ public class Robot implements RobotConstants {
       break;
     case LOOP:
       jj_consume_token(LOOP);
-                             elreturn = ""; backup= "";
+                                     elreturn = ""; backup= "";
       estoyenloop = condition();
                                           if(elreturn == "")
                                           {
@@ -546,7 +699,7 @@ public class Robot implements RobotConstants {
                                                elreturn="";
       jj_consume_token(CP);
       soloRevisaIf(x, salida, tempnombres, tempvalores);
-                                          acumuloop = acumuloop.concat(elreturn);
+                                          acumuloop = elreturn;
                                           elreturn="";
                                           //codeloop=cprespuesto.concat(codeloop);
                                           if(estoyenloop)
@@ -569,20 +722,20 @@ public class Robot implements RobotConstants {
     jj_consume_token(CP);
           if(estoyenloop)
           {
-            armando = codeloop;
-
-            armando = armando.concat("(loop");
+            armando = "(";
+            armando = armando.concat(paraloop);
             armando = armando.concat(condiloop);
             armando = armando.concat(")");
             armando = armando.concat(codeloop);
+            //armando = armando.concat("(loop");
+            //armando = armando.concat(condiloop);
+            //armando = armando.concat(")");
+            //armando = armando.concat(codeloop);
+            //armando = armando.concat(")");
             armando = armando.concat(")");
             //armando = armando.concat(codeloop);
             System.out.println(armando);
             this.ReInit(new java.io.StringReader(armando));
-          }
-          else if(acumuloop!="")
-          {
-            this.ReInit(new java.io.StringReader(acumuloop));
           }
           else if(acumuloop!="")
           {
@@ -600,11 +753,120 @@ public class Robot implements RobotConstants {
   String busque = "";
   int sizee = 0;
   String cprespuesto=")";
+  String direcciones = "";
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case EQUALS:
       jj_consume_token(EQUALS);
       jj_consume_token(45);
       cambiarVariable(variables, valorvars);
+      break;
+    case RUN_DIRS:
+      jj_consume_token(RUN_DIRS);
+      jj_consume_token(OP);
+      jj_consume_token(46);
+                                    direcciones = token.image;
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case FRONT:
+        jj_consume_token(FRONT);
+        break;
+      case RIGHT:
+        jj_consume_token(RIGHT);
+        break;
+      case LEFT:
+        jj_consume_token(LEFT);
+        break;
+      case BACK:
+        jj_consume_token(BACK);
+        break;
+      default:
+        jj_la1[11] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+                                                                                                direcciones= direcciones.concat(token.image);
+      label_2:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case 47:
+          ;
+          break;
+        default:
+          jj_la1[12] = jj_gen;
+          break label_2;
+        }
+        jj_consume_token(47);
+                                    direcciones= direcciones.concat(token.image);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case FRONT:
+          jj_consume_token(FRONT);
+          break;
+        case RIGHT:
+          jj_consume_token(RIGHT);
+          break;
+        case LEFT:
+          jj_consume_token(LEFT);
+          break;
+        case BACK:
+          jj_consume_token(BACK);
+          break;
+        default:
+          jj_la1[13] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+                                                                                                                  direcciones= direcciones.concat(token.image);
+      }
+                                                                                                  for(int i=0;i<direcciones.length();i++ )
+                                                                                                  {
+                                                                                                    if(Character.toString(direcciones.charAt(i)).equals(":"))
+                                                                                                    {
+                                                                                                      if(Character.toString(direcciones.charAt(i+1)).equals("l"))
+                                                                                                      {
+                                                                                                        if(world.getFacing()==0)//north
+                                                                                                                  {world.left();}
+                                                                                                                  else if (world.getFacing()==1)//south
+                                                                                                                  {world.right();}
+                                                                                                                  else if (world.getFacing()==2)//east
+                                                                                                                  {world.down();}
+                                                                                                                  else if (world.getFacing()==3)//west
+                                                                                                                  {world.up();}
+                                                                                                      }
+                                                                                                      else if(Character.toString(direcciones.charAt(i+1)).equals("f"))
+                                                                                                      {
+                                                                                                        if(world.getFacing()==0)
+                                                                                                                  { world.up();}
+                                                                                                                  else if (world.getFacing()==1)
+                                                                                                                  {world.down();}
+                                                                                                                  else if (world.getFacing()==2)
+                                                                                                                  {world.right();}
+                                                                                                                  else if (world.getFacing()==3)
+                                                                                                                  {world.left();}
+                                                                                                      }
+                                                                                                      else if(Character.toString(direcciones.charAt(i+1)).equals("r"))
+                                                                                                      {
+                                                                                                        if(world.getFacing()==0)//north
+                                                                                                                  {world.right();}
+                                                                                                                  else if (world.getFacing()==1)//south
+                                                                                                                  {world.left();}
+                                                                                                                  else if (world.getFacing()==2)//east
+                                                                                                                  {world.down();}
+                                                                                                                  else if (world.getFacing()==3)//west
+                                                                                                                  {world.up();}
+                                                                                                      }
+                                                                                                      else if(Character.toString(direcciones.charAt(i+1)).equals("b"))
+                                                                                                      {
+                                                                                                        if(world.getFacing()==0)//north
+                                                                                                                  {world.down();}
+                                                                                                                  else if (world.getFacing()==1)//south
+                                                                                                                  {world.up();}
+                                                                                                                  else if (world.getFacing()==2)//east
+                                                                                                                  {world.left();}
+                                                                                                                  else if (world.getFacing()==3)//west
+                                                                                                                  {world.right();}
+                                                                                                      }
+                                                                                                    }
+                                                                                                  }
+      jj_consume_token(CP);
       break;
     case MOVE:
       jj_consume_token(MOVE);
@@ -632,7 +894,7 @@ public class Robot implements RobotConstants {
                                                    world.turnRight();
         break;
       default:
-        jj_la1[11] = jj_gen;
+        jj_la1[14] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -643,18 +905,66 @@ public class Robot implements RobotConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SOUTH:
         jj_consume_token(SOUTH);
+                                                                if(world.getFacing()==0)
+                                                                {
+                                                                 world.turnRight();world.turnRight();
+                                                                }
+                                                                else if(world.getFacing()==2)
+                                                                {
+                                                                 world.turnRight();
+                                                                }
+                                                                else if(world.getFacing()==3)
+                                                                {
+                                                                 world.turnRight();world.turnRight();world.turnRight();
+                                                                }
         break;
       case WEST:
         jj_consume_token(WEST);
+                                                  if(world.getFacing()==0)
+                                                                {
+                                                                 world.turnRight();world.turnRight();world.turnRight();
+                                                                }
+                                                                else if(world.getFacing()==2)
+                                                                {
+                                                                 world.turnRight();world.turnRight();
+                                                                }
+                                                                else if(world.getFacing()==1)
+                                                                {
+                                                                 world.turnRight();world.turnRight();world.turnRight(); world.turnRight();world.turnRight();
+                                                                }
         break;
       case EAST:
         jj_consume_token(EAST);
+                                                  if(world.getFacing()==0)
+                                                                {
+                                                                 world.turnRight();
+                                                                }
+                                                                else if(world.getFacing()==1)
+                                                                {
+                                                                 world.turnRight();world.turnRight();world.turnRight();
+                                                                }
+                                                                else if(world.getFacing()==3)
+                                                                {
+                                                                 world.turnRight();world.turnRight();
+                                                                }
         break;
       case NORTH:
         jj_consume_token(NORTH);
+                                                    if(world.getFacing()==1)
+                                                                {
+                                                                 world.turnRight();world.turnRight();
+                                                                }
+                                                                else if(world.getFacing()==2)
+                                                                {
+                                                                 world.turnRight();world.turnRight();world.turnRight();
+                                                                }
+                                                                else if(world.getFacing()==3)
+                                                                {
+                                                                 world.turnRight();
+                                                                }
         break;
       default:
-        jj_la1[12] = jj_gen;
+        jj_la1[15] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -676,7 +986,7 @@ public class Robot implements RobotConstants {
                                                                                       world.putChips(x);
         break;
       default:
-        jj_la1[13] = jj_gen;
+        jj_la1[16] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -698,32 +1008,122 @@ public class Robot implements RobotConstants {
                                                                                       world.pickChips(x);
         break;
       default:
-        jj_la1[14] = jj_gen;
+        jj_la1[17] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     case MOVE_DIR:
       jj_consume_token(MOVE_DIR);
+      jj_consume_token(45);
       x = checkNum(variables, valorvars);
+      jj_consume_token(47);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FRONT:
         jj_consume_token(FRONT);
+                                          if(world.getFacing()==0)
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.up(); }
+                                          }
+                                          else if (world.getFacing()==1)
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.down();}
+                                          }
+                                          else if (world.getFacing()==2)
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.right(); }
+                                          }
+                                          else if (world.getFacing()==3)
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.left(); }
+                                          }
         break;
       case RIGHT:
         jj_consume_token(RIGHT);
+                                          if(world.getFacing()==0)//north
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.right(); }
+                                          }
+                                          else if (world.getFacing()==1)//south
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.left();}
+                                          }
+                                          else if (world.getFacing()==2)//east
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.down(); }
+                                          }
+                                          else if (world.getFacing()==3)//west
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.up(); }
+                                          }
         break;
       case LEFT:
         jj_consume_token(LEFT);
+                                         if(world.getFacing()==0)//north
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.left(); }
+                                          }
+                                          else if (world.getFacing()==1)//south
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.right();}
+                                          }
+                                          else if (world.getFacing()==2)//east
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.down(); }
+                                          }
+                                          else if (world.getFacing()==3)//west
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.up(); }
+                                          }
         break;
       case BACK:
         jj_consume_token(BACK);
+                                          if(world.getFacing()==0)//north
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.down(); }
+                                          }
+                                          else if (world.getFacing()==1)//south
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.up();}
+                                          }
+                                          else if (world.getFacing()==2)//east
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.left(); }
+                                          }
+                                          else if (world.getFacing()==3)//west
+                                          {
+                                            for(int i=1;i<=x;i++)
+                                                { world.right(); }
+                                          }
         break;
       default:
-        jj_la1[15] = jj_gen;
+        jj_la1[18] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
+      break;
+    case PARALOOP:
+      jj_consume_token(PARALOOP);
+      estoyenloop = condition();
+                                                        if(!estoyenloop) { this.ReInit(new java.io.StringReader(")(skip))")); }
+      jj_consume_token(CP);
+      jj_consume_token(OP);
+      haceInputRecursion(x, salida, nueva);
       break;
     case REPEAT:
       jj_consume_token(REPEAT);
@@ -760,59 +1160,82 @@ public class Robot implements RobotConstants {
                                                 System.out.println(acumuresto);
                                                 this.ReInit(new java.io.StringReader(acumuresto));
       break;
-    case RUN_DIRS:
-      jj_consume_token(RUN_DIRS);
-      label_2:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case FRONT:
-          jj_consume_token(FRONT);
-          break;
-        case RIGHT:
-          jj_consume_token(RIGHT);
-          break;
-        case LEFT:
-          jj_consume_token(LEFT);
-          break;
-        case BACK:
-          jj_consume_token(BACK);
-          break;
-        default:
-          jj_la1[16] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case RIGHT:
-        case LEFT:
-        case BACK:
-        case FRONT:
-          ;
-          break;
-        default:
-          jj_la1[17] = jj_gen;
-          break label_2;
-        }
-      }
-      break;
     case MOVE_FACE:
       jj_consume_token(MOVE_FACE);
+      jj_consume_token(45);
       x = checkNum(variables, valorvars);
+      jj_consume_token(47);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SOUTH:
         jj_consume_token(SOUTH);
+                                                                if(world.getFacing()==0)
+                                                                {
+                                                                 world.turnRight();world.turnRight();
+                                                                }
+                                                                else if(world.getFacing()==2)
+                                                                {
+                                                                 world.turnRight();
+                                                                }
+                                                                else if(world.getFacing()==3)
+                                                                {
+                                                                 world.turnRight();world.turnRight();world.turnRight();
+                                                                }
+                                                                for(int i=1;i<=x;i++)
+                                                                { world.down(); }
         break;
       case WEST:
         jj_consume_token(WEST);
+                                                  if(world.getFacing()==0)
+                                                                {
+                                                                 world.turnRight();world.turnRight();world.turnRight();
+                                                                }
+                                                                else if(world.getFacing()==2)
+                                                                {
+                                                                 world.turnRight();world.turnRight();
+                                                                }
+                                                                else if(world.getFacing()==1)
+                                                                {
+                                                                 world.turnRight();world.turnRight();world.turnRight(); world.turnRight();world.turnRight();
+                                                                }
+                                                                for(int i=1;i<=x;i++)
+                                                                { world.left(); }
         break;
       case EAST:
         jj_consume_token(EAST);
+                                                  if(world.getFacing()==0)
+                                                                {
+                                                                 world.turnRight();
+                                                                }
+                                                                else if(world.getFacing()==1)
+                                                                {
+                                                                 world.turnRight();world.turnRight();world.turnRight();
+                                                                }
+                                                                else if(world.getFacing()==3)
+                                                                {
+                                                                 world.turnRight();world.turnRight();
+                                                                }
+                                                                for(int i=1;i<=x;i++)
+                                                                { world.right(); }
         break;
       case NORTH:
         jj_consume_token(NORTH);
+                                                    if(world.getFacing()==1)
+                                                                {
+                                                                 world.turnRight();world.turnRight();
+                                                                }
+                                                                else if(world.getFacing()==2)
+                                                                {
+                                                                 world.turnRight();world.turnRight();world.turnRight();
+                                                                }
+                                                                else if(world.getFacing()==3)
+                                                                {
+                                                                 world.turnRight();
+                                                                }
+                                                                for(int i=1;i<=x;i++)
+                                                                { world.up(); }
         break;
       default:
-        jj_la1[18] = jj_gen;
+        jj_la1[19] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -820,18 +1243,31 @@ public class Robot implements RobotConstants {
     case RESETVAR:
       jj_consume_token(RESETVAR);
                                                 sizee = tempnomdos.size();
-                                                for(p=0; p<tempnomdos.size(); p++)
+                                                for(p=0; p<sizee; p++)
                                                 {
-                                                  busque = tempnomdos.get(q);
+                                                  busque = tempnomdos.get(p);
                                                   for(q=0; q<variables.size(); q++)
                                                   {
                                                     if(busque.equals(variables.get(q)))
                                                     {
-                                                      variables.remove(q);
-                                                      valorvars.remove(q);
-                                                      tempnomdos.remove(p);
+                                                      dirbordos.add(p);
+                                                      dirborrar.add(q);
+                                                      //variables.remove(q);
+                                                      //valorvars.remove(q);
+                                                      //tempnomdos.remove(p);
                                                     }
                                                   }
+                                                }
+                                                for(p=0; p<dirborrar.size(); p++)
+                                                {
+                                                  q = dirborrar.get(p);
+                                                  variables.remove(q);
+                                                  valorvars.remove(q);
+                                                }
+                                                for(p=0; p<dirbordos.size(); p++)
+                                                {
+                                                  q = dirborrar.get(p);
+                                                  tempnomdos.remove(q);
                                                 }
       break;
     case DEFVAR:
@@ -867,6 +1303,7 @@ public class Robot implements RobotConstants {
                                 acumuresto = "(";
                                 acumuresto = acumuresto.concat(elreturn);
                                 acumuresto = acumuresto.concat(")");
+                                acumuresto = acumuresto.concat(")");
                           }
                           elreturn="";
                           if (bool)
@@ -890,6 +1327,37 @@ public class Robot implements RobotConstants {
                             acumuresto = "";
                           }
       break;
+    case LOOP:
+      jj_consume_token(LOOP);
+                                     elreturn = ""; backup= "";
+      estoyenloop = condition();
+                                          if(elreturn == "")
+                                          {
+                                            condiloop = backup;
+                                          }
+                                          else
+                                          {
+                                            condiloop = elreturn;
+                                          }
+      jj_consume_token(CP);
+      jj_consume_token(OP);
+                                                     elreturn=token.image;
+      soloRevisaIf(x, salida, tempnombres, tempvalores);
+                                                                                            //elreturn=elreturn.concat(token.image);
+                                                                                                                                                elreturn=elreturn.concat(")");
+                                                                                                                                                codeloop= elreturn;
+      jj_consume_token(CP);
+                                               elreturn="";
+      jj_consume_token(CP);
+      soloRevisaIf(x, salida, tempnombres, tempvalores);
+                                          acumuloop = elreturn;
+                                          elreturn="";
+                                          //codeloop=cprespuesto.concat(codeloop);
+                                          if(estoyenloop)
+                                          {
+                                            this.ReInit(new java.io.StringReader(cprespuesto));
+                                          }
+      break;
     case OP:
       jj_consume_token(OP);
       haceInputRecursion(x, salida, nueva);
@@ -898,7 +1366,7 @@ public class Robot implements RobotConstants {
       buscarFuncion();
       break;
     default:
-      jj_la1[19] = jj_gen;
+      jj_la1[20] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -909,7 +1377,7 @@ public class Robot implements RobotConstants {
       haceInputRecursion(x, salida, nueva);
       break;
     default:
-      jj_la1[20] = jj_gen;
+      jj_la1[21] = jj_gen;
       ;
     }
   }
@@ -934,7 +1402,7 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[21] = jj_gen;
+        jj_la1[22] = jj_gen;
         break label_3;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -947,7 +1415,7 @@ public class Robot implements RobotConstants {
                                                                                                                                             elsupernombre=elsupernombre.concat(token.image);
         break;
       default:
-        jj_la1[22] = jj_gen;
+        jj_la1[23] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1024,7 +1492,7 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[23] = jj_gen;
+          jj_la1[24] = jj_gen;
           break label_4;
         }
         jj_consume_token(45);
@@ -1043,7 +1511,7 @@ public class Robot implements RobotConstants {
       }
       break;
     default:
-      jj_la1[24] = jj_gen;
+      jj_la1[25] = jj_gen;
       ;
     }
     jj_consume_token(CP);
@@ -1054,7 +1522,7 @@ public class Robot implements RobotConstants {
     input = cpp.concat(input);
     //System.out.println(input);
     elreturn = "";
-    soloRevisaIf(x, salida, tempnombres, tempvalores);
+    soloRevisaIf(x, salida, variables, valorvars);
     if(!elreturn.equals(""))
                           {
                                 acumuresto = "(";
@@ -1114,7 +1582,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(RIGHT);
         break;
       default:
-        jj_la1[25] = jj_gen;
+        jj_la1[26] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1123,8 +1591,8 @@ public class Robot implements RobotConstants {
     case FACE:
       jj_consume_token(FACE);
                           elreturn=elreturn.concat(token.image);
-      jj_consume_token(46);
-                                                                      elreturn=elreturn.concat(token.image);
+      jj_consume_token(47);
+                                                                       elreturn=elreturn.concat(token.image);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SOUTH:
         jj_consume_token(SOUTH);
@@ -1139,11 +1607,11 @@ public class Robot implements RobotConstants {
         jj_consume_token(NORTH);
         break;
       default:
-        jj_la1[26] = jj_gen;
+        jj_la1[27] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-                                                                                                                                              elreturn=elreturn.concat(token.image);
+                                                                                                                                               elreturn=elreturn.concat(token.image);
       break;
     case PUT:
       jj_consume_token(PUT);
@@ -1158,7 +1626,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(CHIPS);
         break;
       default:
-        jj_la1[27] = jj_gen;
+        jj_la1[28] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1180,7 +1648,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(CHIPS);
         break;
       default:
-        jj_la1[28] = jj_gen;
+        jj_la1[29] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1192,7 +1660,11 @@ public class Robot implements RobotConstants {
     case MOVE_DIR:
       jj_consume_token(MOVE_DIR);
                               elreturn=elreturn.concat(token.image);
+      jj_consume_token(45);
+                                                                          elreturn=elreturn.concat(token.image);
       x = checkNum(tempnombres, tempvalores);
+      jj_consume_token(47);
+                                                                                                                                                            elreturn=elreturn.concat(token.image);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FRONT:
         jj_consume_token(FRONT);
@@ -1207,56 +1679,87 @@ public class Robot implements RobotConstants {
         jj_consume_token(BACK);
         break;
       default:
-        jj_la1[29] = jj_gen;
+        jj_la1[30] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-                                                                                                                                            elreturn=elreturn.concat(token.image);
+                                                                                                                                                                                                                                      elreturn=elreturn.concat(token.image);
       break;
     case RUN_DIRS:
       jj_consume_token(RUN_DIRS);
                               elreturn=elreturn.concat(token.image);
+      jj_consume_token(OP);
+                                                                            elreturn=elreturn.concat(token.image);
+      jj_consume_token(46);
+                                                                                                                        elreturn=elreturn.concat(token.image);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case FRONT:
+        jj_consume_token(FRONT);
+                                                                                                                                                                         elreturn=elreturn.concat(token.image);
+        break;
+      case RIGHT:
+        jj_consume_token(RIGHT);
+                                                                                                                                                                                                                          elreturn=elreturn.concat(token.image);
+        break;
+      case LEFT:
+        jj_consume_token(LEFT);
+                                                                                                                                                                                                                                                                          elreturn=elreturn.concat(token.image);
+        break;
+      case BACK:
+        jj_consume_token(BACK);
+                                                                                                                                                                                                                                                                                                                          elreturn=elreturn.concat(token.image);
+        break;
+      default:
+        jj_la1[31] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
       label_5:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case FRONT:
-          jj_consume_token(FRONT);
-                                                                               elreturn=elreturn.concat(token.image);
-          break;
-        case RIGHT:
-          jj_consume_token(RIGHT);
-                                                                                                                                elreturn=elreturn.concat(token.image);
-          break;
-        case LEFT:
-          jj_consume_token(LEFT);
-                                                                                                                                                                                elreturn=elreturn.concat(token.image);
-          break;
-        case BACK:
-          jj_consume_token(BACK);
-                                                                                                                                                                                                                                elreturn=elreturn.concat(token.image);
-          break;
-        default:
-          jj_la1[30] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case RIGHT:
-        case LEFT:
-        case BACK:
-        case FRONT:
+        case 47:
           ;
           break;
         default:
-          jj_la1[31] = jj_gen;
+          jj_la1[32] = jj_gen;
           break label_5;
         }
+        jj_consume_token(47);
+                                                                                                                                                                                                                                                                                                                                                                         elreturn=elreturn.concat(token.image);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case FRONT:
+          jj_consume_token(FRONT);
+                                                                                                                                                                                                                                                                                                                                                                                                                          elreturn=elreturn.concat(token.image);
+          break;
+        case RIGHT:
+          jj_consume_token(RIGHT);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                           elreturn=elreturn.concat(token.image);
+          break;
+        case LEFT:
+          jj_consume_token(LEFT);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           elreturn=elreturn.concat(token.image);
+          break;
+        case BACK:
+          jj_consume_token(BACK);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           elreturn=elreturn.concat(token.image);
+          break;
+        default:
+          jj_la1[33] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
       }
+      jj_consume_token(CP);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            elreturn=elreturn.concat(token.image);
       break;
     case MOVE_FACE:
       jj_consume_token(MOVE_FACE);
                                 elreturn=elreturn.concat(token.image);
+      jj_consume_token(45);
+                                                                            elreturn=elreturn.concat(token.image);
       x = checkNum(tempnombres, valorvars);
+      jj_consume_token(47);
+                                                                                                                                                           elreturn=elreturn.concat(token.image);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case SOUTH:
         jj_consume_token(SOUTH);
@@ -1271,11 +1774,11 @@ public class Robot implements RobotConstants {
         jj_consume_token(NORTH);
         break;
       default:
-        jj_la1[32] = jj_gen;
+        jj_la1[34] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-                                                                                                                                           elreturn=elreturn.concat(token.image);
+                                                                                                                                                                                                                                    elreturn=elreturn.concat(token.image);
       break;
     case DEFVAR:
       jj_consume_token(DEFVAR);
@@ -1288,7 +1791,9 @@ public class Robot implements RobotConstants {
     case IF:
       jj_consume_token(IF);
                         elreturn=elreturn.concat(token.image);
-      bool = condition();
+      conditionRevi();
+      jj_consume_token(CP);
+                                                                                      elreturn=elreturn.concat(token.image);
       break;
     case CAN_MOVE_P:
       jj_consume_token(CAN_MOVE_P);
@@ -1309,7 +1814,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(NORTH);
         break;
       default:
-        jj_la1[33] = jj_gen;
+        jj_la1[35] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1334,7 +1839,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(NORTH);
         break;
       default:
-        jj_la1[34] = jj_gen;
+        jj_la1[36] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1353,7 +1858,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(CHIPS);
         break;
       default:
-        jj_la1[35] = jj_gen;
+        jj_la1[37] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1385,7 +1890,7 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[36] = jj_gen;
+          jj_la1[38] = jj_gen;
           break label_6;
         }
       }
@@ -1394,7 +1899,7 @@ public class Robot implements RobotConstants {
       chequearFuncion();
       break;
     default:
-      jj_la1[37] = jj_gen;
+      jj_la1[39] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1417,7 +1922,7 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[38] = jj_gen;
+        jj_la1[40] = jj_gen;
         break label_7;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1430,7 +1935,7 @@ public class Robot implements RobotConstants {
                                                                                                                                                                                                                           elsupernombre=elsupernombre.concat(token.image); elreturn=elreturn.concat(token.image);
         break;
       default:
-        jj_la1[39] = jj_gen;
+        jj_la1[41] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1461,7 +1966,7 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[40] = jj_gen;
+          jj_la1[42] = jj_gen;
           break label_8;
         }
         jj_consume_token(45);
@@ -1471,7 +1976,7 @@ public class Robot implements RobotConstants {
       }
       break;
     default:
-      jj_la1[41] = jj_gen;
+      jj_la1[43] = jj_gen;
       ;
     }
     String[] tempvarsss= paramfuns.get(indexxx).split(" ");
@@ -1492,6 +1997,7 @@ public class Robot implements RobotConstants {
   String salida = "";
   String elrelleno = "";
   String elrenombre = "";
+  String lavaria = "";
     jj_consume_token(LETRA);
                 elrenombre=elrenombre.concat(token.image);
     label_9:
@@ -1502,7 +2008,7 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[42] = jj_gen;
+        jj_la1[44] = jj_gen;
         break label_9;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1515,7 +2021,7 @@ public class Robot implements RobotConstants {
                                                                                                                                 elrenombre=elrenombre.concat(token.image);
         break;
       default:
-        jj_la1[43] = jj_gen;
+        jj_la1[45] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1537,6 +2043,7 @@ public class Robot implements RobotConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LETRA:
       jj_consume_token(LETRA);
+                lavaria=lavaria.concat(token.image);
       label_10:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1545,27 +2052,31 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[44] = jj_gen;
+          jj_la1[46] = jj_gen;
           break label_10;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case LETRA:
           jj_consume_token(LETRA);
+                                                                  lavaria=lavaria.concat(token.image);
           break;
         case DIGITO:
           jj_consume_token(DIGITO);
+                                                                                                                    lavaria=lavaria.concat(token.image);
           break;
         default:
-          jj_la1[45] = jj_gen;
+          jj_la1[47] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
       }
         try
                         {
-                                tempnombres.add(token.image);
+                                tempnombres.add(lavaria);
                                 tempvalores.add(4);
-                                parametros = parametros.concat(token.image);
+                                parametros = parametros.concat(lavaria);
+
+
                         }
                         catch (NumberFormatException ee)
                         {
@@ -1580,11 +2091,12 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[46] = jj_gen;
+          jj_la1[48] = jj_gen;
           break label_11;
         }
         jj_consume_token(45);
         jj_consume_token(LETRA);
+                 lavaria=token.image;
         label_12:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1593,28 +2105,30 @@ public class Robot implements RobotConstants {
             ;
             break;
           default:
-            jj_la1[47] = jj_gen;
+            jj_la1[49] = jj_gen;
             break label_12;
           }
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case LETRA:
             jj_consume_token(LETRA);
+                                                   lavaria=lavaria.concat(token.image);
             break;
           case DIGITO:
             jj_consume_token(DIGITO);
+                                                                                                     lavaria=lavaria.concat(token.image);
             break;
           default:
-            jj_la1[48] = jj_gen;
+            jj_la1[50] = jj_gen;
             jj_consume_token(-1);
             throw new ParseException();
           }
         }
                 try
                         {
-                                tempnombres.add(token.image);
+                                tempnombres.add(lavaria);
                                 tempvalores.add(4);
                                 parametros = parametros.concat(" ");
-                                parametros = parametros.concat(token.image);
+                                parametros = parametros.concat(lavaria);
                         }
                         catch (NumberFormatException ee)
                         {
@@ -1625,7 +2139,7 @@ public class Robot implements RobotConstants {
       }
       break;
     default:
-      jj_la1[49] = jj_gen;
+      jj_la1[51] = jj_gen;
       ;
     }
     jj_consume_token(CP);
@@ -1721,7 +2235,7 @@ public class Robot implements RobotConstants {
                                                          }
         break;
       default:
-        jj_la1[50] = jj_gen;
+        jj_la1[52] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1826,7 +2340,7 @@ public class Robot implements RobotConstants {
                                           }
         break;
       default:
-        jj_la1[51] = jj_gen;
+        jj_la1[53] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1851,11 +2365,100 @@ public class Robot implements RobotConstants {
                                           {if (true) return parafuncion;}
       break;
     default:
-      jj_la1[52] = jj_gen;
+      jj_la1[54] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
     throw new Error("Missing return statement in function");
+  }
+
+  final public void conditionRevi() throws ParseException {
+  int x=0;
+  boolean bool;
+  int posx=0;
+  int posy=0;
+  int newpos=0;
+  boolean paranot=false;
+  boolean parafuncion=false;
+    jj_consume_token(OP);
+              elreturn=elreturn.concat(token.image);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case FACING_P:
+      jj_consume_token(FACING_P);
+                            elreturn=elreturn.concat(token.image);
+      jj_consume_token(47);
+                                      elreturn=elreturn.concat(token.image);
+      bool = facing_p();
+      break;
+    case CAN_PUT_P:
+      jj_consume_token(CAN_PUT_P);
+                               elreturn=elreturn.concat(token.image);
+      jj_consume_token(45);
+                                                                           elreturn=elreturn.concat(token.image);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case BALLOONS:
+        jj_consume_token(BALLOONS);
+                                                     elreturn=elreturn.concat(token.image);
+        jj_consume_token(45);
+                                                                                                 elreturn=elreturn.concat(token.image);
+        x = checkNum(variables, valorvars);
+        break;
+      case CHIPS:
+        jj_consume_token(CHIPS);
+                                                  elreturn=elreturn.concat(token.image);
+        jj_consume_token(45);
+                                                                                              elreturn=elreturn.concat(token.image);
+        x = checkNum(variables, valorvars);
+        break;
+      default:
+        jj_la1[55] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      break;
+    case CAN_MOVE_P:
+      jj_consume_token(CAN_MOVE_P);
+                                elreturn=elreturn.concat(token.image);
+      jj_consume_token(47);
+                                                                             elreturn=elreturn.concat(token.image);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case SOUTH:
+        jj_consume_token(SOUTH);
+                                          elreturn=elreturn.concat(token.image);
+        break;
+      case WEST:
+        jj_consume_token(WEST);
+                                      elreturn=elreturn.concat(token.image);
+        break;
+      case EAST:
+        jj_consume_token(EAST);
+                                          elreturn=elreturn.concat(token.image);
+        break;
+      case NORTH:
+        jj_consume_token(NORTH);
+                                      elreturn=elreturn.concat(token.image);
+        break;
+      default:
+        jj_la1[56] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      break;
+    case NOT:
+      jj_consume_token(NOT);
+                 elreturn=elreturn.concat(token.image);
+      paranot = condition();
+      jj_consume_token(CP);
+                                                                elreturn=elreturn.concat(token.image);
+      break;
+    case LETRA:
+      revisarFuncionIf();
+      break;
+    default:
+      jj_la1[57] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
   }
 
   final public boolean facing_p() throws ParseException {
@@ -1921,7 +2524,7 @@ public class Robot implements RobotConstants {
      }
       break;
     default:
-      jj_la1[53] = jj_gen;
+      jj_la1[58] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1932,8 +2535,9 @@ public class Robot implements RobotConstants {
   int pos=-40;
   int i = 0;
   String pru = "";
+  String lavaria = "";
     jj_consume_token(LETRA);
-               elreturn= elreturn.concat(token.image);
+               elreturn= elreturn.concat(token.image); lavaria= lavaria.concat(token.image);
     label_13:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1942,20 +2546,20 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[54] = jj_gen;
+        jj_la1[59] = jj_gen;
         break label_13;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case LETRA:
         jj_consume_token(LETRA);
-                                                                    elreturn=elreturn.concat(token.image);
+                                                                                                          elreturn=elreturn.concat(token.image); lavaria= lavaria.concat(token.image);
         break;
       case DIGITO:
         jj_consume_token(DIGITO);
-                                                                                                                        elreturn=elreturn.concat(token.image);
+                                                                                                                                                                                                    elreturn=elreturn.concat(token.image); lavaria= lavaria.concat(token.image);
         break;
       default:
-        jj_la1[55] = jj_gen;
+        jj_la1[60] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1965,11 +2569,11 @@ public class Robot implements RobotConstants {
           pru = variables.get(i);
           if (pru!=null)
           {
-        if(token.image.equals(pru))
+        if(lavaria.equals(pru))
         {
           variables.remove(i);
           valorvars.remove(i);
-          variables.add(token.image);
+          variables.add(lavaria);
           pos = i;
         }
           }
@@ -1989,10 +2593,11 @@ public class Robot implements RobotConstants {
   final public int checkNum(ArrayList<String> variables, ArrayList<Integer> valorvars) throws ParseException {
   int rta = -57;
   int i = 0;
+  String lavariable = "";
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LETRA:
       jj_consume_token(LETRA);
-                elreturn=elreturn.concat(token.image);
+                elreturn=elreturn.concat(token.image); lavariable=lavariable.concat(token.image);
       label_14:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2001,27 +2606,27 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[56] = jj_gen;
+          jj_la1[61] = jj_gen;
           break label_14;
         }
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case LETRA:
           jj_consume_token(LETRA);
-                                                                    elreturn=elreturn.concat(token.image);
+                                                                                                               elreturn=elreturn.concat(token.image);  lavariable=lavariable.concat(token.image);
           break;
         case DIGITO:
           jj_consume_token(DIGITO);
-                                                                                                                        elreturn=elreturn.concat(token.image);
+                                                                                                                                                                                                               elreturn=elreturn.concat(token.image);  lavariable=lavariable.concat(token.image);
           break;
         default:
-          jj_la1[57] = jj_gen;
+          jj_la1[62] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
       }
         for(i=0; i<variables.size(); i++)
         {
-        if(token.image.equals(variables.get(i)))
+        if(lavariable.equals(variables.get(i)))
         {
           rta= valorvars.get(i);
 
@@ -2029,7 +2634,7 @@ public class Robot implements RobotConstants {
         }
         if(rta == -57)
         {
-          {if (true) throw new Error("ERROR: NO EXISTE LA VARIABLE" + token.image);}
+          {if (true) throw new Error("ERROR: NO EXISTE LA VARIABLE" + lavariable);}
 
         }
         {if (true) return rta;}
@@ -2041,7 +2646,7 @@ public class Robot implements RobotConstants {
           {if (true) return rta;}
       break;
     default:
-      jj_la1[58] = jj_gen;
+      jj_la1[63] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -2054,8 +2659,10 @@ public class Robot implements RobotConstants {
           int pos = 0;
           int j = 0;
           int k = 0;
+          String lavariab = "";
+          boolean yaesta = false;
     jj_consume_token(LETRA);
-                        elreturn=elreturn.concat(token.image);
+                        elreturn=elreturn.concat(token.image); lavariab=lavariab.concat(token.image);
     label_15:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2064,27 +2671,27 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[59] = jj_gen;
+        jj_la1[64] = jj_gen;
         break label_15;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case LETRA:
         jj_consume_token(LETRA);
-                                                                            elreturn=elreturn.concat(token.image);
+                                                                                                                   elreturn=elreturn.concat(token.image); lavariab=lavariab.concat(token.image);
         break;
       case DIGITO:
         jj_consume_token(DIGITO);
-                                                                                                                                elreturn=elreturn.concat(token.image);
+                                                                                                                                                                                                              elreturn=elreturn.concat(token.image); lavariab=lavariab.concat(token.image);
         break;
       default:
-        jj_la1[60] = jj_gen;
+        jj_la1[65] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
     }
             try
                         {
-                                variables.add(token.image);
+                                variables.add(lavariab);
 
                         }
                         catch (NumberFormatException ee)
@@ -2114,6 +2721,7 @@ public class Robot implements RobotConstants {
   final public boolean buscarFuncionIf() throws ParseException {
   int x=0;
   int y=0;
+  int z=0;
   boolean cheker=false;
   int indexxx= 0;
   String elnombre = "";
@@ -2131,7 +2739,7 @@ public class Robot implements RobotConstants {
         ;
         break;
       default:
-        jj_la1[61] = jj_gen;
+        jj_la1[66] = jj_gen;
         break label_16;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2144,7 +2752,7 @@ public class Robot implements RobotConstants {
                                                                                                                                                                                                                           elsupernombre=elsupernombre.concat(token.image); elreturn=elreturn.concat(token.image);
         break;
       default:
-        jj_la1[62] = jj_gen;
+        jj_la1[67] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -2223,7 +2831,7 @@ public class Robot implements RobotConstants {
           ;
           break;
         default:
-          jj_la1[63] = jj_gen;
+          jj_la1[68] = jj_gen;
           break label_17;
         }
         jj_consume_token(45);
@@ -2245,7 +2853,7 @@ public class Robot implements RobotConstants {
       }
       break;
     default:
-      jj_la1[64] = jj_gen;
+      jj_la1[69] = jj_gen;
       ;
     }
     jj_consume_token(CP);
@@ -2259,6 +2867,14 @@ public class Robot implements RobotConstants {
 
     //System.out.println(input);
     elreturn = "";
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case CP:
+      jj_consume_token(CP);
+      break;
+    default:
+      jj_la1[70] = jj_gen;
+      ;
+    }
     jj_consume_token(OP);
           elreturn=elreturn.concat(token.image);
     soloRevisaIf(x, salida, tempnombres, tempvalores);
@@ -2270,20 +2886,31 @@ public class Robot implements RobotConstants {
     jj_consume_token(CP);
           elreturn=elreturn.concat(token.image); blodos = elreturn; elreturn = "";System.out.println("EL SEGUNDO BLOQUE ES:   "+blodos);
     jj_consume_token(CP);
-    soloRevisaIf(x, salida, tempnombres, tempvalores);
+    soloRevisaIf(x, salida, variables, valorvars);
     if(!elreturn.equals(""))
                           {
                                 acumuresto = "";
                                 acumuresto = acumuresto.concat(blouno);
                                 acumuresto = acumuresto.concat(blodos);
                                 acumuresto = acumuresto.concat(")");
-                                acumuresto = acumuresto.concat(elreturn);
+                                input = input.concat(acumuresto);
+                                //acumuresto = acumuresto.concat(elreturn);
                                 if(!paramfuns.get(indexxx).equals(""))
                                 {
                                   input = input.concat("(!!!)");
                                 }
                                 //input = input.concat("(!!!)");
-                        input = input.concat(acumuresto);
+
+                                //for(z=0;z<variables.size();z++)
+                                //{
+                                  //input = input.concat("(defvar ");
+                                  //input = input.concat(variables.get(z));
+                                  //input = input.concat(" ");
+                                  //input = input.concat(Integer.toString(valorvars.get(z)));
+                                  //input = input.concat(")");
+                                //}
+                                input = input.concat("(skip)");
+                        input = input.concat(elreturn);
                           }
     System.out.println("EL NUEVO INPUT ES:   "+input);
 
@@ -2296,6 +2923,210 @@ public class Robot implements RobotConstants {
     throw new Error("Missing return statement in function");
   }
 
+  final public boolean revisarFuncionIf() throws ParseException {
+  int x=0;
+  int y=0;
+  int z=0;
+  boolean cheker=false;
+  int indexxx= 0;
+  String elnombre = "";
+  String elsupernombre = "";
+  int elnumero = 0;
+  String input = "";
+  String cpp= ")";
+    jj_consume_token(LETRA);
+                elsupernombre=elsupernombre.concat(token.image); elreturn=elreturn.concat(token.image);
+    label_18:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case LETRA:
+      case DIGITO:
+        ;
+        break;
+      default:
+        jj_la1[71] = jj_gen;
+        break label_18;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case LETRA:
+        jj_consume_token(LETRA);
+                                                                                                                     elsupernombre=elsupernombre.concat(token.image); elreturn=elreturn.concat(token.image);
+        break;
+      case DIGITO:
+        jj_consume_token(DIGITO);
+                                                                                                                                                                                                                          elsupernombre=elsupernombre.concat(token.image); elreturn=elreturn.concat(token.image);
+        break;
+      default:
+        jj_la1[72] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
+    try
+                        {
+                                for(x=0; x<nombrefuns.size(); x++)
+                        {
+                                if(elsupernombre.equals(nombrefuns.get(x)))
+                                {
+                                  cheker=true;
+                                  indexxx= x;
+                                  input = blockfuns.get(x);
+                                  try
+                                                {
+                                                        tempnombres = new ArrayList<String>();
+                                                        tempvalores = new ArrayList<Integer>();
+                                                        String[] tempvarss= paramfuns.get(indexxx).split(" ");
+                                                        System.out.println(tempvarss.length);
+                                                        for(y=0; y<tempvarss.length; y++)
+                                                        {
+                                                          tempnombres.add(tempvarss[y]);
+                                                          tempnomdos.add(tempvarss[y]);
+                                                          tempvalores.add(-1);
+                                                         }
+                                                         if(paramfuns.get(indexxx).equals(""))
+                                                         {
+                                                           tempnombres.remove(0);
+                                                           tempnomdos.remove(tempnomdos.size()-1);
+                                                           tempvalores.remove(0);
+                                                         }
+                                                }
+                                        catch (NumberFormatException ee)
+                                                {
+                                                        // Dada la forma de NUMERO, sabemos que solo puede tener d�gitos
+                                                        // Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
+                                                        {if (true) throw new Error("NO PUDE METER EN EL ARRAY ESTO: "+token.image+"!!");}
+                                                }
+
+                                }
+                        }
+                        if(!cheker)
+                        {
+
+                          {if (true) throw new Error("NO ENCONTRE ESA FUNCION... PAILA ");}
+
+                        }
+                        }
+                        catch (NumberFormatException ee)
+                        {
+                                // Dada la forma de NUMERO, sabemos que solo puede tener d�gitos
+                                // Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
+                                {if (true) throw new Error("NO PUDE METER EN EL ARRAY ESTO: "+token.image+"!!");}
+                        }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case 45:
+      jj_consume_token(45);
+         elreturn=elreturn.concat(token.image);
+      jj_consume_token(NUMERO);
+                elreturn=elreturn.concat(token.image);
+      if(tempnombres.get(0)!=null) {
+        elnombre = tempnombres.get(0);
+        elnumero = Integer.parseInt(token.image);
+        tempnombres.remove(0);
+        variables.add(elnombre);
+        valorvars.add(elnumero);
+      }
+      else
+      {
+        {if (true) throw new Error("NO HAY SUFICIENTES VARIABLES");}
+      }
+      label_19:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case 45:
+          ;
+          break;
+        default:
+          jj_la1[73] = jj_gen;
+          break label_19;
+        }
+        jj_consume_token(45);
+          elreturn=elreturn.concat(token.image);
+        jj_consume_token(NUMERO);
+      elreturn=elreturn.concat(token.image);
+      backup= elreturn;
+    if(tempnombres.get(0)!=null) {
+        elnombre = tempnombres.get(0);
+        elnumero = Integer.parseInt(token.image);
+        tempnombres.remove(0);
+        variables.add(elnombre);
+        valorvars.add(elnumero);
+      }
+      else
+      {
+        {if (true) throw new Error("NO HAY SUFICIENTES VARIABLES");}
+      }
+      }
+      break;
+    default:
+      jj_la1[74] = jj_gen;
+      ;
+    }
+    jj_consume_token(CP);
+    if(tempnombres.size() >0)
+    {
+      {if (true) throw new Error("FALTARON VARIABLE POR DEFINIR PARA USAR LA FUNCION");}
+    }
+    //input = nuevotoken.concat(input);
+
+    //input = input.concat(cpp);
+
+    //System.out.println(input);
+    elreturn = "";
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case CP:
+      jj_consume_token(CP);
+      break;
+    default:
+      jj_la1[75] = jj_gen;
+      ;
+    }
+    jj_consume_token(OP);
+          elreturn=elreturn.concat(token.image);
+    soloRevisaIf(x, salida, variables, valorvars);
+    jj_consume_token(CP);
+          elreturn=elreturn.concat(token.image); blouno = elreturn; elreturn = "";System.out.println("EL PRIMER BLOQUE ES:   "+blouno);
+    jj_consume_token(OP);
+          elreturn=elreturn.concat(token.image);
+    soloRevisaIf(x, salida, variables, valorvars);
+    jj_consume_token(CP);
+          elreturn=elreturn.concat(token.image); blodos = elreturn; elreturn = "";System.out.println("EL SEGUNDO BLOQUE ES:   "+blodos);
+    jj_consume_token(CP);
+    soloRevisaIf(x, salida, variables, valorvars);
+    if(!elreturn.equals(""))
+                          {
+                                acumuresto = "";
+                                acumuresto = acumuresto.concat(blouno);
+                                acumuresto = acumuresto.concat(blodos);
+                                acumuresto = acumuresto.concat(")");
+                                input = input.concat(acumuresto);
+                                //acumuresto = acumuresto.concat(elreturn);
+                                if(!paramfuns.get(indexxx).equals(""))
+                                {
+                                  input = input.concat("(!!!)");
+                                }
+                                //input = input.concat("(!!!)");
+
+                                //for(z=0;z<variables.size();z++)
+                                //{
+                                  //input = input.concat("(defvar ");
+                                  //input = input.concat(variables.get(z));
+                                  //input = input.concat(" ");
+                                  //input = input.concat(Integer.toString(valorvars.get(z)));
+                                  //input = input.concat(")");
+                                //}
+                                input = input.concat("(skip)");
+                        input = input.concat(elreturn);
+                          }
+    System.out.println("EL NUEVO INPUT ES:   "+input);
+
+    this.ReInit(new java.io.StringReader(input));
+    elreturn = "";
+    //this.ReInit(new java.io.StringReader(elreturn));
+
+    conditionRevi();
+    throw new Error("Missing return statement in function");
+  }
+
   /** Generated Token Manager. */
   public RobotTokenManager token_source;
   SimpleCharStream jj_input_stream;
@@ -2305,7 +3136,7 @@ public class Robot implements RobotConstants {
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[65];
+  final private int[] jj_la1 = new int[76];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -2313,10 +3144,10 @@ public class Robot implements RobotConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x1000001,0x80000000,0x0,0x80000000,0x80000000,0x0,0x60000000,0x60000000,0x80000000,0x0,0x1507ffd0,0x80000000,0x0,0x60000000,0x60000000,0x80000000,0x80000000,0x80000000,0x0,0x1506ffd0,0x1000000,0x0,0x0,0x0,0x0,0x80000000,0x0,0x60000000,0x60000000,0x80000000,0x80000000,0x80000000,0x0,0x0,0x0,0x60000000,0x1000000,0x11d8ffd1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x60000000,0x0,0xd80000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_0 = new int[] {0x1000001,0x80000000,0x0,0x80000000,0x80000000,0x0,0x60000000,0x60000000,0x80000000,0x0,0x1d07ffd0,0x80000000,0x0,0x80000000,0x80000000,0x0,0x60000000,0x60000000,0x80000000,0x0,0x1d07ffd0,0x1000000,0x0,0x0,0x0,0x0,0x80000000,0x0,0x60000000,0x60000000,0x80000000,0x80000000,0x0,0x80000000,0x0,0x0,0x0,0x60000000,0x1000000,0x11d8ffd1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x60000000,0x0,0xd80000,0x60000000,0x0,0xd80000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2000000,0x0,0x0,0x0,0x0,0x2000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x1000,0xd,0x8000,0xd,0x3,0xf0,0x0,0x0,0xd,0xf0,0x400,0x3,0xf0,0x0,0x0,0xd,0xd,0xd,0xf0,0x400,0x0,0xc00,0xc00,0x2000,0x2000,0x3,0xf0,0x0,0x0,0xd,0xd,0xd,0xf0,0xf0,0xf0,0x0,0x0,0x400,0xc00,0xc00,0x2000,0x2000,0xc00,0xc00,0xc00,0xc00,0x2000,0xc00,0xc00,0x400,0x0,0xf0,0x400,0xf0,0xc00,0xc00,0xc00,0xc00,0x500,0xc00,0xc00,0xc00,0xc00,0x2000,0x2000,};
+      jj_la1_1 = new int[] {0x1000,0xd,0x8000,0xd,0x3,0xf0,0x0,0x0,0xd,0xf0,0x400,0xd,0x8000,0xd,0x3,0xf0,0x0,0x0,0xd,0xf0,0x400,0x0,0xc00,0xc00,0x2000,0x2000,0x3,0xf0,0x0,0x0,0xd,0xd,0x8000,0xd,0xf0,0xf0,0xf0,0x0,0x0,0x400,0xc00,0xc00,0x2000,0x2000,0xc00,0xc00,0xc00,0xc00,0x2000,0xc00,0xc00,0x400,0x0,0xf0,0x400,0x0,0xf0,0x400,0xf0,0xc00,0xc00,0xc00,0xc00,0x500,0xc00,0xc00,0xc00,0xc00,0x2000,0x2000,0x0,0xc00,0xc00,0x2000,0x2000,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -2330,7 +3161,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 65; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -2344,7 +3175,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 65; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -2354,7 +3185,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 65; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -2364,7 +3195,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 65; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -2373,7 +3204,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 65; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -2382,7 +3213,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 65; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -2438,7 +3269,7 @@ public class Robot implements RobotConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 65; i++) {
+    for (int i = 0; i < 76; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

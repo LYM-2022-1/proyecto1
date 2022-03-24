@@ -38,6 +38,7 @@ import java.util.Vector;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.awt.Point;
+import java.util.Collections;
 //import control.Interpreter;
 
 @SuppressWarnings("serial")
@@ -52,6 +53,8 @@ public class Robot
 	private ArrayList<Integer> valorvars = new ArrayList<Integer>();
 	private ArrayList<String> tempnombres = new ArrayList<String>();
 	private ArrayList<Integer> tempvalores = new ArrayList<Integer>();
+	private ArrayList<Integer> dirborrar = new ArrayList<Integer>();
+	private ArrayList<Integer> dirbordos = new ArrayList<Integer>();
 	private ArrayList<String> blockfuns = new ArrayList<String>();
 	private ArrayList<String> nombrefuns = new ArrayList<String>();
 	private ArrayList<String> paramfuns = new ArrayList<String>();
@@ -67,7 +70,7 @@ public class Robot
 	private String condiloop = "";
 	private String acumuloop = "";
 	private String armando = "";
-	//private String nuevotoken = "???";
+	private String paraloop = "???";
 	private boolean estoyenloop = false;
 	
 	private int cuentaif = -1;
@@ -117,7 +120,7 @@ TOKEN: /* Nombres de Comandos */
 		|  <OP: "(" >
 		|  <CP: ")" >
 		|  <RESETVAR: "!!!" >
-		|  <PARAIF: "???" >
+		|  <PARALOOP: "???" >
 		| < SALTAR: "skip" >
 		
 	
@@ -202,9 +205,61 @@ void haceInput(int x, String salida, String[] nueva):
   	  <OP>
 	(
    		<EQUALS> " " cambiarVariable(variables, valorvars)
-   		| <RUN_DIRS><OP>":"(<FRONT>{direcciones = token.image;}|<RIGHT>{direcciones = token.image;}|<LEFT>{direcciones = token.image;}|<BACK>{direcciones = token.image;})
-			      (" :"(<FRONT>|<RIGHT>|<LEFT>|<BACK>){direcciones= direcciones.concat(token.image);
-												System.out.println(direcciones);})*<CP>
+   		| <RUN_DIRS><OP>":"{direcciones = token.image;}((<FRONT>|<RIGHT>|<LEFT>|<BACK>){direcciones= direcciones.concat(token.image);})
+			      (" :"{direcciones= direcciones.concat(token.image);}(<FRONT>|<RIGHT>|<LEFT>|<BACK>){direcciones= direcciones.concat(token.image);
+												})*
+												{
+												  for(int i=0;i<direcciones.length();i++ )
+												  {
+												    if(Character.toString(direcciones.charAt(i)).equals(":"))
+												    {
+												      if(Character.toString(direcciones.charAt(i+1)).equals("l"))
+												      {
+												        if(world.getFacing()==0)//north
+														  {world.left();}
+														  else if (world.getFacing()==1)//south
+														  {world.right();}
+														  else if (world.getFacing()==2)//east
+														  {world.down();}
+														  else if (world.getFacing()==3)//west
+														  {world.up();}
+												      }
+												      else if(Character.toString(direcciones.charAt(i+1)).equals("f"))
+												      {
+												        if(world.getFacing()==0)
+														  { world.up();}
+														  else if (world.getFacing()==1)
+														  {world.down();}
+														  else if (world.getFacing()==2)
+														  {world.right();}
+														  else if (world.getFacing()==3)
+														  {world.left();}
+												      }
+												      else if(Character.toString(direcciones.charAt(i+1)).equals("r"))
+												      {
+												        if(world.getFacing()==0)//north
+														  {world.right();}
+														  else if (world.getFacing()==1)//south
+														  {world.left();}
+														  else if (world.getFacing()==2)//east
+														  {world.down();}
+														  else if (world.getFacing()==3)//west
+														  {world.up();}
+												      }
+												      else if(Character.toString(direcciones.charAt(i+1)).equals("b"))
+												      {
+												        if(world.getFacing()==0)//north
+														  {world.down();}
+														  else if (world.getFacing()==1)//south
+														  {world.up();}
+														  else if (world.getFacing()==2)//east
+														  {world.left();}
+														  else if (world.getFacing()==3)//west
+														  {world.right();}
+												      }
+												    }
+												  }
+												}<CP>
 		| <MOVE>" " x=checkNum(variables, valorvars) {world.moveForward(x);salida = "Command: Moveforward ";}
 		| <SALTAR>
 		| <TURN>" :"(<LEFT> { world.turnRight();world.turnRight();world.turnRight();}
@@ -269,17 +324,93 @@ void haceInput(int x, String salida, String[] nueva):
 					  |<CHIPS>" "x=checkNum(variables, valorvars){world.pickChips(x);})
 		| <MOVE_DIR>" "x=checkNum(variables, valorvars)" :"
 					(<FRONT> {
-					  for(int i=1;i<=x;i++)
-					  { world.down(); } }
+					  if(world.getFacing()==0)
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.up(); }
+					  }
+					  else if (world.getFacing()==1)
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.down();}
+					  }
+					  else if (world.getFacing()==2)
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.right(); }
+					  }
+					  else if (world.getFacing()==3)
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.left(); }
+					  }
+					   }
 					|<RIGHT>{
-					  for(int i=1;i<=x;i++)
-					  { world.right(); } }
+					  
+					  if(world.getFacing()==0)//north
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.right(); }
+					  }
+					  else if (world.getFacing()==1)//south
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.left();}
+					  }
+					  else if (world.getFacing()==2)//east
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.down(); }
+					  }
+					  else if (world.getFacing()==3)//west
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.up(); }
+					  } }
 					|<LEFT>{
-					  for(int i=1;i<=x;i++)
-					  { world.left(); } }
+					 if(world.getFacing()==0)//north
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.left(); }
+					  }
+					  else if (world.getFacing()==1)//south
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.right();}
+					  }
+					  else if (world.getFacing()==2)//east
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.down(); }
+					  }
+					  else if (world.getFacing()==3)//west
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.up(); }
+					  }  }
 					|<BACK>{
-					  for(int i=1;i<=x;i++)
-					  { world.up(); } })
+					  if(world.getFacing()==0)//north
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.down(); }
+					  }
+					  else if (world.getFacing()==1)//south
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.up();}
+					  }
+					  else if (world.getFacing()==2)//east
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.left(); }
+					  }
+					  else if (world.getFacing()==3)//west
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.right(); }
+					  } })
+		| < PARALOOP >estoyenloop=condition() { if(!estoyenloop) { this.ReInit(new java.io.StringReader(")(skip))")); }}< CP>< OP>haceInputRecursion( x, salida, nueva)
+
 		| <REPEAT > " "x=checkNum(variables, valorvars) " " { elreturn = "";}
 					<OP> { acumuresto = "";}
 					soloRevisaIf(x, salida, tempnombres, tempvalores)
@@ -376,18 +507,40 @@ void haceInput(int x, String salida, String[] nueva):
 								})
 		| < RESETVAR> {
 		  				sizee = tempnomdos.size();
-		  				for(p=0; p<tempnomdos.size(); p++)
+		  				System.out.println("LEO EL TOKEN " );
+		  				for(p=0; p<sizee; p++)
 						{
-						  busque = tempnomdos.get(q);
+						  System.out.println("ENTRO AL CICLO " );
+						  busque = tempnomdos.get(p);
 						  for(q=0; q<variables.size(); q++)
 						  {
 						    if(busque.equals(variables.get(q)))
 						    {
-						      variables.remove(q);
-						      valorvars.remove(q);
-						      tempnomdos.remove(p);
+						      dirbordos.add(p);
+						      System.out.println("TOCA BORRAR LA VARIABLE "+variables.get(q));
+						      dirborrar.add(q);
+						      //variables.remove(q);
+						      //valorvars.remove(q);
+						      //tempnomdos.remove(p);
 						    }
 						  }
+						}
+						Collections.sort(dirborrar);
+						Collections.sort(dirbordos);
+						sizee = dirborrar.size();
+						for(p=0; p<dirborrar.size(); p++)
+						{
+						  q = dirborrar.get(sizee-p-1);
+						  System.out.println("TOCA BORRAR LA VARIABLE "+variables.get(q));
+						  variables.remove(q);
+						  System.out.println(valorvars.get(q));
+						  valorvars.remove(q);
+						}
+						sizee = dirbordos.size();
+						for(p=0; p<dirbordos.size(); p++)
+						{
+						  q = dirbordos.get(sizee-p-1);
+						  tempnomdos.remove(q);
 						}
 		  				}
 		| <DEFVAR> " " declararVariable(variables, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
@@ -433,7 +586,7 @@ void haceInput(int x, String salida, String[] nueva):
 			    acumuresto = "";
 			  }
 			}
-		| < LOOP > { elreturn = ""; backup= "";}estoyenloop=condition()
+			| < LOOP > { elreturn = ""; backup= "";}estoyenloop=condition()
 					{
 					  if(elreturn == "")
 					  {
@@ -453,7 +606,7 @@ void haceInput(int x, String salida, String[] nueva):
 					< CP>
 					soloRevisaIf(x, salida, tempnombres, tempvalores) 
 					{
-					  acumuloop = acumuloop.concat(elreturn);
+					  acumuloop = elreturn;
 					  elreturn="";
 					  //codeloop=cprespuesto.concat(codeloop);
 					  if(estoyenloop)
@@ -472,20 +625,20 @@ void haceInput(int x, String salida, String[] nueva):
 	{
 	  if(estoyenloop)
 	  {
-	    armando = codeloop;
-
-	    armando = armando.concat("(loop");
+	    armando = "(";
+	    armando = armando.concat(paraloop);
 	    armando = armando.concat(condiloop);
 	    armando = armando.concat(")");
 	    armando = armando.concat(codeloop);
+	    //armando = armando.concat("(loop");
+	    //armando = armando.concat(condiloop);
+	    //armando = armando.concat(")");
+	    //armando = armando.concat(codeloop);
+	    //armando = armando.concat(")");
 	    armando = armando.concat(")");
 	    //armando = armando.concat(codeloop);
 	    System.out.println(armando);
 	    this.ReInit(new java.io.StringReader(armando));
-	  }
-	  else if(acumuloop!="")
-	  {
-	    this.ReInit(new java.io.StringReader(acumuloop));
 	  }
 	  else if(acumuloop!="")
 	  {
@@ -495,7 +648,6 @@ void haceInput(int x, String salida, String[] nueva):
 	  else
 	  { }
 	}
-    
 }
 
 void haceInputRecursion(int x, String salida, String[] nueva):
@@ -506,23 +658,218 @@ void haceInputRecursion(int x, String salida, String[] nueva):
   String busque = "";
   int sizee = 0;
   String cprespuesto=")";
+  String direcciones = "";
  }
 {
   	
 	(
-   		<EQUALS> " " cambiarVariable(variables, valorvars) 
+   		<EQUALS> " " cambiarVariable(variables, valorvars)
+   		| <RUN_DIRS><OP>":"{direcciones = token.image;}((<FRONT>|<RIGHT>|<LEFT>|<BACK>){direcciones= direcciones.concat(token.image);})
+			      (" :"{direcciones= direcciones.concat(token.image);}(<FRONT>|<RIGHT>|<LEFT>|<BACK>){direcciones= direcciones.concat(token.image);
+												})*
+												{
+												  for(int i=0;i<direcciones.length();i++ )
+												  {
+												    if(Character.toString(direcciones.charAt(i)).equals(":"))
+												    {
+												      if(Character.toString(direcciones.charAt(i+1)).equals("l"))
+												      {
+												        if(world.getFacing()==0)//north
+														  {world.left();}
+														  else if (world.getFacing()==1)//south
+														  {world.right();}
+														  else if (world.getFacing()==2)//east
+														  {world.down();}
+														  else if (world.getFacing()==3)//west
+														  {world.up();}
+												      }
+												      else if(Character.toString(direcciones.charAt(i+1)).equals("f"))
+												      {
+												        if(world.getFacing()==0)
+														  { world.up();}
+														  else if (world.getFacing()==1)
+														  {world.down();}
+														  else if (world.getFacing()==2)
+														  {world.right();}
+														  else if (world.getFacing()==3)
+														  {world.left();}
+												      }
+												      else if(Character.toString(direcciones.charAt(i+1)).equals("r"))
+												      {
+												        if(world.getFacing()==0)//north
+														  {world.right();}
+														  else if (world.getFacing()==1)//south
+														  {world.left();}
+														  else if (world.getFacing()==2)//east
+														  {world.down();}
+														  else if (world.getFacing()==3)//west
+														  {world.up();}
+												      }
+												      else if(Character.toString(direcciones.charAt(i+1)).equals("b"))
+												      {
+												        if(world.getFacing()==0)//north
+														  {world.down();}
+														  else if (world.getFacing()==1)//south
+														  {world.up();}
+														  else if (world.getFacing()==2)//east
+														  {world.left();}
+														  else if (world.getFacing()==3)//west
+														  {world.right();}
+												      }
+												    }
+												  }
+												}<CP>
 		| <MOVE>" " x=checkNum(variables, valorvars) {world.moveForward(x);salida = "Command: Moveforward ";}
 		| <SALTAR>
 		| <TURN>" :"(<LEFT> { world.turnRight();world.turnRight();world.turnRight();}
 					|<AROUND> { world.turnRight();world.turnRight();}
 					|<RIGHT> { world.turnRight();}) 
-		| <FACE>" :"(<SOUTH>|<WEST>|<EAST>|<NORTH>) 
+		| <FACE>" :"(<SOUTH> {
+		  						if(world.getFacing()==0)
+								{
+								 world.turnRight();world.turnRight();
+								}
+								else if(world.getFacing()==2)
+								{
+								 world.turnRight(); 
+								}
+								else if(world.getFacing()==3)
+								{
+								 world.turnRight();world.turnRight();world.turnRight();  
+								}
+								
+									}
+					|<WEST> { if(world.getFacing()==0)
+								{
+								 world.turnRight();world.turnRight();world.turnRight();
+								}
+								else if(world.getFacing()==2)
+								{
+								 world.turnRight();world.turnRight(); 
+								}
+								else if(world.getFacing()==1)
+								{
+								 world.turnRight();world.turnRight();world.turnRight(); world.turnRight();world.turnRight();  
+								}
+					   }
+					|<EAST> { if(world.getFacing()==0)
+								{
+								 world.turnRight();
+								}
+								else if(world.getFacing()==1)
+								{
+								 world.turnRight();world.turnRight();world.turnRight(); 
+								}
+								else if(world.getFacing()==3)
+								{
+								 world.turnRight();world.turnRight();  
+								} }
+					|<NORTH> {  if(world.getFacing()==1)
+								{
+								 world.turnRight();world.turnRight();
+								}
+								else if(world.getFacing()==2)
+								{
+								 world.turnRight();world.turnRight();world.turnRight(); 
+								}
+								else if(world.getFacing()==3)
+								{
+								 world.turnRight(); 
+								}}) 
 		| <PUT>" :"
 					 (<BALLOONS>" "x=checkNum(variables, valorvars){world.putBalloons(x);}
 					  |<CHIPS>" "x=checkNum(variables, valorvars){world.putChips(x);})
 		| <PICK>" :"(<BALLOONS>" "x=checkNum(variables, valorvars){world.grabBalloons(x);}
 					  |<CHIPS>" "x=checkNum(variables, valorvars){world.pickChips(x);})
-		| <MOVE_DIR> x=checkNum(variables, valorvars) (<FRONT>|<RIGHT>|<LEFT>|<BACK>)
+		| <MOVE_DIR>" "x=checkNum(variables, valorvars)" :"
+					(<FRONT> {
+					  if(world.getFacing()==0)
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.up(); }
+					  }
+					  else if (world.getFacing()==1)
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.down();}
+					  }
+					  else if (world.getFacing()==2)
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.right(); }
+					  }
+					  else if (world.getFacing()==3)
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.left(); }
+					  }
+					   }
+					|<RIGHT>{
+					  
+					  if(world.getFacing()==0)//north
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.right(); }
+					  }
+					  else if (world.getFacing()==1)//south
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.left();}
+					  }
+					  else if (world.getFacing()==2)//east
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.down(); }
+					  }
+					  else if (world.getFacing()==3)//west
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.up(); }
+					  } }
+					|<LEFT>{
+					 if(world.getFacing()==0)//north
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.left(); }
+					  }
+					  else if (world.getFacing()==1)//south
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.right();}
+					  }
+					  else if (world.getFacing()==2)//east
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.down(); }
+					  }
+					  else if (world.getFacing()==3)//west
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.up(); }
+					  }  }
+					|<BACK>{
+					  if(world.getFacing()==0)//north
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.down(); }
+					  }
+					  else if (world.getFacing()==1)//south
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.up();}
+					  }
+					  else if (world.getFacing()==2)//east
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.left(); }
+					  }
+					  else if (world.getFacing()==3)//west
+					  {
+					    for(int i=1;i<=x;i++)
+					  	{ world.right(); }
+					  } })
+		| < PARALOOP >estoyenloop=condition() { if(!estoyenloop) { this.ReInit(new java.io.StringReader(")(skip))")); }}< CP>< OP>haceInputRecursion( x, salida, nueva)
+
 		| <REPEAT > " "x=checkNum(variables, valorvars) " " { elreturn = "";}
 					<OP> { acumuresto = "";}
 					soloRevisaIf(x, salida, tempnombres, tempvalores)
@@ -555,22 +902,95 @@ void haceInputRecursion(int x, String salida, String[] nueva):
 			  			this.ReInit(new java.io.StringReader(acumuresto));
 					}
 			  		
-		| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
-		| <MOVE_FACE> x=checkNum(variables, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>)
+		//| <RUN_DIRS>(<FRONT>|<RIGHT>|<LEFT>|<BACK>)+ //FALTA QUE VUELVA A POSCICION ORIGINAL
+		| <MOVE_FACE>" "x=checkNum(variables, valorvars)" :"(<SOUTH> {
+		  						if(world.getFacing()==0)
+								{
+								 world.turnRight();world.turnRight();
+								}
+								else if(world.getFacing()==2)
+								{
+								 world.turnRight(); 
+								}
+								else if(world.getFacing()==3)
+								{
+								 world.turnRight();world.turnRight();world.turnRight();  
+								}
+								for(int i=1;i<=x;i++)
+					  			{ world.down(); }
+									}
+					|<WEST> { if(world.getFacing()==0)
+								{
+								 world.turnRight();world.turnRight();world.turnRight();
+								}
+								else if(world.getFacing()==2)
+								{
+								 world.turnRight();world.turnRight(); 
+								}
+								else if(world.getFacing()==1)
+								{
+								 world.turnRight();world.turnRight();world.turnRight(); world.turnRight();world.turnRight();  
+								}
+								for(int i=1;i<=x;i++)
+					  			{ world.left(); }
+					   }
+					|<EAST> { if(world.getFacing()==0)
+								{
+								 world.turnRight();
+								}
+								else if(world.getFacing()==1)
+								{
+								 world.turnRight();world.turnRight();world.turnRight(); 
+								}
+								else if(world.getFacing()==3)
+								{
+								 world.turnRight();world.turnRight();  
+								}
+								for(int i=1;i<=x;i++)
+					  			{ world.right(); }
+							}
+					|<NORTH> {  if(world.getFacing()==1)
+								{
+								 world.turnRight();world.turnRight();
+								}
+								else if(world.getFacing()==2)
+								{
+								 world.turnRight();world.turnRight();world.turnRight(); 
+								}
+								else if(world.getFacing()==3)
+								{
+								 world.turnRight(); 
+								}
+								for(int i=1;i<=x;i++)
+					  			{ world.up(); }
+								})
 		| < RESETVAR> {
 		  				sizee = tempnomdos.size();
-		  				for(p=0; p<tempnomdos.size(); p++)
+		  				for(p=0; p<sizee; p++)
 						{
-						  busque = tempnomdos.get(q);
+						  busque = tempnomdos.get(p);
 						  for(q=0; q<variables.size(); q++)
 						  {
 						    if(busque.equals(variables.get(q)))
 						    {
-						      variables.remove(q);
-						      valorvars.remove(q);
-						      tempnomdos.remove(p);
+						      dirbordos.add(p);
+						      dirborrar.add(q);
+						      //variables.remove(q);
+						      //valorvars.remove(q);
+						      //tempnomdos.remove(p);
 						    }
 						  }
+						}
+						for(p=0; p<dirborrar.size(); p++)
+						{
+						  q = dirborrar.get(p);
+						  variables.remove(q);
+						  valorvars.remove(q);
+						}
+						for(p=0; p<dirbordos.size(); p++)
+						{
+						  q = dirborrar.get(p);
+						  tempnomdos.remove(q);
 						}
 		  				}
 		| <DEFVAR> " " declararVariable(variables, valorvars) //{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
@@ -592,6 +1012,7 @@ void haceInputRecursion(int x, String salida, String[] nueva):
 			  { 
 			  	acumuresto = "(";
 			  	acumuresto = acumuresto.concat(elreturn);
+			  	acumuresto = acumuresto.concat(")");
 			  	acumuresto = acumuresto.concat(")");
 			  }
 			  elreturn="";
@@ -616,8 +1037,36 @@ void haceInputRecursion(int x, String salida, String[] nueva):
 			    acumuresto = "";
 			  }
 			}
+			| < LOOP > { elreturn = ""; backup= "";}estoyenloop=condition()
+					{
+					  if(elreturn == "")
+					  {
+					    condiloop = backup;
+					  }
+					  else
+					  {
+					    condiloop = elreturn;
+					  }
+
+					}
+					< CP><OP > { elreturn=token.image;}
+					soloRevisaIf(x, salida, tempnombres, tempvalores) { //elreturn=elreturn.concat(token.image);
+																		elreturn=elreturn.concat(")");
+					  													codeloop= elreturn;}
+					<CP >{ elreturn="";}
+					< CP>
+					soloRevisaIf(x, salida, tempnombres, tempvalores) 
+					{
+					  acumuloop = elreturn;
+					  elreturn="";
+					  //codeloop=cprespuesto.concat(codeloop);
+					  if(estoyenloop)
+					  {
+					    this.ReInit(new java.io.StringReader(cprespuesto));
+					  }
+					}
 		| < OP> haceInputRecursion( x, salida, nueva)
-		| buscarFuncion() 
+		|buscarFuncion() 
 		
 
 	)
@@ -741,7 +1190,7 @@ void buscarFuncion():
     //System.out.println(input);
     elreturn = "";
   }
-  soloRevisaIf(x, salida, tempnombres, tempvalores) 
+  soloRevisaIf(x, salida, variables, valorvars) 
   {
     if(!elreturn.equals(""))
 			  { 
@@ -779,14 +1228,14 @@ void soloRevisaIf(int x, String salida, ArrayList<String> tempnombres, ArrayList
 		| <MOVE>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
 		| <SALTAR>{ elreturn=elreturn.concat(token.image);}
 		| <TURN>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<LEFT>|<AROUND>|<RIGHT>){elreturn=elreturn.concat(token.image);} 
-		| <FACE>{ elreturn=elreturn.concat(token.image);}":"{ elreturn=elreturn.concat(token.image);}(<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
+		| <FACE>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
 		| <PUT>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<BALLOONS>|<CHIPS>) { elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
 		| <PICK>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<BALLOONS>|<CHIPS>){ elreturn=elreturn.concat(token.image);} " "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)
-		| <MOVE_DIR>{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores) (<FRONT>|<RIGHT>|<LEFT>|<BACK>){ elreturn=elreturn.concat(token.image);}
-		| <RUN_DIRS>{ elreturn=elreturn.concat(token.image);}(<FRONT>{ elreturn=elreturn.concat(token.image);}|<RIGHT>{ elreturn=elreturn.concat(token.image);}|<LEFT>{ elreturn=elreturn.concat(token.image);}|<BACK>{ elreturn=elreturn.concat(token.image);})+ 
-		| <MOVE_FACE> { elreturn=elreturn.concat(token.image);}x=checkNum(tempnombres, valorvars) (<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
+		| <MOVE_DIR>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} x=checkNum(tempnombres, tempvalores)" :"{ elreturn=elreturn.concat(token.image);}  (<FRONT>|<RIGHT>|<LEFT>|<BACK>){ elreturn=elreturn.concat(token.image);}
+		| <RUN_DIRS>{ elreturn=elreturn.concat(token.image);}< OP>{ elreturn=elreturn.concat(token.image);}":"{ elreturn=elreturn.concat(token.image);}(<FRONT>{ elreturn=elreturn.concat(token.image);}|<RIGHT>{ elreturn=elreturn.concat(token.image);}|<LEFT>{ elreturn=elreturn.concat(token.image);}|<BACK>{ elreturn=elreturn.concat(token.image);})(" :"{ elreturn=elreturn.concat(token.image);}(<FRONT>{ elreturn=elreturn.concat(token.image);}|<RIGHT>{ elreturn=elreturn.concat(token.image);}|<LEFT>{ elreturn=elreturn.concat(token.image);}|<BACK>{ elreturn=elreturn.concat(token.image);}))*< CP>{ elreturn=elreturn.concat(token.image);} 
+		| <MOVE_FACE> { elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);}x=checkNum(tempnombres, valorvars)" :"{ elreturn=elreturn.concat(token.image);} (<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
 		| <DEFVAR> { elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);} declararVariable(tempnombres, valorvars) { elreturn=elreturn.concat(token.image);}//{variables[Integer.parseInt(nueva[0])]=nueva[1];valorvars[Integer.parseInt(nueva[0])]=Integer.parseInt(nueva[2]);}
-		| <IF>{ elreturn=elreturn.concat(token.image);}bool=condition()
+		| <IF>{ elreturn=elreturn.concat(token.image);}conditionRevi()< CP >{ elreturn=elreturn.concat(token.image);}//[< CP>{ elreturn=elreturn.concat(token.image);}]
 		| < CAN_MOVE_P > { elreturn=elreturn.concat(token.image);} " :"{ elreturn=elreturn.concat(token.image);}(<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
 		| < FACING_P >  { elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<SOUTH>|<WEST>|<EAST>|<NORTH>){ elreturn=elreturn.concat(token.image);}
 		| <CAN_PUT_P>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);}(<BALLOONS>|< CHIPS >){ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);}x=checkNum(tempnombres, tempvalores)
@@ -856,6 +1305,7 @@ void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores
   String salida = "";
   String elrelleno = "";
   String elrenombre = "";
+  String lavaria = "";
 }
 {
   (    //< NAME>|< LETRA>
@@ -879,15 +1329,17 @@ void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores
   < OP>
   [(
     //< NAME>|< LETRA>
-    (< LETRA >)(< LETRA >|< DIGITO >)*
+    (< LETRA >{ lavaria=lavaria.concat(token.image);})(< LETRA >{ lavaria=lavaria.concat(token.image);}|< DIGITO >{ lavaria=lavaria.concat(token.image);})*
   )
   {
     
   	try 
 			{
-			  	tempnombres.add(token.image);
+			  	tempnombres.add(lavaria);
 				tempvalores.add(4);
-				parametros = parametros.concat(token.image);
+				parametros = parametros.concat(lavaria);
+				
+				
 			} 
 			catch (NumberFormatException ee) 
 			{
@@ -900,16 +1352,16 @@ void cargarFuncion(ArrayList<String> tempnombres, ArrayList<Integer> tempvalores
     " "
     (
     //< NAME>|< LETRA>
-    (< LETRA >)(< LETRA >|< DIGITO >)*
+    (< LETRA > { lavaria=token.image;})(< LETRA >{ lavaria=lavaria.concat(token.image);}|< DIGITO >{ lavaria=lavaria.concat(token.image);})*
   	)
     {
     
   		try 
 			{
-			  	tempnombres.add(token.image);
+			  	tempnombres.add(lavaria);
 				tempvalores.add(4);
 				parametros = parametros.concat(" ");
-				parametros = parametros.concat(token.image);
+				parametros = parametros.concat(lavaria);
 			} 
 			catch (NumberFormatException ee) 
 			{
@@ -1130,8 +1582,57 @@ boolean condition ():
  
 }
 
+void conditionRevi ():
+
+{
+  int x=0;
+  boolean bool;
+  int posx=0;
+  int posy=0;
+  int newpos=0;
+  boolean paranot=false;
+  boolean parafuncion=false;
+}
+{
+	<OP>{ elreturn=elreturn.concat(token.image);}
+
+	(
+  		<FACING_P>{ elreturn=elreturn.concat(token.image);}
+  				" :"{ elreturn=elreturn.concat(token.image);}
+  				(bool=facing_p())
+		| <CAN_PUT_P>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);}
+					(<BALLOONS>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);}x=checkNum(variables, valorvars)
+					|<CHIPS>{ elreturn=elreturn.concat(token.image);}" "{ elreturn=elreturn.concat(token.image);}x=checkNum(variables, valorvars))
+		| <CAN_MOVE_P>{ elreturn=elreturn.concat(token.image);}" :"{ elreturn=elreturn.concat(token.image);}(<SOUTH>
+					{
+					  elreturn=elreturn.concat(token.image);
+					}
+				    |<WEST>
+				    {
+				      elreturn=elreturn.concat(token.image);
+					}
+					
+					|<EAST>
+					{
+					  elreturn=elreturn.concat(token.image);
+					}
+					
+					|<NORTH>
+				    {
+				      elreturn=elreturn.concat(token.image);
+				    }
+					)
 
 
+	| <NOT>{ elreturn=elreturn.concat(token.image);} paranot=condition() < CP>{
+								elreturn=elreturn.concat(token.image);
+	  							}
+	  							
+	| revisarFuncionIf() 
+
+
+)
+}
 
  boolean facing_p():
 {
@@ -1204,10 +1705,11 @@ void cambiarVariable(ArrayList<String> variables, ArrayList<Integer> valorvars) 
   int pos=-40;
   int i = 0;
   String pru = "";
+  String lavaria = "";
 }
 {
   (    //<NAME>|< LETRA>
-    (< LETRA >{elreturn= elreturn.concat(token.image);})(< LETRA >{ elreturn=elreturn.concat(token.image);}|< DIGITO >{ elreturn=elreturn.concat(token.image);})*
+    (< LETRA >{elreturn= elreturn.concat(token.image); lavaria= lavaria.concat(token.image);})(< LETRA >{ elreturn=elreturn.concat(token.image); lavaria= lavaria.concat(token.image);}|< DIGITO >{ elreturn=elreturn.concat(token.image); lavaria= lavaria.concat(token.image);})*
   )
   {
     for(i=0; i<variables.size(); i++)
@@ -1215,11 +1717,11 @@ void cambiarVariable(ArrayList<String> variables, ArrayList<Integer> valorvars) 
   	  pru = variables.get(i);
   	  if (pru!=null)
   	  { 
-    	if(token.image.equals(pru))
+    	if(lavaria.equals(pru))
     	{
     	  variables.remove(i);
     	  valorvars.remove(i);
-    	  variables.add(token.image);
+    	  variables.add(lavaria);
     	  pos = i;
     	}
   	  }
@@ -1244,17 +1746,18 @@ int checkNum(ArrayList<String> variables, ArrayList<Integer> valorvars) :
 {
   int rta = -57;
   int i = 0;
+  String lavariable = "";
 }
 {
   (
     //< NAME>
-    (< LETRA >{ elreturn=elreturn.concat(token.image);})(< LETRA >{ elreturn=elreturn.concat(token.image);}|< DIGITO >{ elreturn=elreturn.concat(token.image);})*
+    (< LETRA >{ elreturn=elreturn.concat(token.image); lavariable=lavariable.concat(token.image);})(< LETRA >{ elreturn=elreturn.concat(token.image);  lavariable=lavariable.concat(token.image);}|< DIGITO >{ elreturn=elreturn.concat(token.image);  lavariable=lavariable.concat(token.image);})*
   {
     
   
   	for(i=0; i<variables.size(); i++)
   	{
-    	if(token.image.equals(variables.get(i)))
+    	if(lavariable.equals(variables.get(i)))
     	{
     	  rta= valorvars.get(i);
 
@@ -1262,7 +1765,7 @@ int checkNum(ArrayList<String> variables, ArrayList<Integer> valorvars) :
   	}
   	if(rta == -57)
   	{
-  	  throw new Error("ERROR: NO EXISTE LA VARIABLE" + token.image);
+  	  throw new Error("ERROR: NO EXISTE LA VARIABLE" + lavariable);
 
   	}
   	return rta;
@@ -1286,16 +1789,18 @@ void declararVariable(ArrayList<String> variables, ArrayList<Integer> valorvars)
 	  int pos = 0;
 	  int j = 0;
 	  int k = 0;
+	  String lavariab = "";
+	  boolean yaesta = false;
 	  
 	}
 	{
 	  (	    //< NAME>|< LETRA>
-	    (< LETRA >{ elreturn=elreturn.concat(token.image);})(< LETRA >{ elreturn=elreturn.concat(token.image);}|< DIGITO >{ elreturn=elreturn.concat(token.image);})*
+	    (< LETRA >{ elreturn=elreturn.concat(token.image); lavariab=lavariab.concat(token.image);})(< LETRA >{ elreturn=elreturn.concat(token.image); lavariab=lavariab.concat(token.image);}|< DIGITO >{ elreturn=elreturn.concat(token.image); lavariab=lavariab.concat(token.image);})*
 	  )
 	  {
 	    try 
 			{
-			  	variables.add(token.image);
+			  	variables.add(lavariab);
 				
 			} 
 			catch (NumberFormatException ee) 
@@ -1331,6 +1836,7 @@ boolean buscarFuncionIf():
 {
   int x=0;
   int y=0;
+  int z=0;
   boolean cheker=false;
   int indexxx= 0;
   String elnombre = "";
@@ -1448,6 +1954,7 @@ boolean buscarFuncionIf():
     //System.out.println(input);
     elreturn = "";
   }
+  [<CP >]
   < OP> { elreturn=elreturn.concat(token.image);}
   soloRevisaIf(x, salida, tempnombres, tempvalores)
   < CP> { elreturn=elreturn.concat(token.image); blouno = elreturn; elreturn = "";System.out.println("EL PRIMER BLOQUE ES:   "+blouno);}
@@ -1455,7 +1962,7 @@ boolean buscarFuncionIf():
   soloRevisaIf(x, salida, tempnombres, tempvalores)
   < CP> { elreturn=elreturn.concat(token.image); blodos = elreturn; elreturn = "";System.out.println("EL SEGUNDO BLOQUE ES:   "+blodos);}
   < CP>
-  soloRevisaIf(x, salida, tempnombres, tempvalores)
+  soloRevisaIf(x, salida, variables, valorvars)
   {
     if(!elreturn.equals(""))
 			  { 
@@ -1463,13 +1970,24 @@ boolean buscarFuncionIf():
 			  	acumuresto = acumuresto.concat(blouno);
 			  	acumuresto = acumuresto.concat(blodos);
 			  	acumuresto = acumuresto.concat(")");
-			  	acumuresto = acumuresto.concat(elreturn);
+			  	input = input.concat(acumuresto);
+			  	//acumuresto = acumuresto.concat(elreturn);
 			  	if(!paramfuns.get(indexxx).equals(""))
 			  	{
 			  	  input = input.concat("(!!!)");
 			  	}
 			  	//input = input.concat("(!!!)");
-    			input = input.concat(acumuresto);
+			  	
+			  	//for(z=0;z<variables.size();z++)
+			  	//{
+			  	  //input = input.concat("(defvar ");
+			  	  //input = input.concat(variables.get(z));
+			  	  //input = input.concat(" ");
+			  	  //input = input.concat(Integer.toString(valorvars.get(z)));
+			  	  //input = input.concat(")");
+			  	//}
+			  	input = input.concat("(skip)");
+    			input = input.concat(elreturn);
 			  }
     System.out.println("EL NUEVO INPUT ES:   "+input);
     
@@ -1479,4 +1997,172 @@ boolean buscarFuncionIf():
   }
   pruebaif=condition() { return pruebaif;}
   
-}	
+}
+
+boolean revisarFuncionIf():
+{
+  int x=0;
+  int y=0;
+  int z=0;
+  boolean cheker=false;
+  int indexxx= 0;
+  String elnombre = "";
+  String elsupernombre = "";
+  int elnumero = 0;
+  String input = "";
+  String cpp= ")";
+  
+}
+{
+  (
+    (< LETRA >{ elsupernombre=elsupernombre.concat(token.image); elreturn=elreturn.concat(token.image);})(< LETRA >{ elsupernombre=elsupernombre.concat(token.image); elreturn=elreturn.concat(token.image);}|< DIGITO >{ elsupernombre=elsupernombre.concat(token.image); elreturn=elreturn.concat(token.image);})*
+  
+  )
+  {
+    try 
+			{
+			  	for(x=0; x<nombrefuns.size(); x++)
+    			{
+      				if(elsupernombre.equals(nombrefuns.get(x)))
+      				{
+      				  cheker=true;
+      				  indexxx= x;
+      				  input = blockfuns.get(x);
+      				  try 
+						{
+						  	tempnombres = new ArrayList<String>();
+							tempvalores = new ArrayList<Integer>();
+							String[] tempvarss= paramfuns.get(indexxx).split(" ");
+							System.out.println(tempvarss.length);
+			  				for(y=0; y<tempvarss.length; y++)
+			  				{
+			  				  tempnombres.add(tempvarss[y]);
+			  				  tempnomdos.add(tempvarss[y]);
+			  				  tempvalores.add(-1);
+			  				 }
+			  				 if(paramfuns.get(indexxx).equals(""))
+			  				 {
+			  				   tempnombres.remove(0);
+			  				   tempnomdos.remove(tempnomdos.size()-1);
+			  				   tempvalores.remove(0);
+			  				 }
+						} 
+					catch (NumberFormatException ee) 
+						{
+							// Dada la forma de NUMERO, sabemos que solo puede tener d�gitos
+							// Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
+							throw new Error("NO PUDE METER EN EL ARRAY ESTO: "+token.image+"!!");
+						}
+
+      				}
+     			}
+     			if(!cheker)
+     			{
+     			  
+     			  throw new Error("NO ENCONTRE ESA FUNCION... PAILA ");
+
+     			}
+			} 
+			catch (NumberFormatException ee) 
+			{
+				// Dada la forma de NUMERO, sabemos que solo puede tener d�gitos
+				// Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
+				throw new Error("NO PUDE METER EN EL ARRAY ESTO: "+token.image+"!!");
+			}
+  }
+  [" " { elreturn=elreturn.concat(token.image);}
+  (
+    < NUMERO> { elreturn=elreturn.concat(token.image);}
+    {
+      if(tempnombres.get(0)!=null) { 
+        elnombre = tempnombres.get(0);
+        elnumero = Integer.parseInt(token.image);
+        tempnombres.remove(0);
+        variables.add(elnombre);
+        valorvars.add(elnumero);
+      }
+      else
+      {
+        throw new Error("NO HAY SUFICIENTES VARIABLES");
+      }
+      
+    
+	}
+  )
+  (
+    " " { elreturn=elreturn.concat(token.image);}
+    < NUMERO>
+    {
+      elreturn=elreturn.concat(token.image);
+      backup= elreturn;
+    if(tempnombres.get(0)!=null) { 
+        elnombre = tempnombres.get(0);
+        elnumero = Integer.parseInt(token.image);
+        tempnombres.remove(0);
+        variables.add(elnombre);
+        valorvars.add(elnumero);
+      }
+      else
+      {
+        throw new Error("NO HAY SUFICIENTES VARIABLES");
+      }
+	}
+  )*]
+  < CP >
+  {
+    if(tempnombres.size() >0)
+    {
+      throw new Error("FALTARON VARIABLE POR DEFINIR PARA USAR LA FUNCION");
+    }
+    //input = nuevotoken.concat(input);
+
+    //input = input.concat(cpp);
+    
+    //System.out.println(input);
+    elreturn = "";
+  }
+  [<CP >]
+  < OP> { elreturn=elreturn.concat(token.image);}
+  soloRevisaIf(x, salida, variables, valorvars)
+  < CP> { elreturn=elreturn.concat(token.image); blouno = elreturn; elreturn = "";System.out.println("EL PRIMER BLOQUE ES:   "+blouno);}
+  < OP> { elreturn=elreturn.concat(token.image);}
+  soloRevisaIf(x, salida, variables, valorvars)
+  < CP> { elreturn=elreturn.concat(token.image); blodos = elreturn; elreturn = "";System.out.println("EL SEGUNDO BLOQUE ES:   "+blodos);}
+  < CP>
+  soloRevisaIf(x, salida, variables, valorvars)
+  {
+    if(!elreturn.equals(""))
+			  { 
+			  	acumuresto = "";
+			  	acumuresto = acumuresto.concat(blouno);
+			  	acumuresto = acumuresto.concat(blodos);
+			  	acumuresto = acumuresto.concat(")");
+			  	input = input.concat(acumuresto);
+			  	//acumuresto = acumuresto.concat(elreturn);
+			  	if(!paramfuns.get(indexxx).equals(""))
+			  	{
+			  	  input = input.concat("(!!!)");
+			  	}
+			  	//input = input.concat("(!!!)");
+			  	
+			  	//for(z=0;z<variables.size();z++)
+			  	//{
+			  	  //input = input.concat("(defvar ");
+			  	  //input = input.concat(variables.get(z));
+			  	  //input = input.concat(" ");
+			  	  //input = input.concat(Integer.toString(valorvars.get(z)));
+			  	  //input = input.concat(")");
+			  	//}
+			  	input = input.concat("(skip)");
+    			input = input.concat(elreturn);
+			  }
+    System.out.println("EL NUEVO INPUT ES:   "+input);
+    
+    this.ReInit(new java.io.StringReader(input));
+    elreturn = "";
+    //this.ReInit(new java.io.StringReader(elreturn));
+  }
+  conditionRevi()
+  
+}
+

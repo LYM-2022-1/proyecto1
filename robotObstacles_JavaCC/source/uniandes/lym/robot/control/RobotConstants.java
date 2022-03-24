@@ -57,7 +57,7 @@ public interface RobotConstants {
   /** RegularExpression Id. */
   int RESETVAR = 26;
   /** RegularExpression Id. */
-  int PARAIF = 27;
+  int PARALOOP = 27;
   /** RegularExpression Id. */
   int SALTAR = 28;
   /** RegularExpression Id. */
