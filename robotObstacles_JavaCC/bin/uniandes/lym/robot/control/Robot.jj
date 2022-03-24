@@ -153,7 +153,7 @@ TOKEN :
 TOKEN:
 {
   	
-  	< LETRA: ["a"-"z","A"-"Z"]>
+  	< LETRA: ["a"-"z","A"-"Z","-"]>
  	| <DIGITO: ["0"-"9"] >
  	//| < NAME: (< LETRA >)(< LETRA >|< DIGITO >)*>
  	//| < LETRA: (< letra >)(< letra >|< digito >)*>
